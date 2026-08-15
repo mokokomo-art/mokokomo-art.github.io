@@ -176,7 +176,7 @@
       z-index: 10;
     }
 
-    .info:focus-within p {
+    .info.open p {
       display: block;
     }
 
@@ -220,11 +220,11 @@
         <div class="meta">
           <div class="info">
             <button type="button">i</button>
-            <p>thinking about nature, the math fuction e^x, 0, 1 and i because trancendental.</p>
+            <p>2024. 50" x 20" so kinda big. Archival Ink Photo, with ink and pencil objects added.</p>
           </div>
           <div class="info faq">
             <button type="button">?</button>
-            <p>2024. 50" x 20" so kinda big. Archival Ink Photo, with ink and pencil objects added.</p>
+            <p>thinking about nature, the math fuction e^x, 0, 1 and i because trancendental.</p>
           </div>
         </div>
       </div>
@@ -262,6 +262,26 @@
       </div>
     </div>
   </div>
+
+  <script>
+    const infos = document.querySelectorAll('.info');
+
+    function closeAll() {
+      infos.forEach(el => el.classList.remove('open'));
+    }
+
+    infos.forEach(info => {
+      info.querySelector('button').addEventListener('click', () => {
+        const wasOpen = info.classList.contains('open');
+        closeAll();
+        if (!wasOpen) info.classList.add('open');
+      });
+    });
+
+    document.addEventListener('pointerdown', e => {
+      if (!e.target.closest('.info')) closeAll();
+    });
+  </script>
 
 </body>
 </html>
