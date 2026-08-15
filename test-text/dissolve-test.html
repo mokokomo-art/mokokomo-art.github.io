@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dissolve Text Test</title>
+<style>
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background: #111;
+    font-family: sans-serif;
+  }
+
+  #text {
+    font-size: 3rem;
+    color: #fff;
+    transition: opacity 0.8s ease;
+  }
+
+  #text.fade {
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="text">Hello</div>
+
+<script>
+  const words = ["Hello", "Welcome", "Goodbye"];
+  let i = 0;
+  const el = document.getElementById("text");
+
+  setInterval(() => {
+    el.classList.add("fade");
+
+    setTimeout(() => {
+      i = (i + 1) % words.length;
+      el.textContent = words[i];
+      el.classList.remove("fade");
+    }, 800);
+  }, 2000);
+</script>
+
+</body>
+</html>

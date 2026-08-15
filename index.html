@@ -138,8 +138,10 @@
       position: relative;
     }
 
-    .info summary {
-      list-style: none;
+    .info button {
+      border: none;
+      padding: 0;
+      line-height: 1;
       cursor: pointer;
       width: 21.3px;
       height: 21.3px;
@@ -154,15 +156,12 @@
       justify-content: center;
     }
 
-    .info.faq summary {
+    .info.faq button {
       background: rgb(76.5% 37.1% 62.2%);
     }
 
-    .info summary::-webkit-details-marker {
-      display: none;
-    }
-
     .info p {
+      display: none;
       position: absolute;
       right: 0;
       top: 22px;
@@ -175,6 +174,16 @@
       font-size: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       z-index: 10;
+    }
+
+    .info:focus-within p {
+      display: block;
+    }
+
+    @media (hover: hover) {
+      .info:hover p {
+        display: block;
+      }
     }
   </style>
 </head>
@@ -209,14 +218,14 @@
       <div class="caption">
         <p class="title">Field Theory #1</p>
         <div class="meta">
-          <details class="info">
-            <summary>i</summary>
+          <div class="info">
+            <button type="button">i</button>
             <p>thinking about nature, the math fuction e^x, 0, 1 and i because trancendental.</p>
-          </details>
-          <details class="info faq">
-            <summary>?</summary>
+          </div>
+          <div class="info faq">
+            <button type="button">?</button>
             <p>2024. 50" x 20" so kinda big. Archival Ink Photo, with ink and pencil objects added.</p>
-          </details>
+          </div>
         </div>
       </div>
     </div>
@@ -225,30 +234,30 @@
       <div class="caption">
         <p class="title">Earth, Sky, Mortals, Divinities</p>
         <div class="meta">
-          <details class="info">
-            <summary>i</summary>
+          <div class="info">
+            <button type="button">i</button>
             <p>Add info about this piece here.</p>
-          </details>
-          <details class="info faq">
-            <summary>?</summary>
+          </div>
+          <div class="info faq">
+            <button type="button">?</button>
             <p>(hat tip Heidegger).</p>
-          </details>
+          </div>
         </div>
       </div>
     </div>
     <div class="box">
       <img src="images/art3.jpg" alt="">
       <div class="caption">
-        <p class="title">(yellow and red, yellow and bladk)</p>
+        <p class="title">(yellow and red, yellow and black)</p>
         <div class="meta">
-          <details class="info">
-            <summary>i</summary>
+          <div class="info">
+            <button type="button">i</button>
             <p>Add info about this piece here.</p>
-          </details>
-          <details class="info faq">
-            <summary>?</summary>
+          </div>
+          <div class="info faq">
+            <button type="button">?</button>
             <p>Add FAQ content here.</p>
-          </details>
+          </div>
         </div>
       </div>
     </div>

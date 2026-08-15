@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>mk</title>
+<style>
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background: #e8e4dc;
+    font-family: sans-serif;
+  }
+
+  #text {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    font-size: 72px;
+    color: #000;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .big {
+    font-size: 256px;
+    line-height: 0.5;
+  }
+
+  .small {
+    clip-path: inset(0 0 100% 0);
+    animation: wipeDown 1s ease-out forwards;
+    animation-delay: 3s;
+  }
+
+  .small.k {
+    clip-path: inset(0 100% 0 0);
+    animation: wipeRight 1s ease-out forwards;
+    animation-delay: 4s;
+  }
+
+  .reveal-slot {
+    position: relative;
+  }
+
+  .okart {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: fadeOut 2s ease forwards;
+    animation-delay: 1s;
+  }
+
+  .reveal-slot .small.k {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    letter-spacing: 28px;
+  }
+
+  @keyframes wipeDown {
+    from { clip-path: inset(0 0 100% 0); }
+    to   { clip-path: inset(0 0 0% 0); }
+  }
+
+  @keyframes wipeRight {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0% 0 0); }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="text">
+  <div>
+    <span class="big">m</span>
+    <div class="small">a<br>u<br>r<br>i<br>c<br>e</div>
+  </div>
+  <div>
+    <span class="big">k</span>
+  </div>
+  <div class="reveal-slot">
+    <div class="okart">
+      <div><span class="big">o</span></div>
+      <div><span class="big">k</span></div>
+      <div><span class="big">.</span></div>
+      <div><span class="big">a</span></div>
+      <div><span class="big">r</span></div>
+      <div><span class="big">t</span></div>
+    </div>
+    <div class="small k">onkle</div>
+  </div>
+</div>
+
+</body>
+</html>
