@@ -10,17 +10,92 @@
       background-color: #e8e4dc;
     }
 
+    /* ===== intro animation (from test-text/text-test-4.html) ===== */
+
+    #intro {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px 40px;
+      font-family: sans-serif;
+    }
+
+    #text {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 12px;
+      font-size: 72px;
+      color: #000;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .big {
+      font-size: 256px;
+      line-height: 0.5;
+    }
+
+    .small {
+      clip-path: inset(0 0 100% 0);
+      animation: wipeDown 1s ease-out forwards;
+      animation-delay: 3s;
+    }
+
+    .small.k {
+      clip-path: inset(0 100% 0 0);
+      animation: wipeRight 1s ease-out forwards;
+      animation-delay: 4s;
+    }
+
+    .reveal-slot {
+      position: relative;
+    }
+
+    .okart {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: fadeOut 2s ease forwards;
+      animation-delay: 1s;
+    }
+
+    .reveal-slot .small.k {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      letter-spacing: 28px;
+    }
+
+    @keyframes wipeDown {
+      from { clip-path: inset(0 0 100% 0); }
+      to   { clip-path: inset(0 0 0% 0); }
+    }
+
+    @keyframes wipeRight {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0% 0 0); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+
+    /* ===== gallery ===== */
+
     .gallery {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 40px;
+      gap: 80px;
       padding: 40px 20px;
     }
 
     .box {
-      background-color: #ffffff;
-      padding: 20px;
+      background-color: #fffaf0;
+      padding: 20px 20px 10px;
       width: 100%;
       max-width: 900px;
       box-sizing: border-box;
@@ -32,19 +107,143 @@
       height: auto;
       display: block;
     }
+
+    .caption {
+      margin: 16px 0 0;
+      font-family: sans-serif;
+      font-size: 14px;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .caption .title {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: ;
+      font-style: italic;
+      text-align: left;
+    }
+
+    .meta {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .info {
+      position: relative;
+    }
+
+    .info summary {
+      list-style: none;
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #555;
+      color: #fff;
+      font-size: 11px;
+      font-style: italic;
+      font-family: Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .info p {
+      position: absolute;
+      right: 0;
+      top: 22px;
+      width: 200px;
+      margin: 0;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
 
+  <header id="intro">
+    <div id="text">
+      <div>
+        <span class="big">m</span>
+        <div class="small">a<br>u<br>r<br>i<br>c<br>e</div>
+      </div>
+      <div>
+        <span class="big">k</span>
+      </div>
+      <div class="reveal-slot">
+        <div class="okart">
+          <div><span class="big">o</span></div>
+          <div><span class="big">k</span></div>
+          <div><span class="big">.</span></div>
+          <div><span class="big">a</span></div>
+          <div><span class="big">r</span></div>
+          <div><span class="big">t</span></div>
+        </div>
+        <div class="small k">onkle</div>
+      </div>
+    </div>
+  </header>
+
   <div class="gallery">
     <div class="box">
       <img src="images/art1.jpg" alt="">
+      <div class="caption">
+        <div class="meta">
+          <details class="info">
+            <summary>?</summary>
+            <p>2024. 50" x 20" so kinda big. Archival Ink Photo, with ink and pencil objects added.</p>
+          </details>
+          <details class="info">
+            <summary>i</summary>
+            <p>thinking about nature, the math fuction e^x, 0, 1 and i because trancendental.</p>
+          </details>
+        </div>
+      </div>
     </div>
     <div class="box">
       <img src="images/art2.jpg" alt="">
+      <div class="caption">
+        <p class="title">Title</p>
+        <div class="meta">
+          <details class="info">
+            <summary>?</summary>
+            <p>Add FAQ content here.</p>
+          </details>
+          <details class="info">
+            <summary>i</summary>
+            <p>Add info about this piece here.</p>
+          </details>
+        </div>
+      </div>
     </div>
     <div class="box">
       <img src="images/art3.jpg" alt="">
+      <div class="caption">
+        <p class="title">Title</p>
+        <div class="meta">
+          <details class="info">
+            <summary>?</summary>
+            <p>Add FAQ content here.</p>
+          </details>
+          <details class="info">
+            <summary>i</summary>
+            <p>Add info about this piece here.</p>
+          </details>
+        </div>
+      </div>
     </div>
   </div>
 
