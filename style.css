@@ -323,3 +323,31 @@ body {
 .prose .head {
   font-weight: bold;
 }
+
+/* ===== home layout (index.html: title + first image) ===== */
+
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (orientation: landscape) {
+  .home {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .home #intro,
+  .home .gallery {
+    width: 50%;
+  }
+}
+
+.home #intro {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.home .box {
+  padding-bottom: clamp(14px, 1.7vw, 20px);
+}
