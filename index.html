@@ -20,6 +20,8 @@
   </nav>
 
   <div class="home">
+    <div class="onkle-line"></div>
+
     <header id="intro">
       <div id="text">
         <div>
@@ -87,6 +89,21 @@
         document.body.classList.remove('menu-open');
       });
     });
+
+    function positionOnkleLine() {
+      const onkle = document.querySelector('.small.k');
+      const home = document.querySelector('.home');
+      const line = document.querySelector('.onkle-line');
+      if (!onkle || !home || !line) return;
+      const onkleRect = onkle.getBoundingClientRect();
+      const homeRect = home.getBoundingClientRect();
+      line.style.top = (onkleRect.top + onkleRect.height / 2 - homeRect.top) + 'px';
+    }
+
+    positionOnkleLine();
+    window.addEventListener('load', positionOnkleLine);
+    window.addEventListener('resize', positionOnkleLine);
+    window.addEventListener('orientationchange', positionOnkleLine);
   </script>
 
 </body>
