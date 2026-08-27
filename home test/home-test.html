@@ -20,13 +20,21 @@
   </nav>
 
   <div class="home">
-    <div class="onkle-line"></div>
+    <div class="grid-box">
+      <div class="frame-box"></div>
+      <div class="onkle-line"></div>
+      <div class="h-line" data-letter="u"></div>
+      <div class="h-line" data-letter="r"></div>
+      <div class="h-line" data-letter="i"></div>
+      <div class="h-line" data-letter="c"></div>
+      <div class="h-line" data-letter="e"></div>
+    </div>
 
     <header id="intro">
       <div id="text">
         <div>
           <span class="big">m</span>
-          <div class="small">a<br>u<br>r<br>i<br>c<br>e</div>
+          <div class="small"><span class="letter-a">a</span><br><span class="letter-u">u</span><br><span class="letter-r">r</span><br><span class="letter-i">i</span><br><span class="letter-c">c</span><br><span class="letter-e">e</span></div>
         </div>
         <div>
           <span class="big">k</span>
@@ -40,7 +48,7 @@
             <div><span class="big">r</span></div>
             <div><span class="big">t</span></div>
           </div>
-          <div class="small k">onkle</div>
+          <div class="small k">onkl<span class="letter-onkle-e">e</span></div>
         </div>
       </div>
     </header>
@@ -90,20 +98,117 @@
       });
     });
 
-    function positionOnkleLine() {
-      const onkle = document.querySelector('.small.k');
+    // italic glyphs (like this "e") often sit left of their own geometric box;
+    // nudge shifts the vertical line to line up with the visible stroke
+    const E_NUDGE_PX = -5;
+
+    function positionGridBox() {
+      const a = document.querySelector('.letter-a');
+      const onkleE = document.querySelector('.letter-onkle-e');
       const home = document.querySelector('.home');
-      const line = document.querySelector('.onkle-line');
-      if (!onkle || !home || !line) return;
-      const onkleRect = onkle.getBoundingClientRect();
+      const gridBox = document.querySelector('.grid-box');
+      const line1 = document.querySelector('.onkle-line');
+      if (!a || !onkleE || !home || !gridBox || !line1) return;
+
       const homeRect = home.getBoundingClientRect();
-      line.style.top = (onkleRect.top + onkleRect.height / 2 - homeRect.top) + 'px';
+      const gridBoxRect = gridBox.getBoundingClientRect();
+      const aRect = a.getBoundingClientRect();
+      const onkleERect = onkleE.getBoundingClientRect();
+
+      // grid-box now spans the full height of .home (set in CSS: top:0, height:100%)
+
+      // line 1: horizontal, through the middle of the "a" in "aurice"
+      const aTop = Math.round(aRect.top + aRect.height / 2 - homeRect.top);
+      line1.style.top = aTop + 'px';
+
+      // 5 more horizontal lines, through u / r / i / c / e of "aurice", staggered in slightly after line 1
+      let uTop = aTop;
+      let eTop = null;
+      document.querySelectorAll('.h-line').forEach((line, index) => {
+        const letter = document.querySelector('.letter-' + line.dataset.letter);
+        if (!letter) return;
+        const top = Math.round(letter.getBoundingClientRect().top + letter.getBoundingClientRect().height / 2 - homeRect.top);
+        line.style.top = top + 'px';
+        line.style.animationDelay = (2.65 + index * 0.15) + 's';
+        if (line.dataset.letter === 'u') uTop = top;
+        if (line.dataset.letter === 'e') eTop = top;
+      });
+
+      // vertical lines: same spacing as the horizontal lines (distance from "a" line to "u" line),
+      // anchored on the "e" of "onkle", repeated left and right to fill the box edge to edge
+      const spacing = Math.abs(uTop - aTop);
+      const anchorX = Math.round(onkleERect.left + onkleERect.width / 2 - homeRect.left + E_NUDGE_PX);
+
+      gridBox.querySelectorAll('.v-line').forEach(el => el.remove());
+
+      const positions = [anchorX];
+      if (spacing > 0) {
+        for (let x = anchorX + spacing; x <= gridBoxRect.width; x += spacing) positions.push(x);
+        for (let x = anchorX - spacing; x >= 0; x -= spacing) positions.push(x);
+      }
+
+      positions.forEach((x, index) => {
+        const line = document.createElement('div');
+        line.className = 'v-line';
+        line.style.left = x + 'px';
+        line.style.animationDelay = (3 + index * 0.15) + 's';
+        gridBox.appendChild(line);
+      });
+
+      // frame-box: shrinks from full page down to the rectangle formed by:
+      // top-left  = a-line  x  (one vertical line right of the "e" anchor)
+      // bottom-right = e-line  x  (the vertical line nearest one hamburger-width left of the hamburger)
+      const hamburger = document.getElementById('menu-toggle');
+      const frameBox = document.querySelector('.frame-box');
+      if (hamburger && frameBox && eTop !== null) {
+        const hamburgerRect = hamburger.getBoundingClientRect();
+        const targetRightX = hamburgerRect.left - hamburgerRect.width - homeRect.left;
+
+        const vLefts = positions.slice();
+        const rightX = vLefts.reduce((closest, x) =>
+          Math.abs(x - targetRightX) < Math.abs(closest - targetRightX) ? x : closest, vLefts[0]);
+
+        // expand the box half a grid-square in every direction
+        const halfSpacing = spacing / 2;
+        const finalTop = aTop - halfSpacing;
+        const finalLeft = (anchorX + spacing) - halfSpacing;
+        const finalWidth = (rightX - (anchorX + spacing)) + spacing;
+        const finalHeight = (eTop - aTop) + spacing;
+
+        const rightInset = gridBoxRect.width - (finalLeft + finalWidth);
+        const bottomInset = gridBoxRect.height - (finalTop + finalHeight);
+        const finalClip = `inset(${finalTop}px ${rightInset}px ${bottomInset}px ${finalLeft}px)`;
+
+        if (frameBox.dataset.animated === 'true') {
+          frameBox.style.top = finalTop + 'px';
+          frameBox.style.left = finalLeft + 'px';
+          frameBox.style.width = finalWidth + 'px';
+          frameBox.style.height = finalHeight + 'px';
+          gridBox.style.clipPath = finalClip;
+        } else if (!frameBox.dataset.pending) {
+          frameBox.dataset.pending = 'true';
+          frameBox.style.top = '0px';
+          frameBox.style.left = '0px';
+          frameBox.style.width = gridBoxRect.width + 'px';
+          frameBox.style.height = gridBoxRect.height + 'px';
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              frameBox.style.top = finalTop + 'px';
+              frameBox.style.left = finalLeft + 'px';
+              frameBox.style.width = finalWidth + 'px';
+              frameBox.style.height = finalHeight + 'px';
+              gridBox.style.clipPath = finalClip;
+              frameBox.dataset.animated = 'true';
+            }, 4500);
+          });
+        }
+      }
     }
 
-    positionOnkleLine();
-    window.addEventListener('load', positionOnkleLine);
-    window.addEventListener('resize', positionOnkleLine);
-    window.addEventListener('orientationchange', positionOnkleLine);
+    positionGridBox();
+    window.addEventListener('load', positionGridBox);
+    window.addEventListener('resize', positionGridBox);
+    window.addEventListener('orientationchange', positionGridBox);
   </script>
 
 </body>
