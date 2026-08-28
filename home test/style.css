@@ -2,6 +2,9 @@ body {
   margin: 0;
   background-color: #e8e4dc;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* ===== intro animation (from test-text/text-test-4.html) ===== */
@@ -81,31 +84,6 @@ body {
 @keyframes fadeOut {
   from { opacity: 1; }
   to   { opacity: 0; }
-}
-
-/* ===== gallery ===== */
-
-.gallery {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 80px;
-  padding: 40px 20px;
-}
-
-.box {
-  background-color: #fffaf0;
-  padding: clamp(14px, 1.7vw, 20px) clamp(14px, 1.7vw, 20px) clamp(7px, 0.85vw, 10px);
-  width: 100%;
-  max-width: 1600px;
-  box-sizing: border-box;
-   border-radius: 16px;
-}
-
-.box img {
-  width: 100%;
-  height: auto;
-  display: block;
 }
 
 /* ===== menu ===== */
@@ -209,18 +187,6 @@ body {
     align-items: center;
   }
 
-  .home #intro,
-  .home .gallery {
-    width: 50%;
-  }
-}
-
-/* phones in landscape (short screens): hide the art, give intro the space */
-@media (orientation: landscape) and (max-height: 600px) {
-  .home .gallery {
-    display: none;
-  }
-
   .home #intro {
     width: 100%;
   }
@@ -229,34 +195,6 @@ body {
 .home #intro {
   margin-left: 0;
   margin-right: 0;
-}
-
-.home .box {
-  background: none;
-  padding: 0;
-  padding-bottom: clamp(14px, 1.7vw, 20px);
-  border-radius: 0;
-}
-
-@media (orientation: portrait) {
-  .home .gallery {
-    margin-top: 50px;
-  }
-}
-
-@media (orientation: portrait) {
-  .home {
-    position: relative;
-    min-height: 100dvh;
-  }
-
-  .home .gallery {
-    margin-top: 0;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 50px;
-  }
 }
 
 /* invisible box that constrains and positions the grid of lines;
@@ -319,8 +257,40 @@ body {
   animation: wipeDown 1s ease-out forwards;
 }
 
-.home #intro,
-.home .gallery {
+.home #intro {
   position: relative;
   z-index: 1;
+}
+
+/* ===== content box below the title/grid animation ===== */
+
+.content-box {
+  border: 2px solid #000;
+  border-radius: 0;
+  margin: 100px 30px 30px;
+  box-sizing: border-box;
+  clip-path: inset(0 0 100% 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 200px;
+}
+
+.content-box p {
+  font-family: sans-serif;
+  font-size: 16px;
+  color: #000;
+  text-align: center;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.content-box p.revealed {
+  opacity: 1;
+}
+
+.content-box.revealed {
+  animation: wipeDown 1.5s ease-out forwards;
 }

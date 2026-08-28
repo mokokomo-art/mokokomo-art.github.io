@@ -52,15 +52,18 @@
         </div>
       </div>
     </header>
-
-    <div class="gallery">
-       <div class="box">
-        <img src="../images/Network of Bales (after Duchamp).webp" alt="">
-      </div>
-    </div>
   </div>
 
+  <div class="content-box"><p class="reveal-text">this space left intentional blank</p></div>
+
   <script>
+    // always start at the top on reload, instead of the browser restoring scroll position
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    window.addEventListener('load', () => window.scrollTo(0, 0));
+
     const infos = document.querySelectorAll('.info');
 
     function closeAll() {
@@ -199,11 +202,27 @@
               frameBox.style.height = finalHeight + 'px';
               gridBox.style.clipPath = finalClip;
               frameBox.dataset.animated = 'true';
+
+              // reveal the content box once the frame-box finishes shrinking
+              const contentBox = document.querySelector('.content-box');
+              frameBox.addEventListener('transitionend', function onDone(evt) {
+                if (evt.propertyName !== 'width') return;
+                frameBox.removeEventListener('transitionend', onDone);
+                if (contentBox) contentBox.classList.add('revealed');
+              });
             }, 4500);
           });
         }
       }
     }
+
+    // the text inside the blank box waits until the box's own reveal animation finishes
+    document.querySelector('.content-box').addEventListener('animationend', evt => {
+      if (evt.animationName !== 'wipeDown') return;
+      setTimeout(() => {
+        document.querySelector('.reveal-text').classList.add('revealed');
+      }, 250);
+    });
 
     positionGridBox();
     window.addEventListener('load', positionGridBox);
