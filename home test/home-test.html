@@ -123,6 +123,7 @@
       // line 1: horizontal, through the middle of the "a" in "aurice"
       const aTop = Math.round(aRect.top + aRect.height / 2 - homeRect.top);
       line1.style.top = aTop + 'px';
+      let latestLineDelay = 0;
 
       // 5 more horizontal lines, through u / r / i / c / e of "aurice", staggered in slightly after line 1
       let uTop = aTop;
@@ -132,14 +133,31 @@
         if (!letter) return;
         const top = Math.round(letter.getBoundingClientRect().top + letter.getBoundingClientRect().height / 2 - homeRect.top);
         line.style.top = top + 'px';
-        line.style.animationDelay = (2.65 + index * 0.15) + 's';
+        const delay = 2.65 + index * 0.15;
+        line.style.animationDelay = delay + 's';
+        latestLineDelay = Math.max(latestLineDelay, delay);
         if (line.dataset.letter === 'u') uTop = top;
         if (line.dataset.letter === 'e') eTop = top;
       });
 
+      // 5 more horizontal lines below "e" (no letters left to anchor to, so just continue the spacing)
+      const spacing = Math.abs(uTop - aTop);
+      gridBox.querySelectorAll('.h-line-extra').forEach(el => el.remove());
+      let lastExtraTop = eTop;
+      for (let i = 1; i <= 5; i++) {
+        const top = eTop + spacing * i;
+        const line = document.createElement('div');
+        line.className = 'h-line-extra';
+        line.style.top = top + 'px';
+        const delay = 2.65 + (4 + i) * 0.15;
+        line.style.animationDelay = delay + 's';
+        latestLineDelay = Math.max(latestLineDelay, delay);
+        gridBox.appendChild(line);
+        lastExtraTop = top;
+      }
+
       // vertical lines: same spacing as the horizontal lines (distance from "a" line to "u" line),
       // anchored on the "e" of "onkle", repeated left and right to fill the box edge to edge
-      const spacing = Math.abs(uTop - aTop);
       const anchorX = Math.round(onkleERect.left + onkleERect.width / 2 - homeRect.left + E_NUDGE_PX);
 
       gridBox.querySelectorAll('.v-line').forEach(el => el.remove());
@@ -147,23 +165,41 @@
       const positions = [anchorX];
       if (spacing > 0) {
         for (let x = anchorX + spacing; x <= gridBoxRect.width; x += spacing) positions.push(x);
-        for (let x = anchorX - spacing; x >= 0; x -= spacing) positions.push(x);
+        // leftward fill (anchor toward the left edge) is disabled for now - not desired yet
+        // for (let x = anchorX - spacing; x >= 0; x -= spacing) positions.push(x);
       }
+
+      // on PC and phone portrait the page is exactly one viewable screen (no scroll),
+      // so let the vertical lines run all the way to the bottom of that screen.
+      // phone landscape still scrolls, so leave those lines stopping at the 11th line.
+      const isPhoneLandscape = window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+      const viewportBottom = Math.round(window.innerHeight - homeRect.top);
+      const vLineHeight = isPhoneLandscape ? lastExtraTop : Math.max(lastExtraTop, viewportBottom);
+
+      // grid-box itself needs to actually be this tall, or its own clip-path (and the
+      // frame-box shrink that relies on it) can never reveal anything past .home's short natural height
+      gridBox.style.height = vLineHeight + 'px';
+      const gridBoxRectResized = gridBox.getBoundingClientRect();
 
       positions.forEach((x, index) => {
         const line = document.createElement('div');
         line.className = 'v-line';
         line.style.left = x + 'px';
-        line.style.animationDelay = (3 + index * 0.15) + 's';
+        line.style.height = vLineHeight + 'px';
+        const delay = 3 + index * 0.15;
+        line.style.animationDelay = delay + 's';
+        latestLineDelay = Math.max(latestLineDelay, delay);
         gridBox.appendChild(line);
       });
 
       // frame-box: shrinks from full page down to the rectangle formed by:
       // top-left  = a-line  x  (one vertical line right of the "e" anchor)
       // bottom-right = e-line  x  (the vertical line nearest one hamburger-width left of the hamburger)
+      // TEMPORARILY DISABLED so only the grid lines draw - flip FRAME_BOX_ENABLED back to true to restore
+      const FRAME_BOX_ENABLED = true;
       const hamburger = document.getElementById('menu-toggle');
       const frameBox = document.querySelector('.frame-box');
-      if (hamburger && frameBox && eTop !== null) {
+      if (FRAME_BOX_ENABLED && hamburger && frameBox && eTop !== null) {
         const hamburgerRect = hamburger.getBoundingClientRect();
         const targetRightX = hamburgerRect.left - hamburgerRect.width - homeRect.left;
 
@@ -171,15 +207,18 @@
         const rightX = vLefts.reduce((closest, x) =>
           Math.abs(x - targetRightX) < Math.abs(closest - targetRightX) ? x : closest, vLefts[0]);
 
-        // expand the box half a grid-square in every direction
-        const halfSpacing = spacing / 2;
-        const finalTop = aTop - halfSpacing;
-        const finalLeft = (anchorX + spacing) - halfSpacing;
-        const finalWidth = (rightX - (anchorX + spacing)) + spacing;
-        const finalHeight = (eTop - aTop) + spacing;
+        // expand the box outward almost a full grid-square, stopping just inside the next line;
+        // bottom edge stops just above the 11th horizontal line (the last of the 5 below "e")
+        const FRAME_INSET_PX = 4;
+        const grow = spacing - FRAME_INSET_PX;
+        const finalTop = aTop - grow;
+        const finalLeft = (anchorX + spacing) - grow;
+        const finalBottom = lastExtraTop - FRAME_INSET_PX;
+        const finalWidth = (rightX - (anchorX + spacing)) + grow * 2;
+        const finalHeight = finalBottom - finalTop;
 
-        const rightInset = gridBoxRect.width - (finalLeft + finalWidth);
-        const bottomInset = gridBoxRect.height - (finalTop + finalHeight);
+        const rightInset = gridBoxRectResized.width - (finalLeft + finalWidth);
+        const bottomInset = gridBoxRectResized.height - (finalTop + finalHeight);
         const finalClip = `inset(${finalTop}px ${rightInset}px ${bottomInset}px ${finalLeft}px)`;
 
         if (frameBox.dataset.animated === 'true') {
@@ -192,8 +231,11 @@
           frameBox.dataset.pending = 'true';
           frameBox.style.top = '0px';
           frameBox.style.left = '0px';
-          frameBox.style.width = gridBoxRect.width + 'px';
-          frameBox.style.height = gridBoxRect.height + 'px';
+          frameBox.style.width = gridBoxRectResized.width + 'px';
+          frameBox.style.height = gridBoxRectResized.height + 'px';
+          // start once every line has actually finished drawing (1s duration + a little buffer),
+          // instead of a fixed guess - the number of vertical lines (and their delays) varies with screen width
+          const shrinkStartMs = (latestLineDelay + 1 + 0) * 1000;
           requestAnimationFrame(() => {
             setTimeout(() => {
               frameBox.style.top = finalTop + 'px';
@@ -210,7 +252,7 @@
                 frameBox.removeEventListener('transitionend', onDone);
                 if (contentBox) contentBox.classList.add('revealed');
               });
-            }, 4500);
+            }, shrinkStartMs);
           });
         }
       }
