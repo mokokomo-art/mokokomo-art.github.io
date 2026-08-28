@@ -22,6 +22,7 @@
   <div class="home">
     <div class="grid-box">
       <div class="frame-box"></div>
+      <img class="grid-fade-image" src="../images/Network of Bales (after Duchamp) small.webp" alt="">
       <div class="onkle-line"></div>
       <div class="h-line" data-letter="u"></div>
       <div class="h-line" data-letter="r"></div>
@@ -221,6 +222,24 @@
         const bottomInset = gridBoxRectResized.height - (finalTop + finalHeight);
         const finalClip = `inset(${finalTop}px ${rightInset}px ${bottomInset}px ${finalLeft}px)`;
 
+        // fade image: fit inside the frame with margin, centered - height is usually
+        // the binding dimension since the frame is much wider than it is tall
+        const IMG_MARGIN = 24;
+        const IMG_NATIVE_W = 800;
+        const IMG_NATIVE_H = 600;
+        const fadeImage = document.querySelector('.grid-fade-image');
+        if (fadeImage) {
+          const availW = finalWidth - IMG_MARGIN * 2;
+          const availH = finalHeight - IMG_MARGIN * 2;
+          const scale = Math.min(availW / IMG_NATIVE_W, availH / IMG_NATIVE_H);
+          const imgW = IMG_NATIVE_W * scale;
+          const imgH = IMG_NATIVE_H * scale;
+          fadeImage.style.left = (finalLeft + (finalWidth - imgW) / 2) + 'px';
+          fadeImage.style.top = (finalTop + (finalHeight - imgH) / 2) + 'px';
+          fadeImage.style.width = imgW + 'px';
+          fadeImage.style.height = imgH + 'px';
+        }
+
         if (frameBox.dataset.animated === 'true') {
           frameBox.style.top = finalTop + 'px';
           frameBox.style.left = finalLeft + 'px';
@@ -245,7 +264,8 @@
               gridBox.style.clipPath = finalClip;
               frameBox.dataset.animated = 'true';
 
-              // reveal the content box once the frame-box finishes shrinking
+              // reveal the content box once the frame-box finishes shrinking;
+              // the fade image waits for the content box's own draw to finish (see below)
               const contentBox = document.querySelector('.content-box');
               frameBox.addEventListener('transitionend', function onDone(evt) {
                 if (evt.propertyName !== 'width') return;
@@ -258,12 +278,14 @@
       }
     }
 
-    // the text inside the blank box waits until the box's own reveal animation finishes
+    // the text inside the blank box, and the fade image, wait until the box's own reveal animation finishes
     document.querySelector('.content-box').addEventListener('animationend', evt => {
       if (evt.animationName !== 'wipeDown') return;
       setTimeout(() => {
         document.querySelector('.reveal-text').classList.add('revealed');
       }, 250);
+      const fadeImage = document.querySelector('.grid-fade-image');
+      if (fadeImage) fadeImage.classList.add('revealed');
     });
 
     positionGridBox();

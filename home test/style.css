@@ -237,6 +237,19 @@ body {
   animation: wipeRight 1s ease-out forwards;
 }
 
+/* image that fades up in the middle of the grid once it finishes shrinking;
+   position/size set by JS to fit inside the frame-box with margin from its edges */
+.grid-fade-image {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 2s ease;
+  pointer-events: none;
+}
+
+.grid-fade-image.revealed {
+  opacity: 0.25;
+}
+
 /* frame-box: starts full-page size, shrinks down to the grid-defined rectangle
    (top-left: a-line x one-right-of-e vline; bottom-right: e-line x near-hamburger vline) */
 .frame-box {
