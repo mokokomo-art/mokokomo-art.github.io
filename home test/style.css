@@ -29,7 +29,7 @@ body {
   justify-content: center;
   gap: 0.17em;
   font-size: clamp(9.75px, 3.75vw, 39.75px);
-  color: rgb(48.7% 47.8% 48.2%);
+  color: rgb(48% 48% 48%);
   text-align: center;
   line-height: 1.1;
 }
@@ -265,7 +265,7 @@ body {
 /* ===== content box below the title/grid animation ===== */
 
 .content-box {
-  border: 2px solid #000;
+  border: 2px solid rgb(66% 66% 66%);
   border-radius: 0;
   margin: 100px 30px 30px;
   box-sizing: border-box;
@@ -277,15 +277,18 @@ body {
   min-height: 200px;
 }
 
-/* TEMPORARILY disabled - delete this rule to restore */
-.content-box {
-  display: none;
+/* phones in landscape (short screens): give the blank box a taller floor,
+   scaled to the viewport height, instead of the flat 200px */
+@media (orientation: landscape) and (max-height: 600px) {
+  .content-box {
+    min-height: 75vh;
+  }
 }
 
 .content-box p {
   font-family: sans-serif;
   font-size: 16px;
-  color: #000;
+  color: rgb(48% 48% 48%);
   text-align: center;
   margin: 0;
   opacity: 0;
