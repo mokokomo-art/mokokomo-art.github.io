@@ -106,6 +106,39 @@
     // nudge shifts the vertical line to line up with the visible stroke
     const E_NUDGE_PX = -5;
 
+    // images cycled through the grid box, fixed alphabetical order for now
+    // (random/quasi-random selection is the planned next step)
+    const GRID_IMAGES = [
+      '../images-small/(yellow-red, yellow-black)-small.webp',
+      '../images-small/35mm Slide Mt Rainier Ice Cave-small.webp',
+      '../images-small/Duchamp Network of Stoppages-small.webp',
+      '../images-small/Field Theory 1-small.webp',
+      '../images-small/Field Theory 2-small.webp',
+      '../images-small/Field Theory 3-small.webp',
+      '../images-small/Field Theory 4-small.webp',
+      '../images-small/Network of Bales (after Duchamp)-small.webp',
+      '../images-small/Network(s) of Bales + Outliers-small.webp',
+      '../images-small/SX-70 Eclipse-small.webp',
+      '../images-small/SX-70 Parka-small.webp',
+      '../images-small/SX-70 Umbrella-small.webp',
+      '../images-small/after-because-small.webp',
+      '../images-small/calculating area-small.webp',
+      '../images-small/fourfold-small.webp',
+      '../images-small/hope-small.webp',
+      '../images-small/how far-small.webp'
+    ];
+    let gridImageIndex = 0;
+    let gridImageCycleStarted = false;
+
+    // preload and fully decode every cycled image well ahead of time (cycling doesn't
+    // start for several seconds anyway) - Safari's WebP decode can lag behind a .5s cut
+    // otherwise; Chrome keeps up fine either way, so this only helps, never hurts
+    GRID_IMAGES.forEach(src => {
+      const img = new Image();
+      img.src = src;
+      if (img.decode) img.decode().catch(() => {});
+    });
+
     function positionGridBox() {
       const a = document.querySelector('.letter-a');
       const onkleE = document.querySelector('.letter-onkle-e');
@@ -224,22 +257,16 @@
         const bottomInset = gridBoxRectResized.height - (finalTop + finalHeight);
         const finalClip = `inset(${finalTop}px ${rightInset}px ${bottomInset}px ${finalLeft}px)`;
 
-        // fade image: fit inside the frame with margin, centered - height is usually
-        // the binding dimension since the frame is much wider than it is tall
+        // fade image: box sized/positioned to fit inside the frame with a margin;
+        // object-fit: contain (in CSS) lets each image find its own fit within that
+        // fixed box, whichever dimension binds depending on that image's own aspect ratio
         const IMG_MARGIN = 24;
-        const IMG_NATIVE_W = 500;
-        const IMG_NATIVE_H = 373;
         const fadeImage = document.querySelector('.grid-fade-image');
         if (fadeImage) {
-          const availW = finalWidth - IMG_MARGIN * 2;
-          const availH = finalHeight - IMG_MARGIN * 2;
-          const scale = Math.min(availW / IMG_NATIVE_W, availH / IMG_NATIVE_H);
-          const imgW = IMG_NATIVE_W * scale;
-          const imgH = IMG_NATIVE_H * scale;
-          fadeImage.style.left = (finalLeft + (finalWidth - imgW) / 2) + 'px';
-          fadeImage.style.top = (finalTop + (finalHeight - imgH) / 2) + 'px';
-          fadeImage.style.width = imgW + 'px';
-          fadeImage.style.height = imgH + 'px';
+          fadeImage.style.left = (finalLeft + IMG_MARGIN) + 'px';
+          fadeImage.style.top = (finalTop + IMG_MARGIN) + 'px';
+          fadeImage.style.width = (finalWidth - IMG_MARGIN * 2) + 'px';
+          fadeImage.style.height = (finalHeight - IMG_MARGIN * 2) + 'px';
         }
 
         if (frameBox.dataset.animated === 'true') {
@@ -282,11 +309,21 @@
       }
     }
 
-    // the fade image waits until the box's own reveal animation finishes
+    // the fade image waits until the box's own reveal animation finishes, then
+    // starts cycling through GRID_IMAGES - .5s per image, hard cut, no transition
     document.querySelector('.content-box').addEventListener('animationend', evt => {
       if (evt.animationName !== 'fadeIn') return;
       const fadeImage = document.querySelector('.grid-fade-image');
-      if (fadeImage) fadeImage.classList.add('revealed');
+      if (!fadeImage) return;
+      fadeImage.classList.add('revealed');
+      if (!gridImageCycleStarted && GRID_IMAGES.length) {
+        gridImageCycleStarted = true;
+        fadeImage.src = GRID_IMAGES[gridImageIndex];
+        setInterval(() => {
+          gridImageIndex = (gridImageIndex + 1) % GRID_IMAGES.length;
+          fadeImage.src = GRID_IMAGES[gridImageIndex];
+        }, 500);
+      }
     });
 
     positionGridBox();
