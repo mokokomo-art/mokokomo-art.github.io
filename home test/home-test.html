@@ -125,6 +125,7 @@
       const aTop = Math.round(aRect.top + aRect.height / 2 - homeRect.top);
       line1.style.top = aTop + 'px';
       let latestLineDelay = 0;
+      let firstVLineDelay = 0;
 
       // 5 more horizontal lines, through u / r / i / c / e of "aurice", staggered in slightly after line 1
       let uTop = aTop;
@@ -190,6 +191,7 @@
         const delay = 3 + index * 0.15;
         line.style.animationDelay = delay + 's';
         latestLineDelay = Math.max(latestLineDelay, delay);
+        if (index === 0) firstVLineDelay = delay;
         gridBox.appendChild(line);
       });
 
@@ -252,9 +254,9 @@
           frameBox.style.left = '0px';
           frameBox.style.width = gridBoxRectResized.width + 'px';
           frameBox.style.height = gridBoxRectResized.height + 'px';
-          // start once every line has actually finished drawing (1s duration + a little buffer),
-          // instead of a fixed guess - the number of vertical lines (and their delays) varies with screen width
-          const shrinkStartMs = (latestLineDelay + 1 + 0) * 1000;
+          // start once the first vertical line (the "onkle-e" anchor line) has hit the bottom
+          // of the page - its own 1s draw plus its delay - rather than waiting for every line
+          const shrinkStartMs = (firstVLineDelay + 1) * 1000;
           requestAnimationFrame(() => {
             setTimeout(() => {
               frameBox.style.top = finalTop + 'px';
@@ -264,13 +266,15 @@
               gridBox.style.clipPath = finalClip;
               frameBox.dataset.animated = 'true';
 
-              // reveal the content box once the frame-box finishes shrinking;
-              // the fade image waits for the content box's own draw to finish (see below)
+              // reveal the content box and its text together once the frame-box finishes shrinking;
+              // the fade image waits for the content box's own fade to finish (see below)
               const contentBox = document.querySelector('.content-box');
+              const revealText = document.querySelector('.reveal-text');
               frameBox.addEventListener('transitionend', function onDone(evt) {
                 if (evt.propertyName !== 'width') return;
                 frameBox.removeEventListener('transitionend', onDone);
                 if (contentBox) contentBox.classList.add('revealed');
+                if (revealText) revealText.classList.add('revealed');
               });
             }, shrinkStartMs);
           });
@@ -278,12 +282,9 @@
       }
     }
 
-    // the text inside the blank box, and the fade image, wait until the box's own reveal animation finishes
+    // the fade image waits until the box's own reveal animation finishes
     document.querySelector('.content-box').addEventListener('animationend', evt => {
-      if (evt.animationName !== 'wipeDown') return;
-      setTimeout(() => {
-        document.querySelector('.reveal-text').classList.add('revealed');
-      }, 250);
+      if (evt.animationName !== 'fadeIn') return;
       const fadeImage = document.querySelector('.grid-fade-image');
       if (fadeImage) fadeImage.classList.add('revealed');
     });
