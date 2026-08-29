@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Art</title>
+  <link rel="stylesheet" href="art.css">
+</head>
+<body>
+
+  <button id="menu-toggle" type="button" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="drawer">
+    <a href="home%20test/home-test.html">home</a>
+    <a href="art.html">mk art</a>
+    <a href="about.html#bio">bio</a>
+    <a href="about.html#statement">statement(s)</a>
+    <a href="about.html#contact">contact</a>
+  </nav>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    // one filename per artwork - title is derived from the filename for now;
+    // info/faq/other per-piece fields come later once the array grows this way
+    const ARTWORKS = [
+      '(yellow-red, yellow-black).webp',
+      '35mm Slide Mt Rainier Ice Cave.webp',
+      'Field Theory 1.webp',
+      'Field Theory 2.webp',
+      'Field Theory 3.webp',
+      'Field Theory 4.webp',
+      'Network of Bales (after Duchamp).webp',
+      'Network(s) of Bales + Outliers.webp',
+      'SX-70 Eclipse.webp',
+      'SX-70 Parka.webp',
+      'SX-70 Umbrella.webp',
+      'after-because.webp',
+      'calculating area.webp',
+      'fourfold.webp',
+      'hope.webp',
+      'how far.webp'
+    ];
+
+    const gallery = document.getElementById('gallery');
+
+    ARTWORKS.forEach(file => {
+      const box = document.createElement('div');
+      box.className = 'box';
+
+      const img = document.createElement('img');
+      img.src = 'images/' + file;
+      img.alt = '';
+      box.appendChild(img);
+
+      const caption = document.createElement('div');
+      caption.className = 'caption';
+
+      const title = document.createElement('p');
+      title.className = 'title';
+      title.textContent = file.replace(/\.[^.]+$/, '');
+      caption.appendChild(title);
+
+      box.appendChild(caption);
+      gallery.appendChild(box);
+    });
+
+    // menu - same behavior as index.html, no intro animation to wait for on this page
+    const toggle = document.getElementById('menu-toggle');
+    const drawer = document.getElementById('drawer');
+
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('menu-open');
+    });
+
+    document.addEventListener('pointerdown', e => {
+      if (!e.target.closest('#drawer') && !e.target.closest('#menu-toggle')) {
+        document.body.classList.remove('menu-open');
+      }
+    });
+
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('menu-open');
+      });
+    });
+  </script>
+
+</body>
+</html>
