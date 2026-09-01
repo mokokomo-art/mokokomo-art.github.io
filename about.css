@@ -1,6 +1,7 @@
 body {
   margin: 0;
   background-color: #e8e4dc;
+  overflow-x: hidden;
 }
 
 /* ===== intro animation (from test-text/text-test-4.html) ===== */
@@ -8,9 +9,15 @@ body {
 #intro {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 80px 20px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-sizing: border-box;
   font-family: sans-serif;
+  position: relative;
+  left: 20px;
+  top: -20px;
 }
 
 #text {
@@ -18,27 +25,27 @@ body {
   align-items: flex-start;
   justify-content: center;
   gap: 0.17em;
-  font-size: clamp(13px, 5vw, 53px);
-  color: #000;
+  font-size: clamp(9.75px, 3.75vw, 39.75px);
+  color: rgb(48.7% 47.8% 48.2%);
   text-align: center;
   line-height: 1.1;
 }
 
 .big {
-  font-size: clamp(48px, 14vw, 191px);
+  font-size: clamp(24px, 7vw, 95.5px);
   line-height: 0.5;
 }
 
 .small {
   clip-path: inset(0 0 100% 0);
   animation: wipeDown 1s ease-out forwards;
-  animation-delay: 3s;
+  animation-delay: 1.5s;
 }
 
 .small.k {
   clip-path: inset(0 100% 0 0);
   animation: wipeRight 1s ease-out forwards;
-  animation-delay: 4s;
+  animation-delay: 2.5s;
 }
 
 .reveal-slot {
@@ -49,8 +56,8 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 0.17em;
-  animation: fadeOut 2s ease forwards;
-  animation-delay: 1s;
+  animation: fadeOut 1s ease forwards;
+  animation-delay: 0.5s;
 }
 
 .reveal-slot .small.k {
@@ -90,7 +97,7 @@ body {
   background-color: #fffaf0;
   padding: clamp(14px, 1.7vw, 20px) clamp(14px, 1.7vw, 20px) clamp(7px, 0.85vw, 10px);
   width: 100%;
-  max-width: 1200px;
+  max-width: 1600px;
   box-sizing: border-box;
    border-radius: 16px;
 }
@@ -101,6 +108,22 @@ body {
   display: block;
 }
 
+/* phones in landscape: shrink to fit the whole image + caption on screen, no crop */
+@media (orientation: landscape) and (max-height: 600px) {
+  .box {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .box img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(92vh - 70px);
+  }
+}
+
 .caption {
   margin: 16px 0 0;
   font-family: sans-serif;
@@ -109,6 +132,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  width: 100%;
+  container-type: inline-size;
 }
 
 .caption .title {
@@ -117,7 +142,7 @@ body {
   font-weight: ;
   font-style: italic;
   text-align: left;
-  font-size: clamp(14px, 3.6vw, 17.5px);
+  font-size: clamp(14px, 3.6cqw, 17.5px);
   margin-left: 2.3%;
 }
 
@@ -200,18 +225,20 @@ body {
   right: 20px;
   z-index: 100;
   width: 30px;
-  height: 24px;
+  height: 16px;
   padding: 0;
   border: none;
   background: none;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   opacity: 0;
   pointer-events: none;
   animation: menuArrive 0.6s ease forwards;
-  animation-delay: 5s;
+  animation-delay: 3.5s;
 }
 
 @keyframes menuArrive {
@@ -221,14 +248,14 @@ body {
 
 #menu-toggle span {
   display: block;
-  height: 2px;
-  width: 100%;
+  height: 1.3px;
+  width: 66%;
   background: #333;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .menu-open #menu-toggle span:nth-child(1) {
-  transform: translateY(11px) rotate(45deg);
+  transform: translateY(5.3px) rotate(45deg);
 }
 
 .menu-open #menu-toggle span:nth-child(2) {
@@ -236,7 +263,7 @@ body {
 }
 
 .menu-open #menu-toggle span:nth-child(3) {
-  transform: translateY(-11px) rotate(-45deg);
+  transform: translateY(-5.3px) rotate(-45deg);
 }
 
 #drawer {
@@ -316,4 +343,82 @@ body {
 
 .prose .head {
   font-weight: bold;
+}
+
+/* ===== home layout (index.html: title + first image) ===== */
+
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (orientation: landscape) {
+  .home {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .home #intro,
+  .home .gallery {
+    width: 50%;
+  }
+}
+
+.home #intro {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.home .box {
+  padding-bottom: clamp(14px, 1.7vw, 20px);
+}
+
+.home .box {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+@media (orientation: portrait) {
+  .home .gallery {
+    margin-top: 50px;
+  }
+}
+
+@media (orientation: portrait) {
+  .home {
+    position: relative;
+    min-height: 100dvh;
+  }
+
+  .home .gallery {
+    margin-top: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 50px;
+  }
+}
+
+.home {
+  position: relative;
+}
+
+.onkle-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #333;
+  z-index: -1;
+  clip-path: inset(0 100% 0 0);
+  animation: wipeRight 1s ease-out forwards;
+  animation-delay: 2.5s;
+  pointer-events: none;
+}
+
+.home #intro,
+.home .gallery {
+  position: relative;
+  z-index: 1;
 }

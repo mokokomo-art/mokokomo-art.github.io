@@ -2,6 +2,9 @@ body {
   margin: 0;
   background-color: #e8e4dc;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
 }
 
 /* ===== intro animation (from test-text/text-test-4.html) ===== */
@@ -26,7 +29,7 @@ body {
   justify-content: center;
   gap: 0.17em;
   font-size: clamp(9.75px, 3.75vw, 39.75px);
-  color: rgb(48.7% 47.8% 48.2%);
+  color: rgb(48% 48% 48%);
   text-align: center;
   line-height: 1.1;
 }
@@ -83,139 +86,10 @@ body {
   to   { opacity: 0; }
 }
 
-/* ===== gallery ===== */
-
-.gallery {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 80px;
-  padding: 40px 20px;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-
-.box {
-  background-color: #fffaf0;
-  padding: clamp(14px, 1.7vw, 20px) clamp(14px, 1.7vw, 20px) clamp(7px, 0.85vw, 10px);
-  width: 100%;
-  max-width: 1600px;
-  box-sizing: border-box;
-   border-radius: 16px;
-}
-
-.box img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* phones in landscape: shrink to fit the whole image + caption on screen, no crop */
-@media (orientation: landscape) and (max-height: 600px) {
-  .box {
-    width: fit-content;
-    max-width: 100%;
-    margin: 0 auto;
-  }
-
-  .box img {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: calc(92vh - 70px);
-  }
-}
-
-.caption {
-  margin: 16px 0 0;
-  font-family: sans-serif;
-  font-size: 14px;
-  color: #333;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  width: 100%;
-  container-type: inline-size;
-}
-
-.caption .title {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: ;
-  font-style: italic;
-  text-align: left;
-  font-size: clamp(14px, 3.6cqw, 17.5px);
-  margin-left: 2.3%;
-}
-
-.meta {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.info {
-  position: relative;
-}
-
-.info button {
-  border: none;
-  padding: 0;
-  line-height: 1;
-  cursor: pointer;
-  width: 21.3px;
-  height: 21.3px;
-  border-radius: 50%;
-  background: #5ca2e1;
-  color: #fff;
-  font-size: 14.6px;
-  font-style: italic;
-  font-family: Georgia, serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.info.faq button {
-  background: rgb(76.5% 37.1% 62.2%);
-}
-
-.info p {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 22px;
-  width: 250px;
-  margin: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 10px;
-  font-size: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  z-index: 10;
-}
-
-.info.faq p {
-  width: 300px;
-}
-
-.info.faq p img {
-  width: 100%;
-  height: auto;
-  display: block;
-  margin-top: 8px;
-  border-radius: 4px;
-}
-
-.info.open p {
-  display: block;
-}
-
-@media (hover: hover) {
-  .info:hover p {
-    display: block;
-  }
-}
-
 
 /* ===== menu ===== */
 
@@ -273,7 +147,7 @@ body {
   height: 100%;
   width: 100%;
   z-index: 90;
-  background: #fffaf0;
+  background: #fff;
   transform: translateX(100%);
   transition: transform 0.3s ease;
   display: flex;
@@ -304,52 +178,12 @@ body {
   }
 }
 
-
-/* ===== text sections ===== */
-
-.prose p {
-  font-family: sans-serif;
-  font-size: clamp(15px, 1.6vw, 17px);
-  line-height: 1.6;
-  color: #333;
-  margin: 0 0 1.2em;
-}
-
-.prose p:last-child {
-  margin-bottom: 0;
-}
-
-.section-body {
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 16px;
-  margin: 320px 0 400px;
-  scroll-margin-top: 40px;
-}
-
-.back-btn {
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 14px;
-  color: #fff;
-  background: rgb(40.6% 56.2% 44.3%);
-  text-decoration: none;
-  padding: 6px 14px;
-  border-radius: 4px;
-}
-
-.prose .head {
-  font-weight: bold;
-}
-
-/* ===== home layout (index.html: title + first image) ===== */
+/* ===== home layout (title + first image) ===== */
 
 .home {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 @media (orientation: landscape) {
@@ -358,9 +192,8 @@ body {
     align-items: center;
   }
 
-  .home #intro,
-  .home .gallery {
-    width: 50%;
+  .home #intro {
+    width: 100%;
   }
 }
 
@@ -369,56 +202,122 @@ body {
   margin-right: 0;
 }
 
-.home .box {
-  padding-bottom: clamp(14px, 1.7vw, 20px);
+/* invisible box that constrains and positions the grid of lines;
+   top/height are set by JS (top of .home through the "e" of "onkle");
+   left/width stay fixed here */
+.grid-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.5s ease;
 }
 
-.home .box {
-  background: none;
-  padding: 0;
-  border-radius: 0;
-}
-
-@media (orientation: portrait) {
-  .home .gallery {
-    margin-top: 50px;
-  }
-}
-
-@media (orientation: portrait) {
-  .home {
-    position: relative;
-    min-height: 100dvh;
-  }
-
-  .home .gallery {
-    margin-top: 0;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 50px;
-  }
-}
-
-.home {
-  position: relative;
-}
-
+/* line 1: horizontal, through the "a" in "aurice" */
 .onkle-line {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 2px;
-  background: #333;
-  z-index: -1;
+  height: 1px;
+  background: #fff;
   clip-path: inset(0 100% 0 0);
   animation: wipeRight 1s ease-out forwards;
   animation-delay: 2.5s;
+}
+
+/* 5 more horizontal lines, through u / r / i / c / e of "aurice", plus 5 further lines
+   below "e" continuing the same spacing; top and animation-delay set per-line by JS */
+.h-line,
+.h-line-extra {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #fff;
+  clip-path: inset(0 100% 0 0);
+  animation: wipeRight 1s ease-out forwards;
+}
+
+/* image that fades up in the middle of the grid once it finishes shrinking;
+   position/size set by JS to fit inside the frame-box with margin from its edges */
+.grid-fade-image {
+  position: absolute;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 2s ease;
   pointer-events: none;
 }
 
-.home #intro,
-.home .gallery {
+.grid-fade-image.revealed {
+  opacity: 0.33;
+}
+
+/* frame-box: starts full-page size, shrinks down to the grid-defined rectangle
+   (top-left: a-line x one-right-of-e vline; bottom-right: e-line x near-hamburger vline) */
+.frame-box {
+  position: absolute;
+  border: none;
+  box-sizing: border-box;
+  transition: top 1.5s ease, left 1.5s ease, width 1.5s ease, height 1.5s ease;
+}
+
+/* vertical lines: one anchored through the "e" in "onkle", the rest generated by JS
+   at the same spacing as the horizontal lines, filling the box edge to edge */
+.v-line {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  background: #fff;
+  clip-path: inset(0 0 100% 0);
+  animation: wipeDown 1s ease-out forwards;
+}
+
+.home #intro {
   position: relative;
   z-index: 1;
+}
+
+/* ===== content box below the title/grid animation ===== */
+
+.content-box {
+  border: 2px solid rgb(66% 66% 66%);
+  border-radius: 0;
+  margin: 100px 30px 30px;
+  box-sizing: border-box;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 200px;
+}
+
+/* phones in landscape (short screens): give the blank box a taller floor,
+   scaled to the viewport height, instead of the flat 200px */
+@media (orientation: landscape) and (max-height: 1050px) {
+  .content-box {
+    min-height: 75vh;
+  }
+}
+
+.content-box p {
+  font-family: sans-serif;
+  font-size: 16px;
+  color: rgb(48% 48% 48%);
+  text-align: center;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.content-box p.revealed {
+  opacity: 1;
+}
+
+.content-box.revealed {
+  animation: fadeIn 1.5s ease-out forwards;
 }
