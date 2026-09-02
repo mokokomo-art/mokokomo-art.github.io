@@ -30,7 +30,7 @@ body {
 }
 
 /* phones in landscape: shrink to fit the whole image + caption on screen, no crop */
-@media (orientation: landscape) and (max-height: 1050px) {
+@media (orientation: landscape) and (max-height: 1050px) and (hover: none) and (pointer: coarse) {
   .box {
     width: fit-content;
     max-width: 100%;

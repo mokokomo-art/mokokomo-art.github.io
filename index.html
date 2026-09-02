@@ -208,7 +208,7 @@
       // on PC and phone portrait the page is exactly one viewable screen (no scroll),
       // so let the vertical lines run all the way to the bottom of that screen.
       // phone landscape still scrolls, so leave those lines stopping at the 11th line.
-      const isPhoneLandscape = window.matchMedia("(orientation: landscape) and (max-height: 1050px)").matches;
+      const isPhoneLandscape = window.matchMedia("(orientation: landscape) and (max-height: 1050px) and (hover: none) and (pointer: coarse)").matches;
       const viewportBottom = Math.round(window.innerHeight - homeRect.top);
       const vLineHeight = isPhoneLandscape ? lastExtraTop : Math.max(lastExtraTop, viewportBottom);
 

@@ -298,7 +298,7 @@ body {
 
 /* phones in landscape (short screens): give the blank box a taller floor,
    scaled to the viewport height, instead of the flat 200px */
-@media (orientation: landscape) and (max-height: 1050px) {
+@media (orientation: landscape) and (max-height: 1050px) and (hover: none) and (pointer: coarse) {
   .content-box {
     min-height: 75vh;
   }
