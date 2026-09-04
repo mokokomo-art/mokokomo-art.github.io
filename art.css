@@ -98,6 +98,10 @@ body {
   background: rgb(76.5% 37.1% 62.2%);
 }
 
+.info.price button {
+  background: rgb(49.5% 62.8% 52.7%);
+}
+
 .info p {
   display: none;
   position: absolute;
