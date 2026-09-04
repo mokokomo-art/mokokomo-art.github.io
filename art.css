@@ -66,6 +66,76 @@ body {
   margin-left: 2.3%;
 }
 
+.meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.info {
+  position: relative;
+}
+
+.info button {
+  border: none;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+  width: 21.3px;
+  height: 21.3px;
+  border-radius: 50%;
+  background: #5ca2e1;
+  color: #fff;
+  font-size: 14.6px;
+  font-style: italic;
+  font-family: Georgia, serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info.faq button {
+  background: rgb(76.5% 37.1% 62.2%);
+}
+
+.info p {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 22px;
+  width: 250px;
+  margin: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+.info.faq p {
+  width: 300px;
+}
+
+.info.faq p img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 8px;
+  border-radius: 4px;
+}
+
+.info.open p {
+  display: block;
+}
+
+@media (hover: hover) {
+  .info:hover p {
+    display: block;
+  }
+}
+
 /* ===== menu ===== */
 
 #menu-toggle {

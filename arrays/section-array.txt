@@ -1,0 +1,7 @@
+ID	Name
+1	photo as background
+2	photo as object/subject
+3	photo as photo
+4	everything (but odds and ends)
+5	nothing (probably outside of time)
+6	odds and ends

@@ -14,57 +14,210 @@
 
   <nav id="drawer">
     <a href="index.html">home</a>
-    <a href="art.html">mk art</a>
-    <a href="about.html#bio">bio</a>
-    <a href="about.html#statement">statement(s)</a>
-    <a href="about.html#contact">contact</a>
+    <a href="about.html" id="about-link">about</a>
   </nav>
 
   <div class="gallery" id="gallery"></div>
 
   <script>
-    // one filename per artwork - title is derived from the filename for now;
-    // info/faq/other per-piece fields come later once the array grows this way
-    const ARTWORKS = [
-      '(yellow-red, yellow-black).webp',
-      '35mm Slide Mt Rainier Ice Cave.webp',
-      'Field Theory 1.webp',
-      'Field Theory 2.webp',
-      'Field Theory 3.webp',
-      'Field Theory 4.webp',
-      'Network of Bales (after Duchamp).webp',
-      'Network(s) of Bales + Outliers.webp',
-      'SX-70 Eclipse.webp',
-      'SX-70 Parka.webp',
-      'SX-70 Umbrella.webp',
-      'after-because.webp',
-      'calculating area.webp',
-      'fourfold.webp',
-      'hope.webp',
-      'how far.webp'
-    ];
+    // ===== data loading =====
+    // arrays/Art-Array.txt, arrays/faq-array.txt, arrays/section-array.txt are the live
+    // source data - editing those files (Excel export for Art-Array.txt) is enough to
+    // update the site, nothing here needs hand-transcribing.
 
+    // Art-Array.txt is exported from Excel (Mac) as tab-delimited text, which comes out
+    // Mac-Roman encoded with CSV-style quoting (fields containing a literal " are wrapped
+    // in "..." with "" for an embedded quote) - this parser handles both.
+    function parseDelimited(text) {
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      text = text.replace(/\r\n/g, '\n');
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (text[i + 1] === '"') { field += '"'; i++; }
+            else { inQuotes = false; }
+          } else {
+            field += c;
+          }
+        } else {
+          if (c === '"') { inQuotes = true; }
+          else if (c === '\t') { row.push(field); field = ''; }
+          else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+          else { field += c; }
+        }
+      }
+      if (field.length || row.length) { row.push(field); rows.push(row); }
+      return rows.filter(r => !(r.length === 1 && r[0] === ''));
+    }
+
+    function rowsToObjects(rows) {
+      const header = rows[0];
+      return rows.slice(1).map(r => {
+        const obj = {};
+        header.forEach((h, i) => obj[h] = (r[i] ?? '').trim());
+        return obj;
+      });
+    }
+
+    function buildArtInfo(rows) {
+      return rowsToObjects(rows).map(r => ({
+        id: Number(r['ID-num']),
+        piece: r['Piece'],
+        file: r['File Name'],
+        section: Number(r['Section']),
+        order: Number(r['section Order']),
+        date: r['date-opus'],
+        size: r['size'],
+        info: r['info'],
+        price: r['Price']
+      }));
+    }
+
+    // section-array.txt is plain UTF-8, no quoting needed
+    function parseSections(text) {
+      return text.trim().split(/\r?\n/).slice(1).map(line => {
+        const [id, name] = line.split('\t');
+        return { id: Number(id), name };
+      });
+    }
+
+    // faq-array.txt: one [ID] block per piece, kept out of Art-Array.txt because Excel's
+    // tab-delimited export choked on a field with embedded quotes.
+    function parseFaqText(text) {
+      const faqs = {};
+      const re = /\[(\d+)\]\r?\n([\s\S]*?)(?=\r?\n\[\d+\]\r?\n|$)/g;
+      let m;
+      while ((m = re.exec(text)) !== null) faqs[Number(m[1])] = m[2].trim();
+      return faqs;
+    }
+
+    let ART_INFO = [];
+    let SECTIONS = [];
+    let FAQS = {};
+
+    const dataReady = Promise.all([
+      fetch('arrays/Art-Array.txt')
+        .then(r => r.arrayBuffer())
+        .then(buf => new TextDecoder('macintosh').decode(buf))
+        .then(parseDelimited)
+        .then(buildArtInfo),
+      fetch('arrays/section-array.txt').then(r => r.text()).then(parseSections),
+      fetch('arrays/faq-array.txt').then(r => r.text()).then(parseFaqText)
+    ]).then(([artInfo, sections, faqs]) => {
+      ART_INFO = artInfo;
+      SECTIONS = sections;
+      FAQS = faqs;
+    }).catch(err => console.error('failed to load art data', err));
+
+    // ===== gallery rendering =====
     const gallery = document.getElementById('gallery');
 
-    ARTWORKS.forEach(file => {
-      const box = document.createElement('div');
-      box.className = 'box';
+    function renderSection(sectionId) {
+      gallery.innerHTML = '';
 
-      const img = document.createElement('img');
-      img.src = 'images/' + file;
-      img.alt = '';
-      box.appendChild(img);
+      const pieces = ART_INFO
+        .filter(a => a.section === sectionId)
+        .sort((a, b) => a.order - b.order);
 
-      const caption = document.createElement('div');
-      caption.className = 'caption';
+      pieces.forEach(art => {
+        const box = document.createElement('div');
+        box.className = 'box';
 
-      const title = document.createElement('p');
-      title.className = 'title';
-      title.textContent = file.replace(/\.[^.]+$/, '');
-      caption.appendChild(title);
+        const img = document.createElement('img');
+        img.src = 'images/' + art.file;
+        img.alt = '';
+        box.appendChild(img);
 
-      box.appendChild(caption);
-      gallery.appendChild(box);
+        const caption = document.createElement('div');
+        caption.className = 'caption';
+
+        const title = document.createElement('p');
+        title.className = 'title';
+        title.textContent = art.piece;
+        caption.appendChild(title);
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const infoWrap = document.createElement('div');
+        infoWrap.className = 'info';
+        const infoBtn = document.createElement('button');
+        infoBtn.type = 'button';
+        infoBtn.textContent = 'i';
+        const infoP = document.createElement('p');
+        infoP.textContent = art.info;
+        infoBtn.addEventListener('click', () => toggleInfo(infoWrap));
+        infoWrap.append(infoBtn, infoP);
+        meta.appendChild(infoWrap);
+
+        const faqWrap = document.createElement('div');
+        faqWrap.className = 'info faq';
+        const faqBtn = document.createElement('button');
+        faqBtn.type = 'button';
+        faqBtn.textContent = '?';
+        const faqP = document.createElement('p');
+        faqP.innerHTML = FAQS[art.id] || '';
+        faqBtn.addEventListener('click', () => toggleInfo(faqWrap));
+        faqWrap.append(faqBtn, faqP);
+        meta.appendChild(faqWrap);
+
+        caption.appendChild(meta);
+        box.appendChild(caption);
+        gallery.appendChild(box);
+      });
+    }
+
+    function toggleInfo(wrap) {
+      const wasOpen = wrap.classList.contains('open');
+      document.querySelectorAll('.info.open').forEach(el => el.classList.remove('open'));
+      if (!wasOpen) wrap.classList.add('open');
+    }
+
+    document.addEventListener('pointerdown', e => {
+      if (!e.target.closest('.info')) {
+        document.querySelectorAll('.info.open').forEach(el => el.classList.remove('open'));
+      }
+    });
+
+    function getSectionFromURL() {
+      const s = Number(new URLSearchParams(window.location.search).get('section'));
+      return s || null;
+    }
+
+    // ===== drawer: section links built from SECTIONS once data is loaded =====
+    dataReady.then(() => {
+      const aboutLink = document.getElementById('about-link');
+
+      SECTIONS.forEach(({ id, name }) => {
+        const a = document.createElement('a');
+        a.textContent = name;
+        a.className = 'section-link';
+        a.dataset.section = id;
+
+        if (id <= 3) {
+          a.href = `art.html?section=${id}`;
+          a.addEventListener('click', e => {
+            e.preventDefault();
+            renderSection(id);
+            history.pushState({ section: id }, '', `art.html?section=${id}`);
+          });
+        } else {
+          a.href = 'javascript:void(0)'; // no defined behavior yet
+        }
+
+        a.addEventListener('click', () => document.body.classList.remove('menu-open'));
+        aboutLink.before(a);
+      });
+
+      const startSection = getSectionFromURL();
+      if (startSection) renderSection(startSection);
+    });
+
+    window.addEventListener('popstate', () => {
+      const s = getSectionFromURL();
+      if (s) renderSection(s);
     });
 
     // menu - same behavior as index.html, no intro animation to wait for on this page
