@@ -2,6 +2,6 @@ ID	Name
 1	photo as background
 2	photo as object/subject
 3	photo as photo
-91	everything (but odds and ends)
-5	nothing <br>(probably outside of time)
+91	everything <br>(but odds and ends)
+5	nothing
 6	odds and ends
