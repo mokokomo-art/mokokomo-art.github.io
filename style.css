@@ -326,3 +326,50 @@ body {
 .content-box.revealed {
   animation: fadeIn 1.5s ease-out forwards;
 }
+
+/* ===== skip-intro: repeat visit this session, jump every entrance animation
+   straight to its finished state instead of playing it ===== */
+
+html.skip-intro .small,
+html.skip-intro .small.k {
+  animation: none;
+  clip-path: inset(0 0 0 0);
+}
+
+html.skip-intro .okart {
+  animation: none;
+  opacity: 0;
+}
+
+html.skip-intro #menu-toggle {
+  animation: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+html.skip-intro .onkle-line,
+html.skip-intro .h-line,
+html.skip-intro .h-line-extra,
+html.skip-intro .v-line {
+  animation: none;
+  clip-path: inset(0 0 0 0);
+}
+
+html.skip-intro .frame-box,
+html.skip-intro .grid-box {
+  transition: none;
+}
+
+html.skip-intro .content-box.revealed {
+  animation: none;
+  opacity: 1;
+}
+
+html.skip-intro .content-box p {
+  transition: none;
+}
+
+html.skip-intro .grid-fade-image,
+html.skip-intro .grid-fade-image.revealed {
+  transition: none;
+}

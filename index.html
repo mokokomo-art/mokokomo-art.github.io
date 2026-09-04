@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Art</title>
   <link rel="stylesheet" href="style.css">
+  <script>
+    // set before body renders, so a repeat visit this session never paints the intro at all
+    if (sessionStorage.getItem('introPlayed')) {
+      document.documentElement.classList.add('skip-intro');
+    }
+  </script>
 </head>
 <body>
 
@@ -155,7 +161,7 @@
     let gridImageCycleStarted = false;
 
     // preload and fully decode every cycled image well ahead of time (cycling doesn't
-    // start for several seconds anyway) - Safari's WebP decode can lag behind a .5s cut
+    // start for several seconds anyway) - Safari's WebP decode can lag behind the cut
     // otherwise; Chrome keeps up fine either way, so this only helps, never hurts
     GRID_IMAGES.forEach(src => {
       const img = new Image();
@@ -334,7 +340,7 @@
     }
 
     // the fade image waits until the box's own reveal animation finishes, then
-    // starts cycling through GRID_IMAGES - .5s per image, hard cut, no transition
+    // starts cycling through GRID_IMAGES - 667ms per image, hard cut, no transition
     document.querySelector('.content-box').addEventListener('animationend', evt => {
       if (evt.animationName !== 'fadeIn') return;
       const fadeImage = document.querySelector('.grid-fade-image');
@@ -346,14 +352,44 @@
         setInterval(() => {
           gridImageIndex = (gridImageIndex + 1) % GRID_IMAGES.length;
           fadeImage.src = GRID_IMAGES[gridImageIndex];
-        }, 500);
+        }, 667);
       }
     });
+
+    // ===== skip the intro animation on a repeat visit within the same browser session =====
+    const skipIntro = document.documentElement.classList.contains('skip-intro');
+    if (skipIntro) {
+      // pre-mark the frame-box as already animated so positionGridBox() takes its
+      // "already done" branch (apply final geometry immediately, no delay/transition)
+      const frameBoxEl = document.querySelector('.frame-box');
+      if (frameBoxEl) frameBoxEl.dataset.animated = 'true';
+    } else {
+      sessionStorage.setItem('introPlayed', '1');
+    }
 
     positionGridBox();
     window.addEventListener('load', positionGridBox);
     window.addEventListener('resize', positionGridBox);
     window.addEventListener('orientationchange', positionGridBox);
+
+    if (skipIntro) {
+      // the reveal chain below normally fires off the frame-box's transitionend, which
+      // never happens when there's no transition to begin with - do it directly instead
+      const contentBox = document.querySelector('.content-box');
+      const revealText = document.querySelector('.reveal-text');
+      const fadeImage = document.querySelector('.grid-fade-image');
+      if (contentBox) contentBox.classList.add('revealed');
+      if (revealText) revealText.classList.add('revealed');
+      if (fadeImage && !gridImageCycleStarted && GRID_IMAGES.length) {
+        fadeImage.classList.add('revealed');
+        gridImageCycleStarted = true;
+        fadeImage.src = GRID_IMAGES[gridImageIndex];
+        setInterval(() => {
+          gridImageIndex = (gridImageIndex + 1) % GRID_IMAGES.length;
+          fadeImage.src = GRID_IMAGES[gridImageIndex];
+        }, 667);
+      }
+    }
   </script>
 
 </body>
