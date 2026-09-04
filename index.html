@@ -73,7 +73,7 @@
         const aboutLink = document.getElementById('about-link');
         sections.forEach(({ id, name }) => {
           const a = document.createElement('a');
-          a.textContent = name;
+          a.innerHTML = name; // section-array.txt names can include plain HTML, e.g. <br>
           a.dataset.section = id;
           a.href = id <= 3 ? `art.html?section=${id}` : 'javascript:void(0)';
           a.addEventListener('click', () => document.body.classList.remove('menu-open'));

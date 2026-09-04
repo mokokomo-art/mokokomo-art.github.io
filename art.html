@@ -204,7 +204,7 @@
 
       SECTIONS.forEach(({ id, name }) => {
         const a = document.createElement('a');
-        a.textContent = name;
+        a.innerHTML = name; // section-array.txt names can include plain HTML, e.g. <br>
         a.className = 'section-link';
         a.dataset.section = id;
 
