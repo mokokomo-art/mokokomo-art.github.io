@@ -147,7 +147,8 @@
         infoBtn.type = 'button';
         infoBtn.textContent = 'i';
         const infoP = document.createElement('p');
-        infoP.textContent = art.info;
+        const year = art.date.slice(0, 4);
+        infoP.textContent = `© ${year}, ${art.size}, ${art.info}`;
         infoBtn.addEventListener('click', () => toggleInfo(infoWrap));
         infoWrap.append(infoBtn, infoP);
         meta.appendChild(infoWrap);
@@ -162,6 +163,17 @@
         faqBtn.addEventListener('click', () => toggleInfo(faqWrap));
         faqWrap.append(faqBtn, faqP);
         meta.appendChild(faqWrap);
+
+        const priceWrap = document.createElement('div');
+        priceWrap.className = 'info price';
+        const priceBtn = document.createElement('button');
+        priceBtn.type = 'button';
+        priceBtn.textContent = '$';
+        const priceP = document.createElement('p');
+        priceP.textContent = art.price;
+        priceBtn.addEventListener('click', () => toggleInfo(priceWrap));
+        priceWrap.append(priceBtn, priceP);
+        meta.appendChild(priceWrap);
 
         caption.appendChild(meta);
         box.appendChild(caption);
