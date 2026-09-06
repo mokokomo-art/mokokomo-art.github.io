@@ -30,7 +30,7 @@ body {
 }
 
 /* short/landscape windows (any device): shrink to fit the whole image + caption on screen, no crop */
-@media (orientation: landscape) and (max-height: 1050px) {
+@media (orientation: landscape) {
   .box {
     width: fit-content;
     max-width: 100%;
