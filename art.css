@@ -12,6 +12,8 @@ body {
   align-items: center;
   gap: 80px;
   padding: 100px 20px 40px;
+  opacity: 1;
+  transition: opacity 0.2s ease;
 }
 
 .box {

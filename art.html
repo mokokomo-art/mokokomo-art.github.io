@@ -190,6 +190,19 @@
       });
     }
 
+    // fast cross-dissolve between sections: fade the gallery out, swap its content
+    // while invisible, fade back in. Only used for an actual section-to-section switch
+    // (drawer click / back-forward) -- the very first render on page load skips it.
+    const GALLERY_FADE_MS = 200;
+    function goToSection(sectionId, pushUrl) {
+      gallery.style.opacity = '0';
+      setTimeout(() => {
+        renderSection(sectionId);
+        if (pushUrl) history.pushState({ section: sectionId }, '', `art.html?section=${sectionId}`);
+        gallery.style.opacity = '1';
+      }, GALLERY_FADE_MS);
+    }
+
     function toggleInfo(wrap) {
       const wasOpen = wrap.classList.contains('open');
       document.querySelectorAll('.info.open').forEach(el => el.classList.remove('open'));
@@ -223,8 +236,7 @@
           a.href = `art.html?section=${id}`;
           a.addEventListener('click', e => {
             e.preventDefault();
-            renderSection(id);
-            history.pushState({ section: id }, '', `art.html?section=${id}`);
+            goToSection(id, true);
           });
         } else {
           a.href = 'javascript:void(0)'; // no defined behavior yet
@@ -240,7 +252,7 @@
 
     window.addEventListener('popstate', () => {
       const s = getSectionFromURL();
-      if (s) renderSection(s);
+      if (s) goToSection(s, false);
     });
 
     // menu - same behavior as index.html, no intro animation to wait for on this page
