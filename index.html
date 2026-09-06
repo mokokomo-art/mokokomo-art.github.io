@@ -75,8 +75,14 @@
     });
 
     // ===== section menu: names/order come from arrays/section-array.txt, so the
-    // drawer's section list only needs editing in one place. Sections 1-3 have art
-    // pieces and link to art.html; 4-6 have none yet and are inert for now. =====
+    // drawer's section list only needs editing in one place. Sections 1-2 have art
+    // pieces and link to art.html; 3 ("photo as photo") and 6 ("odds and ends") don't
+    // have any pieces tagged yet, so they share a "still working on this" placeholder
+    // page instead -- revisit once 3 gets real art (it'll want its own drawer entry
+    // routed back to art.html at that point, like 1/2). 5 ("nothing") gets its own
+    // separate placeholder page. 4 has no section-array.txt entry yet. =====
+    const PLACEHOLDER_SHARED = 'coming-soon.html'; // section 3, section 6
+    const PLACEHOLDER_NOTHING = 'nothing.html'; // section 5
     function parseSections(text) {
       return text.trim().split(/\r?\n/).slice(1).map(line => {
         const [id, name] = line.split('\t');
@@ -93,11 +99,18 @@
           const a = document.createElement('a');
           a.innerHTML = name; // section-array.txt names can include plain HTML, e.g. <br>
           a.dataset.section = id;
-          const isRealSection = [1, 2, 3].includes(id) || id >= 91;
-          a.href = isRealSection ? `art.html?section=${id}` : 'javascript:void(0)';
+          const isRealSection = [1, 2].includes(id) || id >= 91;
+          if (isRealSection) {
+            a.href = `art.html?section=${id}`;
+          } else if (id === 5) {
+            a.href = PLACEHOLDER_NOTHING;
+          } else {
+            a.href = PLACEHOLDER_SHARED; // sections 3, 6
+          }
           a.addEventListener('click', e => {
             document.body.classList.remove('menu-open');
             // fade the whole page out, then navigate to art.html once the fade finishes
+            // (placeholder pages just navigate normally, no fade -- not asked for yet)
             if (isRealSection) {
               e.preventDefault();
               const dest = a.href;

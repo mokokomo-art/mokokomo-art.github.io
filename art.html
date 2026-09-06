@@ -242,22 +242,30 @@
     dataReady.then(() => {
       const aboutLink = document.getElementById('about-link');
 
+      // 91+ is reserved for computed/union views like "everything"; real content
+      // sections are 1-2 for now. 3 ("photo as photo") and 6 ("odds and ends") have
+      // no pieces tagged yet, so they share a "still working on this" placeholder page
+      // -- revisit once 3 gets real art. 5 ("nothing") gets its own separate placeholder.
+      const PLACEHOLDER_SHARED = 'coming-soon.html'; // section 3, section 6
+      const PLACEHOLDER_NOTHING = 'nothing.html'; // section 5
+
       SECTIONS.forEach(({ id, name }) => {
         const a = document.createElement('a');
         a.innerHTML = name; // section-array.txt names can include plain HTML, e.g. <br>
         a.className = 'section-link';
         a.dataset.section = id;
 
-        // 91+ is reserved for computed/union views like "everything"; real content
-        // sections are 1-3 for now (5/6 not built yet)
-        if ([1, 2, 3].includes(id) || id >= 91) {
+        const isRealSection = [1, 2].includes(id) || id >= 91;
+        if (isRealSection) {
           a.href = `art.html?section=${id}`;
           a.addEventListener('click', e => {
             e.preventDefault();
             goToSection(id, true);
           });
+        } else if (id === 5) {
+          a.href = PLACEHOLDER_NOTHING;
         } else {
-          a.href = 'javascript:void(0)'; // no defined behavior yet
+          a.href = PLACEHOLDER_SHARED; // sections 3, 6
         }
 
         a.addEventListener('click', () => document.body.classList.remove('menu-open'));

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Art</title>
+  <link rel="stylesheet" href="placeholder.css">
+</head>
+<body>
+
+  <button id="menu-toggle" type="button" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="drawer">
+    <a href="index.html">home</a>
+  </nav>
+
+  <p class="placeholder-message">still working on this&hellip;</p>
+
+  <script>
+    const toggle = document.getElementById('menu-toggle');
+    const drawer = document.getElementById('drawer');
+
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('menu-open');
+    });
+
+    document.addEventListener('pointerdown', e => {
+      if (!e.target.closest('#drawer') && !e.target.closest('#menu-toggle')) {
+        document.body.classList.remove('menu-open');
+      }
+    });
+
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('menu-open');
+      });
+    });
+  </script>
+
+</body>
+</html>
