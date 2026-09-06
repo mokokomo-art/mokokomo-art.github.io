@@ -29,20 +29,18 @@ body {
   display: block;
 }
 
-/* short/landscape windows (any device): shrink to fit the whole image + caption on screen, no crop */
-@media (orientation: landscape) {
-  .box {
-    width: fit-content;
-    max-width: 100%;
-    margin: 0 auto;
-  }
+/* always cap an artwork's rendered height so a tall piece never overflows the screen, no crop */
+.box {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
 
-  .box img {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: calc(92vh - 70px);
-  }
+.box img {
+  width: auto;
+  height: auto;
+  max-width: min(1600px, calc(100vw - 80px));
+  max-height: calc(92vh - 70px);
 }
 
 .caption {
