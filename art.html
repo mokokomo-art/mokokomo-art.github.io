@@ -190,6 +190,24 @@
       });
     }
 
+    // fade the whole page in on arrival (pairs with index.html fading itself out
+    // before navigating here). Double rAF makes sure the browser has painted the
+    // initial opacity:0 state before the transition to 1 starts.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.body.style.opacity = '1';
+      });
+    });
+
+    // fade this page out, then navigate, when going back home via the drawer
+    // (pairs with index.html fading itself in on arrival)
+    document.querySelector('#drawer a[href="index.html"]').addEventListener('click', e => {
+      e.preventDefault();
+      document.body.style.transition = 'opacity 0.5s ease';
+      document.body.style.opacity = '0';
+      setTimeout(() => { window.location.href = 'index.html'; }, 500);
+    });
+
     // fast cross-dissolve between sections: fade the gallery out, swap its content
     // while invisible, fade back in. Only used for an actual section-to-section switch
     // (drawer click / back-forward) -- the very first render on page load skips it.

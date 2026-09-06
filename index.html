@@ -64,6 +64,16 @@
   <div class="content-box"><p class="reveal-text">this space left intentionally blank</p></div>
 
   <script>
+    // fade the whole page in on arrival (pairs with art.html fading itself out
+    // before navigating here via its "home" drawer link). Double rAF makes sure
+    // the browser has painted the initial opacity:0 state before the transition
+    // to 1 starts.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.body.style.opacity = '1';
+      });
+    });
+
     // ===== section menu: names/order come from arrays/section-array.txt, so the
     // drawer's section list only needs editing in one place. Sections 1-3 have art
     // pieces and link to art.html; 4-6 have none yet and are inert for now. =====
@@ -83,8 +93,19 @@
           const a = document.createElement('a');
           a.innerHTML = name; // section-array.txt names can include plain HTML, e.g. <br>
           a.dataset.section = id;
-          a.href = ([1, 2, 3].includes(id) || id >= 91) ? `art.html?section=${id}` : 'javascript:void(0)';
-          a.addEventListener('click', () => document.body.classList.remove('menu-open'));
+          const isRealSection = [1, 2, 3].includes(id) || id >= 91;
+          a.href = isRealSection ? `art.html?section=${id}` : 'javascript:void(0)';
+          a.addEventListener('click', e => {
+            document.body.classList.remove('menu-open');
+            // fade the whole page out, then navigate to art.html once the fade finishes
+            if (isRealSection) {
+              e.preventDefault();
+              const dest = a.href;
+              document.body.style.transition = 'opacity 0.5s ease';
+              document.body.style.opacity = '0';
+              setTimeout(() => { window.location.href = dest; }, 500);
+            }
+          });
           aboutLink.before(a);
         });
       })

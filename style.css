@@ -5,6 +5,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 /* ===== intro animation (from test-text/text-test-4.html) ===== */
