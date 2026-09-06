@@ -15,7 +15,8 @@ body {
 }
 
 .box {
-  background-color: #fffaf0;
+  /* was #fffaf0 (cream card) -- set to match the page background so the box disappears visually */
+  background-color: #e8e4dc;
   padding: clamp(14px, 1.7vw, 20px) clamp(14px, 1.7vw, 20px) clamp(7px, 0.85vw, 10px);
   width: 100%;
   max-width: 1600px;
