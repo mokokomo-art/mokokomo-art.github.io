@@ -59,6 +59,8 @@
     </header>
   </div>
 
+  <p class="grid-title"></p>
+
   <div class="content-box"><p class="reveal-text">this space left intentionally blank</p></div>
 
   <script>
@@ -159,6 +161,15 @@
     ];
     let gridImageIndex = 0;
     let gridImageCycleStarted = false;
+
+    // shown once, static, on a repeat visit within the same session (ID 16, "(yellow and red, yellow and black)")
+    // instead of cycling through GRID_IMAGES -- title/size/year below come straight from
+    // that piece's row in arrays/Art-Array.txt, typed in here since this is a fixed,
+    // hand-picked override rather than a data-driven listing like art.html
+    const RETURN_VISIT_IMAGE = 'images-small/(yellow-red, yellow-black)-small.webp';
+    const RETURN_VISIT_TITLE = '(yellow and red, yellow and black)';
+    const RETURN_VISIT_SIZE = '45" x 26"';
+    const RETURN_VISIT_YEAR = '2026';
 
     // preload and fully decode every cycled image well ahead of time (cycling doesn't
     // start for several seconds anyway) - Safari's WebP decode can lag behind the cut
@@ -356,6 +367,17 @@
       }
     });
 
+    // lines up .grid-title under the grid image itself (which is positioned by JS, not
+    // simple centering) by copying the image's own left/width after it's been placed
+    function syncGridTitlePosition() {
+      const gridTitle = document.querySelector('.grid-title');
+      const fadeImage = document.querySelector('.grid-fade-image');
+      if (!gridTitle || !fadeImage) return;
+      const imgRect = fadeImage.getBoundingClientRect();
+      gridTitle.style.marginLeft = imgRect.left + 'px';
+      gridTitle.style.width = imgRect.width + 'px';
+    }
+
     // ===== skip the intro animation on a repeat visit within the same browser session =====
     const skipIntro = document.documentElement.classList.contains('skip-intro');
     if (skipIntro) {
@@ -380,14 +402,19 @@
       const fadeImage = document.querySelector('.grid-fade-image');
       if (contentBox) contentBox.classList.add('revealed');
       if (revealText) revealText.classList.add('revealed');
-      if (fadeImage && !gridImageCycleStarted && GRID_IMAGES.length) {
+      if (fadeImage) {
         fadeImage.classList.add('revealed');
-        gridImageCycleStarted = true;
-        fadeImage.src = GRID_IMAGES[gridImageIndex];
-        setInterval(() => {
-          gridImageIndex = (gridImageIndex + 1) % GRID_IMAGES.length;
-          fadeImage.src = GRID_IMAGES[gridImageIndex];
-        }, 667);
+        gridImageCycleStarted = true; // also blocks the normal animationend listener from ever starting a cycle here
+        fadeImage.src = RETURN_VISIT_IMAGE;
+      }
+      const gridTitle = document.querySelector('.grid-title');
+      if (gridTitle) {
+        const gap = '\u00A0'.repeat(4);
+        gridTitle.innerHTML = '<span class="piece-name">' + RETURN_VISIT_TITLE + '</span>' + gap + RETURN_VISIT_YEAR + gap + RETURN_VISIT_SIZE;
+        gridTitle.style.display = 'block';
+        syncGridTitlePosition();
+        window.addEventListener('resize', syncGridTitlePosition);
+        window.addEventListener('orientationchange', syncGridTitlePosition);
       }
     }
   </script>
