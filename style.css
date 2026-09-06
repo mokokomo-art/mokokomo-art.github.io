@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background-color: #e8e4dc;
+  background-color: #b1aeae;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@ body {
   justify-content: center;
   gap: 0.17em;
   font-size: clamp(9.75px, 3.75vw, 39.75px);
-  color: rgb(48% 48% 48%);
+  color: #505050;
   text-align: center;
   line-height: 1.1;
 }
@@ -258,7 +258,7 @@ body {
 }
 
 .grid-fade-image.revealed {
-  opacity: 0.33;
+  opacity: 0.66;
 }
 
 /* frame-box: starts full-page size, shrinks down to the grid-defined rectangle
@@ -289,7 +289,7 @@ body {
 /* ===== content box below the title/grid animation ===== */
 
 .content-box {
-  border: 2px solid rgb(66% 66% 66%);
+  border: 2px solid #292929;
   border-radius: 0;
   margin: 100px 30px 30px;
   box-sizing: border-box;
@@ -312,7 +312,7 @@ body {
 .content-box p {
   font-family: sans-serif;
   font-size: 16px;
-  color: rgb(48% 48% 48%);
+  color: #292929;
   text-align: center;
   margin: 0;
   opacity: 0;
