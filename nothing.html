@@ -6,7 +6,7 @@
   <title>My Art</title>
   <link rel="stylesheet" href="placeholder.css">
 </head>
-<body>
+<body class="nothing-page">
 
   <button id="menu-toggle" type="button" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -16,9 +16,18 @@
     <a href="index.html">home</a>
   </nav>
 
-  <p class="placeholder-message">still working on this&hellip;</p>
+  <div class="content-box"><p class="reveal-text">this space left intentionally blank</p></div>
 
   <script>
+    // reveal the blank box immediately -- same box/animation as index.html's, just
+    // without the grid intro sequence to wait for first
+    const contentBox = document.querySelector('.content-box');
+    const revealText = document.querySelector('.reveal-text');
+    requestAnimationFrame(() => {
+      contentBox.classList.add('revealed');
+      revealText.classList.add('revealed');
+    });
+
     const toggle = document.getElementById('menu-toggle');
     const drawer = document.getElementById('drawer');
 
