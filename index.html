@@ -18,10 +18,7 @@
     <span></span><span></span><span></span>
   </button>
 
-  <nav id="drawer">
-    <a href="index.html">home</a>
-    <a href="about.html" id="about-link">about</a>
-  </nav>
+  <nav id="drawer"></nav>
 
   <div class="home">
     <div class="grid-box">
@@ -74,55 +71,50 @@
       });
     });
 
-    // ===== section menu: names/order come from arrays/section-array.txt, so the
-    // drawer's section list only needs editing in one place. Sections 1-2 have art
-    // pieces and link to art.html; 3 ("photo as photo") and 6 ("odds and ends") don't
-    // have any pieces tagged yet, so they share a "still working on this" placeholder
-    // page instead -- revisit once 3 gets real art (it'll want its own drawer entry
-    // routed back to art.html at that point, like 1/2). 5 ("nothing") gets its own
-    // separate placeholder page. 4 has no section-array.txt entry yet. =====
-    const PLACEHOLDER_SHARED = 'coming-soon.html'; // section 3, section 6
-    const PLACEHOLDER_NOTHING = 'nothing.html'; // section 5
-    function parseSections(text) {
+    // ===== drawer menu: built entirely from arrays/menu-array.txt, in file order.
+    // Each row's Action says what happens on click:
+    //   goto  -> plain link straight to a page (home, about, nothing, coming-soon)
+    //   union -> art.html filtered to one or more categories, OR'd together (Value is
+    //            a comma-separated list of category IDs from arrays/category-array.txt --
+    //            a single ID is just a union of one)
+    //   chron -> art.html's fixed chronological view (sections 1+2, newest first --
+    //            see art.html for the rendering; no Value needed yet)
+    function parseMenu(text) {
       return text.trim().split(/\r?\n/).slice(1).map(line => {
-        const [id, name] = line.split('\t');
-        return { id: Number(id), name };
+        const [name, action, value] = line.split('\t');
+        return { name, action, value: value || '' };
       });
     }
 
-    fetch('arrays/section-array.txt')
+    fetch('arrays/menu-array.txt')
       .then(r => r.text())
-      .then(parseSections)
-      .then(sections => {
-        const aboutLink = document.getElementById('about-link');
-        sections.forEach(({ id, name }) => {
+      .then(parseMenu)
+      .then(items => {
+        const drawer = document.getElementById('drawer');
+        items.forEach(({ name, action, value }) => {
           const a = document.createElement('a');
-          a.innerHTML = name; // section-array.txt names can include plain HTML, e.g. <br>
-          a.dataset.section = id;
-          const isRealSection = [1, 2].includes(id) || id >= 91;
-          if (isRealSection) {
-            a.href = `art.html?section=${id}`;
-          } else if (id === 5) {
-            a.href = PLACEHOLDER_NOTHING;
-          } else {
-            a.href = PLACEHOLDER_SHARED; // sections 3, 6
-          }
-          a.addEventListener('click', e => {
-            document.body.classList.remove('menu-open');
-            // fade the whole page out, then navigate to art.html once the fade finishes
-            // (placeholder pages just navigate normally, no fade -- not asked for yet)
-            if (isRealSection) {
+          a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
+
+          if (action === 'union' || action === 'chron') {
+            const dest = `art.html?section=${action === 'chron' ? 'chron' : value}`;
+            a.href = dest;
+            a.addEventListener('click', e => {
               e.preventDefault();
-              const dest = a.href;
+              document.body.classList.remove('menu-open');
+              // fade the whole page out, then navigate to art.html once the fade finishes
               document.body.style.transition = 'opacity 0.5s ease';
               document.body.style.opacity = '0';
               setTimeout(() => { window.location.href = dest; }, 500);
-            }
-          });
-          aboutLink.before(a);
+            });
+          } else { // goto -- plain navigation, no fade (not asked for yet on these pages)
+            a.href = value;
+            a.addEventListener('click', () => document.body.classList.remove('menu-open'));
+          }
+
+          drawer.appendChild(a);
         });
       })
-      .catch(err => console.error('section-array.txt failed to load', err));
+      .catch(err => console.error('menu-array.txt failed to load', err));
 
     // always start at the top on reload, instead of the browser restoring scroll position
     if ('scrollRestoration' in history) {
@@ -160,12 +152,6 @@
       if (!e.target.closest('#drawer') && !e.target.closest('#menu-toggle')) {
         document.body.classList.remove('menu-open');
       }
-    });
-
-    drawer.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.body.classList.remove('menu-open');
-      });
     });
 
     // italic glyphs (like this "e") often sit left of their own geometric box;
@@ -442,7 +428,7 @@
       }
       const gridTitle = document.querySelector('.grid-title');
       if (gridTitle) {
-        const gap = '\u00A0'.repeat(4);
+        const gap = ' '.repeat(4);
         gridTitle.innerHTML = '<span class="piece-name">' + RETURN_VISIT_TITLE + '</span>' + gap + RETURN_VISIT_YEAR + gap + RETURN_VISIT_SIZE;
         gridTitle.style.display = 'block';
         syncGridTitlePosition();

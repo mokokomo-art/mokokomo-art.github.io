@@ -12,18 +12,17 @@
     <span></span><span></span><span></span>
   </button>
 
-  <nav id="drawer">
-    <a href="index.html">home</a>
-    <a href="about.html" id="about-link">about</a>
-  </nav>
+  <nav id="drawer"></nav>
 
   <div class="gallery" id="gallery"></div>
 
   <script>
     // ===== data loading =====
-    // arrays/Art-Array.txt, arrays/faq-array.txt, arrays/section-array.txt are the live
+    // arrays/Art-Array.txt, arrays/faq-array.txt, arrays/menu-array.txt are the live
     // source data - editing those files (Excel export for Art-Array.txt) is enough to
-    // update the site, nothing here needs hand-transcribing.
+    // update the site, nothing here needs hand-transcribing. arrays/category-array.txt
+    // is not fetched here -- it's a reference file only, for keeping track of which
+    // Section number in Art-Array.txt means what.
 
     // Art-Array.txt is exported from Excel (Mac) as tab-delimited text, which comes out
     // Mac-Roman encoded with CSV-style quoting (fields containing a literal " are wrapped
@@ -75,11 +74,16 @@
       }));
     }
 
-    // section-array.txt is plain UTF-8, no quoting needed
-    function parseSections(text) {
+    // menu-array.txt is plain UTF-8, no quoting needed. Each row is Name / Action / Value:
+    //   goto  -> Value is a page to link straight to (home, about, nothing, coming-soon)
+    //   union -> Value is a comma-separated list of category IDs (from
+    //            arrays/category-array.txt) to filter to, OR'd together -- a single ID
+    //            is just a union of one
+    //   chron -> the fixed chronological view (sections 1+2, newest first); no Value yet
+    function parseMenu(text) {
       return text.trim().split(/\r?\n/).slice(1).map(line => {
-        const [id, name] = line.split('\t');
-        return { id: Number(id), name };
+        const [name, action, value] = line.split('\t');
+        return { name, action, value: value || '' };
       });
     }
 
@@ -94,7 +98,7 @@
     }
 
     let ART_INFO = [];
-    let SECTIONS = [];
+    let MENU = [];
     let FAQS = {};
 
     const dataReady = Promise.all([
@@ -103,11 +107,11 @@
         .then(buf => new TextDecoder('macintosh').decode(buf))
         .then(parseDelimited)
         .then(buildArtInfo),
-      fetch('arrays/section-array.txt').then(r => r.text()).then(parseSections),
+      fetch('arrays/menu-array.txt').then(r => r.text()).then(parseMenu),
       fetch('arrays/faq-array.txt').then(r => r.text()).then(parseFaqText)
-    ]).then(([artInfo, sections, faqs]) => {
+    ]).then(([artInfo, menu, faqs]) => {
       ART_INFO = artInfo;
-      SECTIONS = sections;
+      MENU = menu;
       FAQS = faqs;
     }).catch(err => console.error('failed to load art data', err));
 
@@ -119,14 +123,16 @@
       window.scrollTo(0, 0);
 
       let pieces;
-      if (sectionId === 91) {
+      if (sectionId === 'chron') {
         // "everything (but odds and ends)": sections 1+2 combined, newest piece first
         pieces = ART_INFO
           .filter(a => a.section === 1 || a.section === 2)
           .sort((a, b) => b.date.localeCompare(a.date));
       } else {
+        // sectionId is a list of one or more category IDs, OR'd together -- a single
+        // real section (like "image as means") is just a union of one
         pieces = ART_INFO
-          .filter(a => a.section === sectionId)
+          .filter(a => sectionId.includes(a.section))
           .sort((a, b) => a.order - b.order);
       }
 
@@ -199,15 +205,6 @@
       });
     });
 
-    // fade this page out, then navigate, when going back home via the drawer
-    // (pairs with index.html fading itself in on arrival)
-    document.querySelector('#drawer a[href="index.html"]').addEventListener('click', e => {
-      e.preventDefault();
-      document.body.style.transition = 'opacity 0.5s ease';
-      document.body.style.opacity = '0';
-      setTimeout(() => { window.location.href = 'index.html'; }, 500);
-    });
-
     // fast cross-dissolve between sections: fade the gallery out, swap its content
     // while invisible, fade back in. Only used for an actual section-to-section switch
     // (drawer click / back-forward) -- the very first render on page load skips it.
@@ -233,43 +230,48 @@
       }
     });
 
-    function getSectionFromURL() {
-      const s = Number(new URLSearchParams(window.location.search).get('section'));
-      return s || null;
+    // "chron" stays a plain string; anything else is parsed into a list of category
+    // IDs, even a single one -- see renderSection()
+    function parseSectionParam(raw) {
+      return raw === 'chron' ? 'chron' : raw.split(',').map(n => Number(n.trim()));
     }
 
-    // ===== drawer: section links built from SECTIONS once data is loaded =====
+    function getSectionFromURL() {
+      const s = new URLSearchParams(window.location.search).get('section');
+      return s ? parseSectionParam(s) : null;
+    }
+
+    // ===== drawer: built entirely from arrays/menu-array.txt, once data is loaded =====
     dataReady.then(() => {
-      const aboutLink = document.getElementById('about-link');
+      const drawer = document.getElementById('drawer');
 
-      // 91+ is reserved for computed/union views like "everything"; real content
-      // sections are 1-2 for now. 3 ("photo as photo") and 6 ("odds and ends") have
-      // no pieces tagged yet, so they share a "still working on this" placeholder page
-      // -- revisit once 3 gets real art. 5 ("nothing") gets its own separate placeholder.
-      const PLACEHOLDER_SHARED = 'coming-soon.html'; // section 3, section 6
-      const PLACEHOLDER_NOTHING = 'nothing.html'; // section 5
-
-      SECTIONS.forEach(({ id, name }) => {
+      MENU.forEach(({ name, action, value }) => {
         const a = document.createElement('a');
-        a.innerHTML = name; // section-array.txt names can include plain HTML, e.g. <br>
-        a.className = 'section-link';
-        a.dataset.section = id;
+        a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
 
-        const isRealSection = [1, 2].includes(id) || id >= 91;
-        if (isRealSection) {
-          a.href = `art.html?section=${id}`;
+        if (action === 'union' || action === 'chron') {
+          const sectionValue = action === 'chron' ? 'chron' : parseSectionParam(value);
+          a.href = `art.html?section=${action === 'chron' ? 'chron' : value}`;
           a.addEventListener('click', e => {
             e.preventDefault();
-            goToSection(id, true);
+            goToSection(sectionValue, true);
           });
-        } else if (id === 5) {
-          a.href = PLACEHOLDER_NOTHING;
-        } else {
-          a.href = PLACEHOLDER_SHARED; // sections 3, 6
+        } else if (action === 'goto' && value === 'index.html') {
+          // "home" specifically fades the page out first, pairing with index.html's
+          // own fade-in on arrival -- other goto destinations just navigate plainly
+          a.href = value;
+          a.addEventListener('click', e => {
+            e.preventDefault();
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '0';
+            setTimeout(() => { window.location.href = value; }, 500);
+          });
+        } else { // goto -- plain navigation, no fade (not asked for yet on these pages)
+          a.href = value;
         }
 
         a.addEventListener('click', () => document.body.classList.remove('menu-open'));
-        aboutLink.before(a);
+        drawer.appendChild(a);
       });
 
       const startSection = getSectionFromURL();
@@ -293,12 +295,6 @@
       if (!e.target.closest('#drawer') && !e.target.closest('#menu-toggle')) {
         document.body.classList.remove('menu-open');
       }
-    });
-
-    drawer.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.body.classList.remove('menu-open');
-      });
     });
   </script>
 

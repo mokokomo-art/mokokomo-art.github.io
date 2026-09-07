@@ -1,0 +1,8 @@
+Name	Action	Value
+home	goto	index.html
+image as means	union	1
+image as subject	union	2
+everything <br>(except odds and ends)	chron	
+nothing	goto	nothing.html
+odds and ends	goto	coming-soon.html
+about	goto	about.html
