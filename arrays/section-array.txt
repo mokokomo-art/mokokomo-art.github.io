@@ -1,7 +1,0 @@
-ID	Name
-1	image as means
-2	image as subject
-3	delete this button?
-91	everything 
-5	nothing
-6	other things

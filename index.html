@@ -61,7 +61,7 @@
   <div class="content-box"><p class="reveal-text">this space left intentionally blank</p></div>
 
   <script>
-    // fade the whole page in on arrival (pairs with art.html fading itself out
+    // fade the whole page in on arrival (pairs with art-display.html fading itself out
     // before navigating here via its "home" drawer link). Double rAF makes sure
     // the browser has painted the initial opacity:0 state before the transition
     // to 1 starts.
@@ -74,11 +74,11 @@
     // ===== drawer menu: built entirely from arrays/menu-array.txt, in file order.
     // Each row's Action says what happens on click:
     //   goto  -> plain link straight to a page (home, about, nothing, coming-soon)
-    //   union -> art.html filtered to one or more categories, OR'd together (Value is
+    //   union -> art-display.html filtered to one or more categories, OR'd together (Value is
     //            a comma-separated list of category IDs from arrays/category-array.txt --
     //            a single ID is just a union of one)
-    //   chron -> art.html's fixed chronological view (sections 1+2, newest first --
-    //            see art.html for the rendering; no Value needed yet)
+    //   chron -> art-display.html's fixed chronological view (sections 1+2, newest first --
+    //            see art-display.html for the rendering; no Value needed yet)
     function parseMenu(text) {
       return text.trim().split(/\r?\n/).slice(1).map(line => {
         const [name, action, value] = line.split('\t');
@@ -96,12 +96,12 @@
           a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
 
           if (action === 'union' || action === 'chron') {
-            const dest = `art.html?section=${action === 'chron' ? 'chron' : value}`;
+            const dest = `art-display.html?section=${action === 'chron' ? 'chron' : value}`;
             a.href = dest;
             a.addEventListener('click', e => {
               e.preventDefault();
               document.body.classList.remove('menu-open');
-              // fade the whole page out, then navigate to art.html once the fade finishes
+              // fade the whole page out, then navigate to art-display.html once the fade finishes
               document.body.style.transition = 'opacity 0.5s ease';
               document.body.style.opacity = '0';
               setTimeout(() => { window.location.href = dest; }, 500);
@@ -184,7 +184,7 @@
     // shown once, static, on a repeat visit within the same session (ID 16, "(yellow and red, yellow and black)")
     // instead of cycling through GRID_IMAGES -- title/size/year below come straight from
     // that piece's row in arrays/Art-Array.txt, typed in here since this is a fixed,
-    // hand-picked override rather than a data-driven listing like art.html
+    // hand-picked override rather than a data-driven listing like art-display.html
     const RETURN_VISIT_IMAGE = 'images-small/(yellow-red, yellow-black)-small.webp';
     const RETURN_VISIT_TITLE = '(yellow and red, yellow and black)';
     const RETURN_VISIT_SIZE = '45" x 26"';

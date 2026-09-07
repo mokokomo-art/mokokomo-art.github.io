@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Art</title>
-  <link rel="stylesheet" href="art.css">
+  <link rel="stylesheet" href="art-display.css">
 </head>
 <body>
 
@@ -213,7 +213,7 @@
       gallery.style.opacity = '0';
       setTimeout(() => {
         renderSection(sectionId);
-        if (pushUrl) history.pushState({ section: sectionId }, '', `art.html?section=${sectionId}`);
+        if (pushUrl) history.pushState({ section: sectionId }, '', `art-display.html?section=${sectionId}`);
         gallery.style.opacity = '1';
       }, GALLERY_FADE_MS);
     }
@@ -251,7 +251,7 @@
 
         if (action === 'union' || action === 'chron') {
           const sectionValue = action === 'chron' ? 'chron' : parseSectionParam(value);
-          a.href = `art.html?section=${action === 'chron' ? 'chron' : value}`;
+          a.href = `art-display.html?section=${action === 'chron' ? 'chron' : value}`;
           a.addEventListener('click', e => {
             e.preventDefault();
             goToSection(sectionValue, true);
