@@ -12,17 +12,11 @@
     <span></span><span></span><span></span>
   </button>
 
-  <nav id="drawer">
-    <a href="about.html#bio">bio</a>
-    <a href="about.html#statement">statement(s)</a>
-    <a href="about.html#contact">contact</a>
-  </nav>
+  <nav id="drawer"></nav>
 
   <div class="gallery">
 
     <div class="section-body" id="bio">
-      <a class="back-btn" href="index.html">back</a>
-
       <div class="box prose">
         <p class="head">artist&rsquo;s bio</p>
 
@@ -36,8 +30,6 @@
 
 
     <div class="section-body" id="statement">
-      <a class="back-btn" href="index.html">back</a>
-
       <div class="box prose">
         <p class="head">artist&rsquo;s statement(s)</p>
 
@@ -62,8 +54,6 @@
     </div>
 
     <div class="section-body" id="contact">
-      <a class="back-btn" href="index.html">back</a>
-
       <div class="box prose">
         <p>mk@mkok.art</p>
       </div>
@@ -85,11 +75,35 @@
       }
     });
 
-    drawer.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.body.classList.remove('menu-open');
+    // ===== drawer: built entirely from arrays/menu-array.txt, in file order.
+    // Each row's Action says what happens on click:
+    //   goto  -> plain link straight to a page (home, about, nothing, coming-soon)
+    //   union -> art-display.html filtered to one or more categories, OR'd together (Value is
+    //            a comma-separated list of category IDs from arrays/category-array.txt --
+    //            a single ID is just a union of one)
+    //   chron -> art-display.html's fixed chronological view (sections 1+2, newest first)
+    function parseMenu(text) {
+      return text.trim().split(/\r?\n/).slice(1).map(line => {
+        const [name, action, value] = line.split('\t');
+        return { name, action, value: value || '' };
       });
-    });
+    }
+
+    fetch('arrays/menu-array.txt')
+      .then(r => r.text())
+      .then(parseMenu)
+      .then(items => {
+        items.forEach(({ name, action, value }) => {
+          const a = document.createElement('a');
+          a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
+          a.href = (action === 'union' || action === 'chron')
+            ? `art-display.html?section=${action === 'chron' ? 'chron' : value}`
+            : value;
+          a.addEventListener('click', () => document.body.classList.remove('menu-open'));
+          drawer.appendChild(a);
+        });
+      })
+      .catch(err => console.error('menu-array.txt failed to load', err));
   </script>
 
 </body>
