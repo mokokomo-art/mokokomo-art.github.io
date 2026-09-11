@@ -14,17 +14,58 @@
 
   <nav id="drawer"></nav>
 
-  <div class="content-box"><p class="reveal-text">this space left intentionally blank</p></div>
+  <div class="content-box"><div class="text-stack" id="text-stack"></div><div class="down-arrow" aria-hidden="true">&#8595;</div></div>
 
   <script>
     // reveal the blank box immediately -- same box/animation as index.html's, just
     // without the grid intro sequence to wait for first
     const contentBox = document.querySelector('.content-box');
-    const revealText = document.querySelector('.reveal-text');
+    const textStack = document.getElementById('text-stack');
+
+    // ===== stacked reveal lines: the first line shows immediately; each next
+    // line fades in once the line before it has fully scrolled above the top
+    // of the screen. Add more strings here for more lines later. =====
+    const PHRASES = [
+      'this space left intentionally blank',
+      'also intentionally blank'
+    ];
+
+    const lines = PHRASES.map(text => {
+      const p = document.createElement('p');
+      p.className = 'reveal-text';
+      p.textContent = text;
+      textStack.appendChild(p);
+      return p;
+    });
+
     requestAnimationFrame(() => {
       contentBox.classList.add('revealed');
-      revealText.classList.add('revealed');
+      lines[0].classList.add('revealed');
     });
+
+    let nextLineIndex = 1;
+    function checkLineReveals() {
+      while (nextLineIndex < lines.length &&
+             lines[nextLineIndex - 1].getBoundingClientRect().bottom <= 0) {
+        lines[nextLineIndex].classList.add('revealed');
+        nextLineIndex++;
+      }
+    }
+
+    // ===== scroll-driven growth: the box's bottom edge always tracks the bottom
+    // of the current viewport, so it keeps expanding as you scroll further down. =====
+    function updateBoxHeight() {
+      const boxTop = contentBox.getBoundingClientRect().top + window.scrollY;
+      const newHeight = Math.max(200, window.innerHeight + window.scrollY - boxTop);
+      contentBox.style.height = newHeight + 'px';
+    }
+
+    updateBoxHeight();
+    window.addEventListener('scroll', () => {
+      updateBoxHeight();
+      checkLineReveals();
+    });
+    window.addEventListener('resize', updateBoxHeight);
 
     const toggle = document.getElementById('menu-toggle');
     const drawer = document.getElementById('drawer');

@@ -23,7 +23,7 @@ body.nothing-page {
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  min-height: 100dvh;
+  min-height: 220dvh;
 }
 
 /* ===== "this space left intentionally blank" box (copied from style.css) =====
@@ -39,13 +39,37 @@ body.nothing-page {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  flex: none;
   min-height: 200px;
+  position: relative;
+}
+
+.text-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.down-arrow {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  font-size: 48px;
+  color: #292929;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.content-box.revealed .down-arrow {
+  opacity: 1;
 }
 
 .content-box p {
   font-family: sans-serif;
-  font-size: 16px;
+  font-size: 24px;
   color: #292929;
   text-align: center;
   margin: 0;
