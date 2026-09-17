@@ -86,7 +86,7 @@
     //   union -> art-display.html filtered to one or more categories, OR'd together (Value is
     //            a comma-separated list of category IDs from arrays/category-array.txt --
     //            a single ID is just a union of one)
-    //   chron -> art-display.html's fixed chronological view (sections 1+2, newest first)
+    //   chron -> art-display.html's fixed chronological view (categories 1+2, newest first)
     function parseMenu(text) {
       return text.trim().split(/\r?\n/).slice(1).map(line => {
         const [name, action, value] = line.split('\t');
@@ -102,7 +102,7 @@
           const a = document.createElement('a');
           a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
           a.href = (action === 'union' || action === 'chron')
-            ? `art-display.html?section=${action === 'chron' ? 'chron' : value}`
+            ? `art-display.html?category=${action === 'chron' ? 'chron' : value}`
             : value;
           a.addEventListener('click', () => document.body.classList.remove('menu-open'));
           drawer.appendChild(a);

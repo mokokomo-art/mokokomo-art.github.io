@@ -22,7 +22,7 @@
     // source data - editing those files (Excel export for Art-Array.txt) is enough to
     // update the site, nothing here needs hand-transcribing. arrays/category-array.txt
     // is not fetched here -- it's a reference file only, for keeping track of which
-    // Section number in Art-Array.txt means what.
+    // Category number in Art-Array.txt means what.
 
     // Art-Array.txt is exported from Excel (Mac) as tab-delimited text, which comes out
     // Mac-Roman encoded with CSV-style quoting (fields containing a literal " are wrapped
@@ -65,8 +65,8 @@
         id: Number(r['ID-num']),
         piece: r['Piece'],
         file: r['File Name'],
-        section: Number(r['Section']),
-        order: Number(r['section Order']),
+        category: Number(r['Category']),
+        order: Number(r['category Order']),
         date: r['date-opus'],
         size: r['size'],
         info: r['info'],
@@ -79,7 +79,7 @@
     //   union -> Value is a comma-separated list of category IDs (from
     //            arrays/category-array.txt) to filter to, OR'd together -- a single ID
     //            is just a union of one
-    //   chron -> the fixed chronological view (sections 1+2, newest first); no Value yet
+    //   chron -> the fixed chronological view (categories 1+2, newest first); no Value yet
     function parseMenu(text) {
       return text.trim().split(/\r?\n/).slice(1).map(line => {
         const [name, action, value] = line.split('\t');
@@ -118,21 +118,21 @@
     // ===== gallery rendering =====
     const gallery = document.getElementById('gallery');
 
-    function renderSection(sectionId) {
+    function renderCategory(categoryId) {
       gallery.innerHTML = '';
       window.scrollTo(0, 0);
 
       let pieces;
-      if (sectionId === 'chron') {
-        // "everything (but odds and ends)": sections 1+2 combined, newest piece first
+      if (categoryId === 'chron') {
+        // "everything (but odds and ends)": categories 1+2 combined, newest piece first
         pieces = ART_INFO
-          .filter(a => a.section === 1 || a.section === 2)
+          .filter(a => a.category === 1 || a.category === 2)
           .sort((a, b) => b.date.localeCompare(a.date));
       } else {
-        // sectionId is a list of one or more category IDs, OR'd together -- a single
-        // real section (like "image as means") is just a union of one
+        // categoryId is a list of one or more category IDs, OR'd together -- a single
+        // real category (like "image as means") is just a union of one
         pieces = ART_INFO
-          .filter(a => sectionId.includes(a.section))
+          .filter(a => categoryId.includes(a.category))
           .sort((a, b) => a.order - b.order);
       }
 
@@ -205,15 +205,15 @@
       });
     });
 
-    // fast cross-dissolve between sections: fade the gallery out, swap its content
-    // while invisible, fade back in. Only used for an actual section-to-section switch
+    // fast cross-dissolve between categories: fade the gallery out, swap its content
+    // while invisible, fade back in. Only used for an actual category-to-category switch
     // (drawer click / back-forward) -- the very first render on page load skips it.
     const GALLERY_FADE_MS = 200;
-    function goToSection(sectionId, pushUrl) {
+    function goToCategory(categoryId, pushUrl) {
       gallery.style.opacity = '0';
       setTimeout(() => {
-        renderSection(sectionId);
-        if (pushUrl) history.pushState({ section: sectionId }, '', `art-display.html?section=${sectionId}`);
+        renderCategory(categoryId);
+        if (pushUrl) history.pushState({ category: categoryId }, '', `art-display.html?category=${categoryId}`);
         gallery.style.opacity = '1';
       }, GALLERY_FADE_MS);
     }
@@ -231,14 +231,14 @@
     });
 
     // "chron" stays a plain string; anything else is parsed into a list of category
-    // IDs, even a single one -- see renderSection()
-    function parseSectionParam(raw) {
+    // IDs, even a single one -- see renderCategory()
+    function parseCategoryParam(raw) {
       return raw === 'chron' ? 'chron' : raw.split(',').map(n => Number(n.trim()));
     }
 
-    function getSectionFromURL() {
-      const s = new URLSearchParams(window.location.search).get('section');
-      return s ? parseSectionParam(s) : null;
+    function getCategoryFromURL() {
+      const s = new URLSearchParams(window.location.search).get('category');
+      return s ? parseCategoryParam(s) : null;
     }
 
     // ===== drawer: built entirely from arrays/menu-array.txt, once data is loaded =====
@@ -250,11 +250,11 @@
         a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
 
         if (action === 'union' || action === 'chron') {
-          const sectionValue = action === 'chron' ? 'chron' : parseSectionParam(value);
-          a.href = `art-display.html?section=${action === 'chron' ? 'chron' : value}`;
+          const categoryValue = action === 'chron' ? 'chron' : parseCategoryParam(value);
+          a.href = `art-display.html?category=${action === 'chron' ? 'chron' : value}`;
           a.addEventListener('click', e => {
             e.preventDefault();
-            goToSection(sectionValue, true);
+            goToCategory(categoryValue, true);
           });
         } else if (action === 'goto' && value === 'index.html') {
           // "home" specifically fades the page out first, pairing with index.html's
@@ -274,13 +274,13 @@
         drawer.appendChild(a);
       });
 
-      const startSection = getSectionFromURL();
-      if (startSection) renderSection(startSection);
+      const startCategory = getCategoryFromURL();
+      if (startCategory) renderCategory(startCategory);
     });
 
     window.addEventListener('popstate', () => {
-      const s = getSectionFromURL();
-      if (s) goToSection(s, false);
+      const s = getCategoryFromURL();
+      if (s) goToCategory(s, false);
     });
 
     // menu - same behavior as index.html, no intro animation to wait for on this page

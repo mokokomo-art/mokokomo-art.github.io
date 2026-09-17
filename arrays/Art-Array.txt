@@ -1,4 +1,4 @@
-ID-num	Piece	File Name	Section	section Order	date-opus	size	info	faq	Price
+ID-num	Piece	File Name	Category	category Order	date-opus	size	info	faq	Price
 1	how far	how far.webp	1	1	2021-07-01	38� x 24�	"archival print, color pencil."	application of mechical drawing to wonder about problems of distance and separation	nfs
 2	hope	hope.webp	1	11	2021-11-01	"22"" x 18"""	"archival print,  ink marker."	application of mechical drawing to wonder about seeking virtue/grace	gifted
 3	after/because	after-because.webp	1	6	2022-08-11	36� x 29�	"archival print, color pencil,  ink marker."	application of coordinate system to wonder about causation	gifted
