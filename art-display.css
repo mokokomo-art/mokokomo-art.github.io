@@ -18,6 +18,28 @@ body {
   transition: opacity 0.2s ease;
 }
 
+.category-intro {
+  max-width: 800px;
+  text-align: center;
+}
+
+.category-intro-heading {
+  font-style: italic;
+  font-weight: bold;
+  text-transform: lowercase;
+  font-size: 2em;
+}
+
+.category-intro-body {
+  font-size: 1.5em;
+  text-align: left;
+  line-height: 1.44;
+}
+
+.category-intro-footnote {
+  font-size: 0.667em;
+}
+
 .box {
   /* was #fffaf0 (cream card) -- set to match the page background so the box disappears visually */
   background-color: #e8e4dc;

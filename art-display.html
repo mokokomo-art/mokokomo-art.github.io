@@ -82,8 +82,8 @@
     //   chron -> the fixed chronological view (categories 1+2, newest first); no Value yet
     function parseMenu(text) {
       return text.trim().split(/\r?\n/).slice(1).map(line => {
-        const [name, action, value] = line.split('\t');
-        return { name, action, value: value || '' };
+        const [name, action, value, intro] = line.split('\t');
+        return { name, action, value: value || '', intro: intro || '' };
       });
     }
 
@@ -97,9 +97,31 @@
       return faqs;
     }
 
+    // category-array.txt: ID<TAB>Name per row, header first. Was reference-only until now --
+    // this is the first code that actually reads it, to build the category intro heading.
+    function parseCategoryNames(text) {
+      const names = {};
+      text.trim().split(/\r?\n/).slice(1).forEach(line => {
+        const [id, name] = line.split('\t');
+        names[Number(id)] = name;
+      });
+      return names;
+    }
+
+    // category-intro-array.txt: same [ID]-block format as faq-array.txt, one intro per category.
+    function parseIntroText(text) {
+      const intros = {};
+      const re = /\[(\d+)\]\r?\n([\s\S]*?)(?=\r?\n\[\d+\]\r?\n|$)/g;
+      let m;
+      while ((m = re.exec(text)) !== null) intros[Number(m[1])] = m[2].trim();
+      return intros;
+    }
+
     let ART_INFO = [];
     let MENU = [];
     let FAQS = {};
+    let CATEGORY_NAMES = {}; // arrays/category-array.txt, ID -> Name (for the intro heading)
+    let INTROS = {};        // arrays/category-intro-array.txt, ID -> intro text
 
     const dataReady = Promise.all([
       fetch('arrays/Art-Array.txt')
@@ -108,15 +130,29 @@
         .then(parseDelimited)
         .then(buildArtInfo),
       fetch('arrays/menu-array.txt').then(r => r.text()).then(parseMenu),
-      fetch('arrays/faq-array.txt').then(r => r.text()).then(parseFaqText)
-    ]).then(([artInfo, menu, faqs]) => {
+      fetch('arrays/faq-array.txt').then(r => r.text()).then(parseFaqText),
+      fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategoryNames),
+      fetch('arrays/category-intro-array.txt').then(r => r.text()).then(parseIntroText)
+    ]).then(([artInfo, menu, faqs, categoryNames, intros]) => {
       ART_INFO = artInfo;
       MENU = menu;
       FAQS = faqs;
+      CATEGORY_NAMES = categoryNames;
+      INTROS = intros;
     }).catch(err => console.error('failed to load art data', err));
 
     // ===== gallery rendering =====
     const gallery = document.getElementById('gallery');
+
+    // finds the MENU row that produced this categoryId, so its Intro column can be read.
+    function findMenuEntryFor(categoryId) {
+      return MENU.find(m => {
+        if (categoryId === 'chron') return m.action === 'chron';
+        if (m.action !== 'union') return false;
+        const ids = parseCategoryParam(m.value);
+        return Array.isArray(ids) && ids.length === categoryId.length && ids.every(id => categoryId.includes(id));
+      });
+    }
 
     function renderCategory(categoryId) {
       gallery.innerHTML = '';
@@ -134,6 +170,29 @@
         pieces = ART_INFO
           .filter(a => categoryId.includes(a.category))
           .sort((a, b) => a.order - b.order);
+      }
+
+      // category intro: menu-array.txt's Intro column links this listing (by matching its
+      // Action/Value back to the MENU row) to an ID in arrays/category-intro-array.txt.
+      const menuEntry = findMenuEntryFor(categoryId);
+      const introId = menuEntry && menuEntry.intro ? Number(menuEntry.intro) : null;
+      if (introId && INTROS[introId]) {
+        const intro = document.createElement('div');
+        intro.className = 'category-intro';
+
+        const heading = document.createElement('p');
+        heading.className = 'category-intro-heading';
+        heading.textContent = (Array.isArray(categoryId) && categoryId.length === 1)
+          ? (CATEGORY_NAMES[categoryId[0]] || '')
+          : '';
+        intro.appendChild(heading);
+
+        const body = document.createElement('p');
+        body.className = 'category-intro-body';
+        body.innerHTML = INTROS[introId].replace(/\n/g, '<br>');
+        intro.appendChild(body);
+
+        gallery.appendChild(intro);
       }
 
       pieces.forEach(art => {

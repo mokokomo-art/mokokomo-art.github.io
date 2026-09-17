@@ -1,7 +1,7 @@
-Name	Action	Value
+Name	Action	Value	Intro
 home	goto	index.html
-image as means	union	1
-image as subject	union	2
+photo as means	union	1	1
+photo as subject	union	2	2
 everything	chron		
 nothing	goto	nothing.html
 other things	goto	coming-soon.html
