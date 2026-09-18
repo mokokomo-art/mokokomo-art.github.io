@@ -244,7 +244,7 @@
       const spacing = Math.abs(uTop - aTop);
       gridBox.querySelectorAll('.h-line-extra').forEach(el => el.remove());
       let lastExtraTop = eTop;
-      for (let i = 1; i <= 2; i++) {
+      for (let i = 1; i <= 1; i++) {
         const top = eTop + spacing * i;
         const line = document.createElement('div');
         line.className = 'h-line-extra';
@@ -255,6 +255,12 @@
         gridBox.appendChild(line);
         lastExtraTop = top;
       }
+
+      // the box/clip geometry below is still sized as if the (no-longer-drawn) 2nd extra
+      // line existed, so the frame's final shape and the vertical lines' height come out
+      // identical to before -- only that one line itself (which used to flash in and then
+      // immediately get clipped away) is no longer actually drawn.
+      const frameBottomAnchor = eTop + spacing * 2;
 
       // vertical lines: same spacing as the horizontal lines (distance from "a" line to "u" line),
       // anchored on the "e" of "onkle", repeated left and right to fill the box edge to edge
@@ -274,7 +280,7 @@
       // phone landscape still scrolls, so leave those lines stopping at the 11th line.
       const isPhoneLandscape = window.matchMedia("(orientation: landscape) and (max-height: 1050px) and (hover: none) and (pointer: coarse)").matches;
       const viewportBottom = Math.round(window.innerHeight - homeRect.top);
-      const vLineHeight = isPhoneLandscape ? lastExtraTop : Math.max(lastExtraTop, viewportBottom);
+      const vLineHeight = isPhoneLandscape ? frameBottomAnchor : Math.max(frameBottomAnchor, viewportBottom);
 
       // grid-box itself needs to actually be this tall, or its own clip-path (and the
       // frame-box shrink that relies on it) can never reveal anything past .home's short natural height
@@ -293,9 +299,10 @@
         gridBox.appendChild(line);
       });
 
-      // last vertical line's own finish time (delay + its 1s draw) -- depends on how
-      // many lines fit the screen width, via positions.length above
-      const lastVLineDelay = 3 + (positions.length - 1) * 0.15;
+      // timed to the SECOND-TO-LAST vertical line's finish (positions.length - 2), not the
+      // very last one -- so the clip-path finishes shrinking just before the final line
+      // completes its own draw, rather than exactly matching it.
+      const lastVLineDelay = 3 + (positions.length - 2) * 0.15;
       const lastVLineFinishMs = (lastVLineDelay + 1) * 1000;
 
       // frame-box: shrinks from full page down to the rectangle formed by:
@@ -319,7 +326,7 @@
         const grow = spacing - FRAME_INSET_PX;
         const finalTop = aTop - grow;
         const finalLeft = (anchorX + spacing) - grow;
-        const finalBottom = lastExtraTop - FRAME_INSET_PX;
+        const finalBottom = frameBottomAnchor - FRAME_INSET_PX;
         const finalWidth = (rightX - (anchorX + spacing)) + grow * 2;
         const finalHeight = finalBottom - finalTop;
 
