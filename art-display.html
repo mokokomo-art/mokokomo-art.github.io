@@ -212,6 +212,14 @@
         title.textContent = art.piece;
         caption.appendChild(title);
 
+        const captionRight = document.createElement('div');
+        captionRight.className = 'caption-right';
+
+        const sizeEl = document.createElement('p');
+        sizeEl.className = 'size';
+        sizeEl.textContent = art.size;
+        captionRight.appendChild(sizeEl);
+
         const meta = document.createElement('div');
         meta.className = 'meta';
 
@@ -222,7 +230,7 @@
         infoBtn.textContent = 'i';
         const infoP = document.createElement('p');
         const year = art.date.slice(0, 4);
-        infoP.textContent = `© ${year}, ${art.size}, ${art.info}`;
+        infoP.textContent = `© ${year}, ${art.info}`;
         infoBtn.addEventListener('click', () => toggleInfo(infoWrap));
         infoWrap.append(infoBtn, infoP);
         meta.appendChild(infoWrap);
@@ -249,7 +257,8 @@
         priceWrap.append(priceBtn, priceP);
         meta.appendChild(priceWrap);
 
-        caption.appendChild(meta);
+        captionRight.appendChild(meta);
+        caption.appendChild(captionRight);
         box.appendChild(caption);
         gallery.appendChild(box);
       });
