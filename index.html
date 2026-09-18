@@ -6,8 +6,13 @@
   <title>My Art</title>
   <link rel="stylesheet" href="style.css">
   <script>
+    // DEV SWITCH: true = always play the intro on every reload (for working on the
+    // animation itself); false = normal behavior, intro plays once per browser session.
+    // Flip back to false when done testing.
+    const DEV_ALWAYS_PLAY_INTRO = false;
+
     // set before body renders, so a repeat visit this session never paints the intro at all
-    if (sessionStorage.getItem('introPlayed')) {
+    if (!DEV_ALWAYS_PLAY_INTRO && sessionStorage.getItem('introPlayed')) {
       document.documentElement.classList.add('skip-intro');
     }
   </script>
@@ -288,6 +293,11 @@
         gridBox.appendChild(line);
       });
 
+      // last vertical line's own finish time (delay + its 1s draw) -- depends on how
+      // many lines fit the screen width, via positions.length above
+      const lastVLineDelay = 3 + (positions.length - 1) * 0.15;
+      const lastVLineFinishMs = (lastVLineDelay + 1) * 1000;
+
       // frame-box: shrinks from full page down to the rectangle formed by:
       // top-left  = a-line  x  (one vertical line right of the "e" anchor)
       // bottom-right = e-line  x  (the vertical line nearest one hamburger-width left of the hamburger)
@@ -344,8 +354,19 @@
           // start once the first vertical line (the "onkle-e" anchor line) has hit the bottom
           // of the page - its own 1s draw plus its delay - rather than waiting for every line
           const shrinkStartMs = (firstVLineDelay + 1) * 1000;
+
+          // rate of the shrink itself: instead of a fixed 1.75s, size it so the shrink
+          // finishes exactly when the LAST vertical line finishes drawing -- more lines
+          // (a wider screen) means a longer, slower shrink; fewer lines, a quicker one.
+          // 200ms floor guards against a too-short/negative duration on a very narrow screen.
+          const shrinkDurationS = Math.max(200, lastVLineFinishMs - shrinkStartMs) / 1000;
+
           requestAnimationFrame(() => {
             setTimeout(() => {
+              frameBox.style.transition =
+                `top ${shrinkDurationS}s ease, left ${shrinkDurationS}s ease, ` +
+                `width ${shrinkDurationS}s ease, height ${shrinkDurationS}s ease`;
+              gridBox.style.transition = `clip-path ${shrinkDurationS}s ease`;
               frameBox.style.top = finalTop + 'px';
               frameBox.style.left = finalLeft + 'px';
               frameBox.style.width = finalWidth + 'px';
