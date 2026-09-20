@@ -1,3 +1,16 @@
+:root {
+  --fade-duration: 0.5s;
+}
+
+/* page fade-in on arrival / fade-out before navigating -- the duration lives here as
+   the single source of truth; script.js reads --fade-duration to time its setTimeout
+   before navigating, and to size the gallery cross-dissolve. Each page's own CSS file
+   still sets body's background-color (that part is legitimately page-specific). */
+body {
+  opacity: 0;
+  transition: opacity var(--fade-duration) ease;
+}
+
 /* ===== menu (shared across pages) ===== */
 
 #menu-bar {

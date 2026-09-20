@@ -1,3 +1,18 @@
+// ===== shared fade timing =====
+// --fade-duration (set on :root in style.css) is the single source of truth for how
+// long the page fade takes. Read it once here as a number of milliseconds, so the
+// fade-out's setTimeout (below) always matches whatever the CSS says, instead of a
+// separately hand-typed number that could drift out of sync with it. (art-display.html's
+// own gallery cross-dissolve when switching categories in place is a separate, shorter
+// GALLERY_FADE_MS constant -- deliberately not tied to this one.)
+function readFadeMs() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--fade-duration').trim();
+  const value = parseFloat(raw);
+  if (Number.isNaN(value)) return 500; // fallback if the variable is ever missing
+  return raw.endsWith('ms') ? value : value * 1000;
+}
+const FADE_MS = readFadeMs();
+
 // ===== shared across every page: fade in on arrival =====
 // Pairs with the generic fade-out-then-navigate below (and with any page-specific
 // override of that behavior, e.g. art-display.html's in-place category switch).
@@ -73,9 +88,10 @@ window.menuReady = fetch('arrays/menu-array.txt')
         } else {
           a.addEventListener('click', e => {
             e.preventDefault();
-            document.body.style.transition = 'opacity 0.5s ease';
+            // body's own CSS transition (see style.css) already covers this direction
+            // too, so no need to set it again here -- just change the opacity.
             document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = href; }, 500);
+            setTimeout(() => { window.location.href = href; }, FADE_MS);
           });
         }
 
