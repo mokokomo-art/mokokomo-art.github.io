@@ -1,6 +1,10 @@
+:root {
+  --page-bg: #e8e4dc;
+}
+
 body {
   margin: 0;
-  background-color: #e8e4dc;
+  background-color: var(--page-bg);
   overflow-x: hidden;
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -187,9 +191,28 @@ body {
 
 /* ===== menu ===== */
 
+#menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--page-bg) 0%, var(--page-bg) 80%, transparent 100%);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  color: #505050;
+  font-size: 22px;
+  text-transform: lowercase;
+  letter-spacing: 1px;
+}
+
 #menu-toggle {
   position: fixed;
-  top: 20px;
+  top: 10px;
   right: 20px;
   z-index: 100;
   width: 30px;
