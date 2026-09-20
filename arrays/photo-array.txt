@@ -1,0 +1,18 @@
+ID-num	Piece	File Name	Category	category Order	date-opus	size	info	faq	Price
+1	accordion-hands-field	accordion-hands-field.webp		1					
+2	building-bar-camera	building-bar-camera.webp		2					
+3	cloud-sky-building-antenna	cloud-sky-building-antenna.webp		3					
+4	cloud-sky-stacks-buildings	cloud-sky-stacks-buildings.webp		4					
+5	compass–bird–chimney	compass–bird–chimney.webp		5					
+6	eclipse–90-percent	eclipse–90-percent.webp		6					
+7	frozen river-reflection	frozen river-reflection.webp		7					
+8	grill-guage-sky	grill-guage-sky.webp		8					
+9	Inside-window-outside	Inside-window-outside.webp		9					
+10	lamp–glass	lamp–glass.webp		10					
+11	no-step-sky	no-step-sky.webp		11					
+12	rosemary-snow-shadow	rosemary-snow-shadow.webp		12					
+13	sky-cloud-antennas	sky-cloud-antennas.webp		13					
+14	sky-cloud-smoke-stacks	sky-cloud-smoke-stacks.webp		14					
+15	sky-statue	sky-statue.webp		15					
+16	water–oars	water–oars.webp		16					
+17	west-hill-sunset	west-hill-sunset.webp		17					
