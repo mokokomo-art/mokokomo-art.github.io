@@ -19,7 +19,24 @@
 
   <div class="gallery" id="gallery"></div>
 
+  <script src="script.js"></script>
   <script>
+    // override the shared drawer's generic fade-out-then-navigate behavior for this
+    // page's own category links only (union/chron) -- since we're already on
+    // art-display.html, swap the gallery in place instead of reloading the page.
+    // Defined synchronously here, so it's set well before script.js's async fetch
+    // of menu-array.txt resolves and builds the drawer, regardless of tag order.
+    window.drawerLinkOverride = function ({ action, value }) {
+      if (action === 'union' || action === 'chron') {
+        const categoryValue = action === 'chron' ? 'chron' : parseCategoryParam(value);
+        return function (e) {
+          e.preventDefault();
+          goToCategory(categoryValue, true);
+        };
+      }
+      return null; // goto links use the shared generic fade-out-then-navigate
+    };
+
     // ===== data loading =====
     // arrays/Art-Array.txt, arrays/faq-array.txt, arrays/menu-array.txt are the live
     // source data - editing those files (Excel export for Art-Array.txt) is enough to
@@ -77,19 +94,6 @@
       }));
     }
 
-    // menu-array.txt is plain UTF-8, no quoting needed. Each row is Name / Action / Value:
-    //   goto  -> Value is a page to link straight to (home, about, nothing, coming-soon)
-    //   union -> Value is a comma-separated list of category IDs (from
-    //            arrays/category-array.txt) to filter to, OR'd together -- a single ID
-    //            is just a union of one
-    //   chron -> the fixed chronological view (categories 1+2, newest first); no Value yet
-    function parseMenu(text) {
-      return text.trim().split(/\r?\n/).slice(1).map(line => {
-        const [name, action, value, intro] = line.split('\t');
-        return { name, action, value: value || '', intro: intro || '' };
-      });
-    }
-
     // faq-array.txt: one [ID] block per piece, kept out of Art-Array.txt because Excel's
     // tab-delimited export choked on a field with embedded quotes.
     function parseFaqText(text) {
@@ -132,7 +136,7 @@
         .then(buf => new TextDecoder('macintosh').decode(buf))
         .then(parseDelimited)
         .then(buildArtInfo),
-      fetch('arrays/menu-array.txt').then(r => r.text()).then(parseMenu),
+      window.menuReady, // parsed + drawer already built by the shared script.js
       fetch('arrays/faq-array.txt').then(r => r.text()).then(parseFaqText),
       fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategoryNames),
       fetch('arrays/category-intro-array.txt').then(r => r.text()).then(parseIntroText)
@@ -267,15 +271,6 @@
       });
     }
 
-    // fade the whole page in on arrival (pairs with index.html fading itself out
-    // before navigating here). Double rAF makes sure the browser has painted the
-    // initial opacity:0 state before the transition to 1 starts.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        document.body.style.opacity = '1';
-      });
-    });
-
     // fast cross-dissolve between categories: fade the gallery out, swap its content
     // while invisible, fade back in. Only used for an actual category-to-category switch
     // (drawer click / back-forward) -- the very first render on page load skips it.
@@ -312,39 +307,10 @@
       return s ? parseCategoryParam(s) : null;
     }
 
-    // ===== drawer: built entirely from arrays/menu-array.txt, once data is loaded =====
+    // the drawer itself is built by the shared script.js (using window.menuReady, which
+    // this page's dataReady above also waits on) -- once all data is in, just render
+    // whatever category the URL asks for, if any.
     dataReady.then(() => {
-      const drawer = document.getElementById('drawer');
-
-      MENU.forEach(({ name, action, value }) => {
-        const a = document.createElement('a');
-        a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
-
-        if (action === 'union' || action === 'chron') {
-          const categoryValue = action === 'chron' ? 'chron' : parseCategoryParam(value);
-          a.href = `art-display.html?category=${action === 'chron' ? 'chron' : value}`;
-          a.addEventListener('click', e => {
-            e.preventDefault();
-            goToCategory(categoryValue, true);
-          });
-        } else if (action === 'goto' && value === 'index.html') {
-          // "home" specifically fades the page out first, pairing with index.html's
-          // own fade-in on arrival -- other goto destinations just navigate plainly
-          a.href = value;
-          a.addEventListener('click', e => {
-            e.preventDefault();
-            document.body.style.transition = 'opacity 0.5s ease';
-            document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = value; }, 500);
-          });
-        } else { // goto -- plain navigation, no fade (not asked for yet on these pages)
-          a.href = value;
-        }
-
-        a.addEventListener('click', () => document.body.classList.remove('menu-open'));
-        drawer.appendChild(a);
-      });
-
       const startCategory = getCategoryFromURL();
       if (startCategory) renderCategory(startCategory);
     });
@@ -354,19 +320,6 @@
       if (s) goToCategory(s, false);
     });
 
-    // menu - same behavior as index.html, no intro animation to wait for on this page
-    const toggle = document.getElementById('menu-toggle');
-    const drawer = document.getElementById('drawer');
-
-    toggle.addEventListener('click', () => {
-      document.body.classList.toggle('menu-open');
-    });
-
-    document.addEventListener('pointerdown', e => {
-      if (!e.target.closest('#drawer') && !e.target.closest('#menu-toggle')) {
-        document.body.classList.remove('menu-open');
-      }
-    });
   </script>
 
 </body>
