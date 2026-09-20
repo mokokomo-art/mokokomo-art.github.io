@@ -193,7 +193,7 @@ body {
 
 #menu-bar {
   background: linear-gradient(to bottom, var(--page-bg) 0%, var(--page-bg) 80%, transparent 100%);
-  padding-left: 50px;
+  padding-left: 20px;
   font-size: 22px;
   letter-spacing: 1px;
 }
