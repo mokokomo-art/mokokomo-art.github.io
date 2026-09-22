@@ -1,0 +1,35 @@
+/* nothing-test-box.html only: same as nothing-test.html, but the white
+   closes in as a shrinking box instead of a circle.
+   Loaded after nothing-test.css, so these rules replace the circle's. */
+
+/* lets the animation below smoothly change how far in each side has come */
+@property --side {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: -6vmax;
+}
+
+#invert-wipe {
+  /* four white gradients, one from each edge. Each is solid white from its
+     edge up to --side, then fades to see-through over the next 6vmax --
+     that fade is the soft edge (6vmax = 6% of the screen's longer side,
+     about the same softness as the circle). Change 6vmax to make it wider
+     or narrower -- in all four lines here AND in the keyframes below. */
+  background:
+    linear-gradient(to right,  #fff var(--side), transparent calc(var(--side) + 6vmax)),
+    linear-gradient(to left,   #fff var(--side), transparent calc(var(--side) + 6vmax)),
+    linear-gradient(to bottom, #fff var(--side), transparent calc(var(--side) + 6vmax)),
+    linear-gradient(to top,    #fff var(--side), transparent calc(var(--side) + 6vmax));
+  animation: boxClose 16.5s linear 0.5s infinite;
+}
+
+/* same timing as the circle's holeClose in nothing-test.css.
+   -6vmax = the soft edge is just off-screen; 50% = each side has come
+   halfway across, so they meet in the middle. */
+@keyframes boxClose {
+  0%     { --side: -6vmax; }   /* at the edges */
+  48.48% { --side: 50%; }      /* reached the center */
+  50%    { --side: 50%; }      /* hold at the center 0.25s */
+  98.48% { --side: -6vmax; }   /* back out at the edges */
+  100%   { --side: -6vmax; }   /* hold at the edges 0.25s, then loop */
+}

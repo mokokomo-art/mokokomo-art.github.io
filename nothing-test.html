@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Art</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="placeholder.css">
+  <link rel="stylesheet" href="nothing.css">
+  <link rel="stylesheet" href="nothing-test.css">
+</head>
+<body class="nothing-page">
+
+  <div id="menu-bar"></div>
+
+  <button id="menu-toggle" type="button" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="drawer"></nav>
+
+  <div class="up-arrow" aria-hidden="true">&#8593;</div>
+  <div class="left-arrow" aria-hidden="true">&#8592;</div>
+  <div class="right-arrow" aria-hidden="true">&#8594;</div>
+
+  <div class="content-box"><div class="text-stack" id="text-stack"><p class="reveal-text word-swap"><span class="word-a">nothing</span><span class="word-b">also nothing</span></p></div><div class="down-arrow" aria-hidden="true">&#8595;</div></div>
+
+  <!-- test: white layer that closes in from the edges and flips colors under it -->
+  <div id="invert-wipe" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+  <script>
+    // reveal the blank box immediately -- same box/animation as index.html's, just
+    // without the grid intro sequence to wait for first
+    const contentBox = document.querySelector('.content-box');
+    const textStack = document.getElementById('text-stack');
+
+    // test page: the one line is written directly in the HTML above --
+    // two words stacked on top of each other that crossfade (see nothing-test.css)
+    const lines = Array.from(textStack.querySelectorAll('p'));
+
+    requestAnimationFrame(() => {
+      contentBox.classList.add('revealed');
+      lines[0].classList.add('revealed');
+    });
+
+    let nextLineIndex = 1;
+    function checkLineReveals() {
+      while (nextLineIndex < lines.length &&
+             lines[nextLineIndex - 1].getBoundingClientRect().bottom <= 0) {
+        lines[nextLineIndex].classList.add('revealed');
+        nextLineIndex++;
+      }
+    }
+
+    // ===== scroll-driven growth: the box's bottom edge always tracks the bottom
+    // of the current viewport, so it keeps expanding as you scroll further down. =====
+    function updateBoxHeight() {
+      const boxTop = contentBox.getBoundingClientRect().top + window.scrollY;
+      const newHeight = Math.max(200, window.innerHeight + window.scrollY - boxTop);
+      contentBox.style.height = newHeight + 'px';
+    }
+
+    updateBoxHeight();
+    window.addEventListener('scroll', () => {
+      updateBoxHeight();
+      checkLineReveals();
+    });
+    window.addEventListener('resize', updateBoxHeight);
+
+  </script>
+
+</body>
+</html>

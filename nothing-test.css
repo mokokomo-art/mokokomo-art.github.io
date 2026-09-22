@@ -1,0 +1,88 @@
+/* nothing-test.html only: trying the radial "invert" closing in from the edges */
+
+/* pure black to start, so the flip ends on pure white */
+body.nothing-page,
+body.nothing-page #menu-bar {
+  background-color: #000;
+}
+
+/* lets the animation below smoothly change the hole's size */
+@property --hole {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+
+/* a full-screen layer: see-through inside the circle, white outside it.
+   "difference" flips whatever is underneath the white part. */
+#invert-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 200;            /* above everything, including the menu (100) */
+  pointer-events: none;    /* clicks pass through to the page */
+  mix-blend-mode: difference;
+  /* the space between the two stops (--hole and --hole + 10%) is the soft edge:
+     it fades from see-through to white. Change 10% to make it wider or narrower. */
+  background: radial-gradient(circle farthest-corner at center,
+              transparent var(--hole), #fff calc(var(--hole) + 10%));
+  animation: holeClose 16.5s linear 0.5s infinite;
+}
+
+/* one full loop = 16.5s: 8s in, 0.25s pause, 8s out, 0.25s pause.
+   The percentages are those times as fractions of 16.5s
+   (8 / 16.5 = 48.48%, 8.25 / 16.5 = 50%, 16.25 / 16.5 = 98.48%). */
+@keyframes holeClose {
+  0%     { --hole: 100%; }   /* at the edges */
+  48.48% { --hole: -10%; }   /* reached the center (past 0% so the soft edge fully clears it) */
+  50%    { --hole: -10%; }   /* hold at the center 0.25s */
+  98.48% { --hole: 100%; }   /* back out at the edges */
+  100%   { --hole: 100%; }   /* hold at the edges 0.25s, then loop */
+}
+
+/* ===== "nothing" / "also nothing" crossfade =====
+   Both words sit in the same spot; only one shows at a time.
+   This loop is 33s = two circle loops, so the words swap once per
+   inward pass: nothing -> also nothing, then also nothing -> nothing.
+   The fade runs from 6.64s to 7.84s into each inward pass (1.2s long)
+   -- while the circle's soft edge is crossing the words.
+   (6.64 / 33 = 20.12%, 7.84 / 33 = 23.76%,
+    23.14 / 33 = 70.12%, 24.34 / 33 = 73.76%) */
+.word-swap {
+  display: grid;           /* lets both words share one spot */
+}
+
+.word-swap span {
+  grid-area: 1 / 1;        /* both in row 1, column 1 -- on top of each other */
+}
+
+.word-a {
+  animation: wordA 33s linear 0.5s infinite;
+}
+
+.word-b {
+  opacity: 0;              /* hidden until its first fade-in */
+  animation: wordB 33s linear 0.5s infinite;
+}
+
+@keyframes wordA {
+  0%, 20.12%     { opacity: 1; }
+  23.76%, 70.12% { opacity: 0; }
+  73.76%, 100%   { opacity: 1; }
+}
+
+@keyframes wordB {
+  0%, 20.12%     { opacity: 0; }
+  23.76%, 70.12% { opacity: 1; }
+  73.76%, 100%   { opacity: 0; }
+}
+
+/* ===== center the words on the screen itself (not the content box),
+   the same way the arrows are placed -- so the words, arrows and the
+   circle all share one center on any screen size ===== */
+.text-stack {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);   /* pull back by half its own size so its middle sits on the center */
+  white-space: nowrap;                /* keep "also nothing" on one line on narrow phones */
+}
