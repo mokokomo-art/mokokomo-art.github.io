@@ -2,5 +2,6 @@ ID	Name
 1	photo as means
 2	photo as subject
 3	photo as end
+4	everything
 5	nothing
 6	odds and ends

@@ -19,6 +19,14 @@
 
   <div class="gallery" id="gallery"></div>
 
+  <!-- pop-up box for showing another website without leaving this page -->
+  <div id="frame-overlay" hidden>
+    <div id="frame-box">
+      <button id="frame-close" type="button" aria-label="Close">&times;</button>
+      <iframe id="frame-view" title="linked website"></iframe>
+    </div>
+  </div>
+
   <script src="script.js"></script>
   <script>
     // ===== data loading =====
@@ -157,6 +165,37 @@
     }
 
     dataReady.then(renderGallery);
+
+    // ===== pop-up box for links marked class="frame-link" in the intro text =====
+    const frameOverlay = document.getElementById('frame-overlay');
+    const frameView = document.getElementById('frame-view');
+
+    function openFrame(url) {
+      frameView.src = url;
+      frameOverlay.hidden = false;
+    }
+
+    function closeFrame() {
+      frameOverlay.hidden = true;
+      frameView.src = 'about:blank';
+    }
+
+    // a click on a frame-link opens the pop-up box instead of leaving the site
+    gallery.addEventListener('click', e => {
+      const link = e.target.closest('a.frame-link');
+      if (!link) return;
+      e.preventDefault();
+      openFrame(link.href);
+    });
+
+    // close with the × button, a click outside the box, or the Esc key
+    document.getElementById('frame-close').addEventListener('click', closeFrame);
+    frameOverlay.addEventListener('click', e => {
+      if (e.target === frameOverlay) closeFrame();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !frameOverlay.hidden) closeFrame();
+    });
 
   </script>
 

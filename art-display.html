@@ -189,9 +189,8 @@
 
         const heading = document.createElement('p');
         heading.className = 'category-intro-heading';
-        heading.textContent = (Array.isArray(categoryId) && categoryId.length === 1)
-          ? (CATEGORY_NAMES[categoryId[0]] || '')
-          : '';
+        // heading = the category-array.txt name for the same ID as the intro text
+        heading.textContent = CATEGORY_NAMES[introId] || '';
         intro.appendChild(heading);
 
         const body = document.createElement('p');
