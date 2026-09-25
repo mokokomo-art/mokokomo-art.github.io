@@ -195,3 +195,41 @@ body {
   font-size: 22px;
   letter-spacing: 1px;
 }
+
+/* ===== image-note: words in intro text that pop up an image on rollover (or tap) ===== */
+
+.image-note {
+  position: relative;
+  cursor: help;
+}
+
+.image-note sup {
+  margin-left: 0.3em;
+}
+
+.image-note img {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 220px;
+  max-width: 90vw;
+  height: auto;
+  z-index: 50;
+}
+
+/* small screens: show the pop-up image centered on the screen so none of it is cut off */
+@media (max-width: 700px) {
+  .image-note img {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.image-note:hover img,
+.image-note:focus img {
+  display: block;
+}

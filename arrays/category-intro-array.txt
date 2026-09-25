@@ -8,11 +8,11 @@ reasons:
 
 ○ Is a photograph the proper subject of a photograph?
 
-○ Photo as found object. Any "found object" can become art given intentionality, as Dadaist Marcel Duchamp legitimized with his famous R. Mutt urinal, and further that an image of art could become art - L.H.O.O.Q. 
+○ Photo as found object. Any "found object" can become art, given intentionality, as Dadaist Marcel Duchamp legitimized with his famous <span class="image-note" tabindex="0"><em>R. Mutt</em><sup>①</sup><img src="images/support images/R.Mutt.png" alt="Duchamp, Fountain (R. Mutt)"></span>, and further that an image of art could become art - <span class="image-note" tabindex="0"><em>L.H.O.O.Q.</em><sup>②</sup><img src="images/support images/Marcel_Duchamp,_1919,_L.H.O.O.Q cropped.png" alt="Duchamp, L.H.O.O.Q., 1919"></span> 
 
 ○ Self-reference is always interesting: "this sentence is false", our endless fascination with selfies, etc.
 
-○ Neuro-cognitive dissonance. We perceive ordinary photographic images without any cognitive difficulty. We don't ask ourselves “are the people in that photo really 3 inches tall?” Some out-of-scale images cause a processing hiccup - a bit of perceptual push-pull-push.
+○ Neuro-cognitive dissonance. We perceive ordinary photographic images without any cognitive difficulty. We don't ask ourselves “are the people in that photo really 3 inches tall?” Some out-of-scale images cause a processing <span class="image-note" tabindex="0">hiccup<sup>③</sup><img style="width: 600px" src="images/support images/Image Size Incongruence 2.png" alt="Image size incongruence"></span> - a bit of perceptual push-pull-push.
 
 [3]
 If photo as means holds images in waiting to be made an end, this section holds <em>photos as ends in themselves</em>. They are a choice I made to present a view of the world and my worldview. 
