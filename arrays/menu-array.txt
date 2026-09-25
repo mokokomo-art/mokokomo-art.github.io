@@ -5,5 +5,3 @@ photo as subject	union	2	2
 photo as end	goto	photo-display.html
 everything	chron		4
 nothing	goto	nothing.html
-nothing test	goto	nothing-test.html
-nothing test box	goto	nothing-test-box.html

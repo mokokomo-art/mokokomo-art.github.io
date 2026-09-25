@@ -1,4 +1,19 @@
-/* nothing.html only: lets .content-box below fill the full page instead of
+/* nothing.html only.
+   Colors, text size and soft-edge widths below are var(--...) values: the
+   SETTINGS list at the top of nothing.html's script fills them in. The values
+   in :root here are only a fallback in case the script doesn't run.
+   The wipe and word-swap timing (@keyframes) is also built by that script. */
+
+:root {
+  --page-color: #000;
+  --wipe-color: #fff;
+  --text-color: #fff;
+  --text-size: 24px;
+  --box-soft: 6vmax;
+  --circle-soft: 10%;
+}
+
+/* lets .content-box below fill the full page instead of
    being centered like coming-soon.html's plain message */
 body.nothing-page {
   display: flex;
@@ -7,13 +22,12 @@ body.nothing-page {
   justify-content: flex-start;
   height: 100dvh;
   overflow: hidden;
-  background-color: #282828;
+  background-color: var(--page-color);
 }
 
-/* nothing.html only: white menu-bar text, hamburger lines, body text and arrow
-   against the dark background above (coming-soon.html keeps the shared defaults) */
+/* white menu-bar text and hamburger lines that fade after the page fades in */
 body.nothing-page #menu-bar {
-  background: #282828;
+  background: var(--page-color);
   color: #fff;
   animation: mkFadeToTransparent 1s ease forwards;
   animation-delay: var(--fade-duration);
@@ -36,7 +50,7 @@ body.nothing-page #menu-toggle span {
   to   { background: #aaa; }
 }
 
-/* ===== "this space left intentionally blank" box (copied from style.css) ===== */
+/* ===== the box that holds the words ===== */
 
 .content-box {
   margin: 60px 30px 30px;
@@ -50,64 +64,21 @@ body.nothing-page #menu-toggle span {
   position: relative;
 }
 
+/* center the words on the screen itself (not the content box), the same way
+   the arrows are placed -- so the words, arrows and the wipe all share one
+   center on any screen size */
 .text-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
-
-.down-arrow {
-  position: fixed;
-  left: 50%;
-  bottom: 36px;
-  transform: translateX(-50%);
-  font-size: 48px;
-  color: #fff;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  pointer-events: none;
-}
-
-/* mirrors .down-arrow, top-right, just under the 36px menu bar */
-.up-arrow {
-  position: fixed;
-  top: 36px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 48px;
-  color: #fff;
-  pointer-events: none;
-}
-
-/* left/right arrows, vertically centered, inset from their edge by the
-   menu bar's own height (36px) -- same margin idea as .up-arrow/.down-arrow */
-.left-arrow,
-.right-arrow {
   position: fixed;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 48px;
-  color: #fff;
-  pointer-events: none;
-}
-
-.left-arrow {
-  left: 36px;
-}
-
-.right-arrow {
-  right: 36px;
-}
-
-.content-box.revealed .down-arrow {
-  opacity: 1;
+  left: 50%;
+  transform: translate(-50%, -50%);   /* pull back by half its own size so its middle sits on the center */
+  white-space: nowrap;                /* keep a phrase on one line on narrow phones */
 }
 
 .content-box p {
   font-family: sans-serif;
-  font-size: 24px;
-  color: #fff;
+  font-size: var(--text-size);
+  color: var(--text-color);
   text-align: center;
   margin: 0;
   opacity: 0;
@@ -125,4 +96,104 @@ body.nothing-page #menu-toggle span {
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* ===== word swap: all the words sit in the same spot; one shows at a time ===== */
+
+.word-swap {
+  display: grid;           /* lets the words share one spot */
+}
+
+.word-swap span {
+  grid-area: 1 / 1;        /* all in row 1, column 1 -- on top of each other */
+}
+
+/* ===== arrows ===== */
+
+.down-arrow {
+  position: fixed;
+  left: 50%;
+  bottom: 36px;
+  transform: translateX(-50%);
+  font-size: 48px;
+  color: var(--text-color);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.content-box.revealed .down-arrow {
+  opacity: 1;
+}
+
+/* mirrors .down-arrow, just under the 36px menu bar */
+.up-arrow {
+  position: fixed;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 48px;
+  color: var(--text-color);
+  pointer-events: none;
+}
+
+/* left/right arrows, vertically centered, inset from their edge by the
+   menu bar's own height (36px) */
+.left-arrow,
+.right-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 48px;
+  color: var(--text-color);
+  pointer-events: none;
+}
+
+.left-arrow {
+  left: 36px;
+}
+
+.right-arrow {
+  right: 36px;
+}
+
+/* ===== the wipe: a full-screen layer that closes in from the edges.
+   "difference" flips the colors of whatever is underneath the solid part. ===== */
+
+.invert-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 200;            /* above everything, including the menu (100) */
+  pointer-events: none;    /* clicks pass through to the page */
+  mix-blend-mode: difference;
+}
+
+/* lets the animations smoothly change how far in each shape has come */
+@property --side {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: -6vmax;
+}
+
+@property --hole {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+
+/* box: four gradients, one from each edge. Each is solid from its edge up to
+   --side, then fades to see-through over the soft edge (--box-soft). */
+#wipe-box {
+  background:
+    linear-gradient(to right,  var(--wipe-color) var(--side), transparent calc(var(--side) + var(--box-soft))),
+    linear-gradient(to left,   var(--wipe-color) var(--side), transparent calc(var(--side) + var(--box-soft))),
+    linear-gradient(to bottom, var(--wipe-color) var(--side), transparent calc(var(--side) + var(--box-soft))),
+    linear-gradient(to top,    var(--wipe-color) var(--side), transparent calc(var(--side) + var(--box-soft)));
+}
+
+/* circle: see-through inside the circle, solid outside it, with the soft
+   edge (--circle-soft) in between */
+#wipe-circle {
+  background: radial-gradient(circle farthest-corner at center,
+              transparent var(--hole), var(--wipe-color) calc(var(--hole) + var(--circle-soft)));
 }

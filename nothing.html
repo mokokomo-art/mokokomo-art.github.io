@@ -22,30 +22,125 @@
   <div class="left-arrow" aria-hidden="true">&#8592;</div>
   <div class="right-arrow" aria-hidden="true">&#8594;</div>
 
-  <div class="content-box"><div class="text-stack" id="text-stack"></div><div class="down-arrow" aria-hidden="true">&#8595;</div></div>
+  <div class="content-box"><div class="text-stack" id="text-stack"><p class="reveal-text word-swap" id="words"></p></div><div class="down-arrow" aria-hidden="true">&#8595;</div></div>
+
+  <!-- the closing shapes (see nothing.css). Only the one(s) SETTINGS.shape calls for are used. -->
+  <div class="invert-wipe" id="wipe-box" aria-hidden="true"></div>
+  <div class="invert-wipe" id="wipe-circle" aria-hidden="true"></div>
 
   <script src="script.js"></script>
   <script>
-    // reveal the blank box immediately -- same box/animation as index.html's, just
-    // without the grid intro sequence to wait for first
+    // =====================================================================
+    // SETTINGS -- change these to adjust the page. Times are in seconds.
+    // =====================================================================
+    const SETTINGS = {
+      shape: 'box',          // 'box', 'circle', or 'alternate' (box, then circle, then box...)
+
+      inTime: 8,             // time for the edge to close in to the center
+      centerPause: 0.25,     // time it holds at the center
+      outTime: 8,            // time to go back out to the edges
+      edgePause: 0.25,       // time it holds at the edges before the next pass
+      startDelay: 0.5,       // time after the page opens before the first pass
+
+      boxSoftEdge: 6,        // width of the box's soft edge, as % of the screen's longer side
+      circleSoftEdge: 10,    // width of the circle's soft edge, as % of the distance to a corner
+
+      pageColor: '#000',     // page background
+      wipeColor: '#fff',     // the closing shape -- colors under it are flipped by this color
+      textColor: '#fff',     // words and arrows
+      textSize: 24,          // size of the words, in pixels
+
+      words: ['nothing', 'also nothing'],   // one per inward pass, then back to the first
+      wordFade: 1.2          // time for one word to dissolve into the next
+    };
+    // =====================================================================
+
+    const S = SETTINGS;
+    const root = document.documentElement.style;
+    root.setProperty('--page-color', S.pageColor);
+    root.setProperty('--wipe-color', S.wipeColor);
+    root.setProperty('--text-color', S.textColor);
+    root.setProperty('--text-size', S.textSize + 'px');
+    root.setProperty('--box-soft', S.boxSoftEdge + 'vmax');
+    root.setProperty('--circle-soft', S.circleSoftEdge + '%');
+
+    // one pass = in, hold, out, hold
+    const cycle = S.inTime + S.centerPause + S.outTime + S.edgePause;
+
+    // a time (seconds) as a percentage of a loop's length -- the math that used to be done by hand
+    const pct = (t, total) => (t / total * 100).toFixed(3) + '%';
+
+    // keyframes for one pass of a shape, starting passStart seconds into a loop of total seconds
+    function shapeKeyframes(name, prop, off, center, total, passStart) {
+      const t1 = passStart, t2 = t1 + S.inTime, t3 = t2 + S.centerPause, t4 = t3 + S.outTime;
+      return `@keyframes ${name} {
+        0%, ${pct(t1, total)} { ${prop}: ${off}; }
+        ${pct(t2, total)}, ${pct(t3, total)} { ${prop}: ${center}; }
+        ${pct(t4, total)}, 100% { ${prop}: ${off}; }
+      }`;
+    }
+
+    const boxEl = document.getElementById('wipe-box');
+    const circleEl = document.getElementById('wipe-circle');
+    let css = '';
+
+    // box: each side goes from just off-screen to halfway across (they meet in the middle)
+    // circle: the hole goes from the corners to past the center (so the soft edge fully clears it)
+    const boxOff = -S.boxSoftEdge + 'vmax', circleCenter = -S.circleSoftEdge + '%';
+    const shapeTotal = S.shape === 'alternate' ? 2 * cycle : cycle;
+
+    if (S.shape === 'box' || S.shape === 'alternate') {
+      css += shapeKeyframes('boxClose', '--side', boxOff, '50%', shapeTotal, 0);
+      boxEl.style.animation = `boxClose ${shapeTotal}s linear ${S.startDelay}s infinite backwards`;
+    } else {
+      boxEl.style.display = 'none';
+    }
+
+    if (S.shape === 'circle' || S.shape === 'alternate') {
+      const circleStart = S.shape === 'alternate' ? cycle : 0;   // alternate: circle takes the second pass
+      css += shapeKeyframes('circleClose', '--hole', '100%', circleCenter, shapeTotal, circleStart);
+      circleEl.style.animation = `circleClose ${shapeTotal}s linear ${S.startDelay}s infinite backwards`;
+    } else {
+      circleEl.style.display = 'none';
+    }
+
+    // ===== words: each inward pass dissolves to the next word, finishing just
+    // before the edge reaches the center (while the edge is crossing the words) =====
+    const wordsEl = document.getElementById('words');
+    const n = S.words.length;
+    const fadeEnd = S.inTime * 0.98;
+    const fadeStart = Math.max(0, fadeEnd - S.wordFade);
+    const wordTotal = n * cycle;
+
+    S.words.forEach((word, i) => {
+      const span = document.createElement('span');
+      span.textContent = word;
+      if (n > 1) {
+        // [time, opacity] points for this word across the whole loop
+        let points;
+        if (i === 0) {
+          const last = (n - 1) * cycle;
+          points = [[0, 1], [fadeStart, 1], [fadeEnd, 0], [last + fadeStart, 0], [last + fadeEnd, 1], [wordTotal, 1]];
+        } else {
+          const a = (i - 1) * cycle, b = i * cycle;
+          points = [[0, 0], [a + fadeStart, 0], [a + fadeEnd, 1], [b + fadeStart, 1], [b + fadeEnd, 0], [wordTotal, 0]];
+        }
+        css += `@keyframes word${i} {` +
+          points.map(([t, o]) => `${pct(t, wordTotal)} { opacity: ${o}; }`).join(' ') + '}';
+        span.style.opacity = i === 0 ? 1 : 0;
+        span.style.animation = `word${i} ${wordTotal}s linear ${S.startDelay}s infinite backwards`;
+      }
+      wordsEl.appendChild(span);
+    });
+
+    const styleEl = document.createElement('style');
+    styleEl.textContent = css;
+    document.head.appendChild(styleEl);
+
+    // ===== page reveal (unchanged from before) =====
     const contentBox = document.querySelector('.content-box');
     const textStack = document.getElementById('text-stack');
-
-    // ===== stacked reveal lines: the first line shows immediately; each next
-    // line fades in once the line before it has fully scrolled above the top
-    // of the screen. Add more strings here for more lines later. =====
-    const PHRASES = [
-      'this space left intentionally blank',
-      'also intentionally blank'
-    ];
-
-    const lines = PHRASES.map(text => {
-      const p = document.createElement('p');
-      p.className = 'reveal-text';
-      p.textContent = text;
-      textStack.appendChild(p);
-      return p;
-    });
+    const lines = Array.from(textStack.querySelectorAll('p'));
 
     requestAnimationFrame(() => {
       contentBox.classList.add('revealed');

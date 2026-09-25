@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Art</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="placeholder.css">
-  <link rel="stylesheet" href="nothing.css">
-  <link rel="stylesheet" href="nothing-test.css">
-  <link rel="stylesheet" href="nothing-test-box.css">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../placeholder.css">
+  <link rel="stylesheet" href="nothing-v1.css">
 </head>
 <body class="nothing-page">
 
@@ -24,21 +22,30 @@
   <div class="left-arrow" aria-hidden="true">&#8592;</div>
   <div class="right-arrow" aria-hidden="true">&#8594;</div>
 
-  <div class="content-box"><div class="text-stack" id="text-stack"><p class="reveal-text word-swap"><span class="word-a">nothing</span><span class="word-b">also nothing</span></p></div><div class="down-arrow" aria-hidden="true">&#8595;</div></div>
+  <div class="content-box"><div class="text-stack" id="text-stack"></div><div class="down-arrow" aria-hidden="true">&#8595;</div></div>
 
-  <!-- test: white layer that closes in from the edges and flips colors under it -->
-  <div id="invert-wipe" aria-hidden="true"></div>
-
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
   <script>
     // reveal the blank box immediately -- same box/animation as index.html's, just
     // without the grid intro sequence to wait for first
     const contentBox = document.querySelector('.content-box');
     const textStack = document.getElementById('text-stack');
 
-    // test page: the one line is written directly in the HTML above --
-    // two words stacked on top of each other that crossfade (see nothing-test.css)
-    const lines = Array.from(textStack.querySelectorAll('p'));
+    // ===== stacked reveal lines: the first line shows immediately; each next
+    // line fades in once the line before it has fully scrolled above the top
+    // of the screen. Add more strings here for more lines later. =====
+    const PHRASES = [
+      'this space left intentionally blank',
+      'also intentionally blank'
+    ];
+
+    const lines = PHRASES.map(text => {
+      const p = document.createElement('p');
+      p.className = 'reveal-text';
+      p.textContent = text;
+      textStack.appendChild(p);
+      return p;
+    });
 
     requestAnimationFrame(() => {
       contentBox.classList.add('revealed');
