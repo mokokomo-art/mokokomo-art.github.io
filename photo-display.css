@@ -167,6 +167,16 @@ body {
   }
 }
 
+/* ===== superscript number that opens the pop-up box below on rollover (frame-note) ===== */
+
+.frame-note {
+  cursor: pointer;
+}
+
+.frame-note sup {
+  margin-left: 0.3em;
+}
+
 /* ===== pop-up box for showing another website (frame-link) ===== */
 
 #frame-overlay {
@@ -195,6 +205,13 @@ body {
   height: 100%;
   border: none;
   display: block;
+}
+
+/* clear layer over the website -- catches clicks (see photo-display.html) */
+#frame-click {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
 }
 
 #frame-close {
