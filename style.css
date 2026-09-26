@@ -75,7 +75,7 @@ body {
   top: 0;
   right: 0;
   height: 100%;
-  width: 100%;
+  width: max-content; /* only as wide as the longest menu title, on every screen size */
   z-index: 90;
   background: transparent;
   transform: translateX(100%);
@@ -83,7 +83,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 2em;
+  gap: 1em;
   padding: 80px 0 0;
   box-sizing: border-box;
 }
@@ -95,17 +95,11 @@ body {
 #drawer a {
   font-family: Georgia, serif;
   font-style: italic;
-  font-size: clamp(24px, 6vw, 32px);
+  font-size: 22px;
   color: #fff;
   text-decoration: none;
   text-align: center;
-  padding: 8px 20px;
-  background: rgba(145, 198, 178, 0.9);
+  padding: 8px 14px;
+  background: rgba(145, 198, 178, 1); /* fully solid */
 }
 
-@media (min-width: 700px) {
-  #drawer {
-    width: max-content;
-    padding: 80px 0 0;
-  }
-}
