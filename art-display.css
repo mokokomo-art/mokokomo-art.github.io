@@ -58,6 +58,25 @@ body.bg-waiting {
   font-size: 0.667em;
 }
 
+/* superscripts in intro text: a blue dot with an i, same look as the info button
+   under each picture (.info button), about 15% smaller */
+.category-intro-body sup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #5ca2e1;
+  color: #fff;
+  font-size: 12.4px;
+  font-style: italic;
+  font-family: Georgia, serif;
+  line-height: 1;
+  vertical-align: super;
+  -webkit-text-size-adjust: 100%;
+}
+
 .box {
   /* was #fffaf0 (cream card) -- set to match the page background so the box disappears visually */
   background-color: var(--page-bg);
