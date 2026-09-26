@@ -219,7 +219,7 @@ body.bg-waiting {
 
 .image-note {
   position: relative;
-  cursor: help;
+  cursor: pointer;
 }
 
 .image-note sup {

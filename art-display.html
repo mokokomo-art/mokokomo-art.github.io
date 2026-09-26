@@ -309,6 +309,42 @@
       }, fadeMs);
     }
 
+    // ===== keep intro pop-up images (image-note) inside the window =====
+    // A pop-up image starts at its number and extends to the right, so near the right
+    // edge of a narrower window it can run off the page. When one appears, measure it and,
+    // if needed, slide it left just enough to fit (with a 20px margin). It normally sits
+    // above its number; if there isn't room above, it's shown below the number instead.
+    // Phones don't need
+    // this -- there the image is centered on the screen instead (see art-display.css).
+    const EDGE_MARGIN = 20;
+    function fitImageNote(note) {
+      const img = note.querySelector('img');
+      if (!img) return;
+      img.style.left = '';
+      img.style.top = '';
+      img.style.bottom = '';
+      requestAnimationFrame(() => {
+        if (getComputedStyle(img).position === 'fixed') return; // phone layout
+        if (img.getBoundingClientRect().top < EDGE_MARGIN) {
+          img.style.top = '100%';   // not enough room above -- show below the number
+          img.style.bottom = 'auto';
+        }
+        const r = img.getBoundingClientRect();
+        let shift = 0;
+        if (r.right > window.innerWidth - EDGE_MARGIN) shift = window.innerWidth - EDGE_MARGIN - r.right;
+        if (r.left + shift < EDGE_MARGIN) shift = EDGE_MARGIN - r.left;
+        if (shift) img.style.left = shift + 'px';
+      });
+    }
+    gallery.addEventListener('mouseover', e => {
+      const note = e.target.closest('.image-note');
+      if (note && !note.contains(e.relatedTarget)) fitImageNote(note);
+    });
+    gallery.addEventListener('focusin', e => {
+      const note = e.target.closest('.image-note');
+      if (note) fitImageNote(note);
+    });
+
     function toggleInfo(wrap) {
       const wasOpen = wrap.classList.contains('open');
       document.querySelectorAll('.info.open').forEach(el => el.classList.remove('open'));
