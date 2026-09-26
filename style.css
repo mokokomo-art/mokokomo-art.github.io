@@ -1,5 +1,5 @@
 :root {
-  --fade-duration: 0.5s;
+  --fade-duration: 0.8s;
 }
 
 /* page fade-in on arrival / fade-out before navigating -- the duration lives here as
