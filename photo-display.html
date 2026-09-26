@@ -37,7 +37,8 @@
   <script>
     // ===== data loading =====
     // arrays/photo-array.txt is the live source data, same tab-delimited format as
-    // Art-Array.txt (Mac-Roman encoded, CSV-style quoting for fields with a literal ").
+    // Art-Array.txt (CSV-style quoting for fields with a literal "), but saved as UTF-8,
+    // not Mac-Roman like Art-Array.txt.
     // No per-photo category/faq/price system yet -- this page just lists every photo in
     // category-Order. It does show one fixed intro block though, reusing
     // category-array.txt/category-intro-array.txt's category ID 3 ("photo as end") --
@@ -118,8 +119,7 @@
 
     const dataReady = Promise.all([
       fetch('arrays/photo-array.txt')
-        .then(r => r.arrayBuffer())
-        .then(buf => new TextDecoder('macintosh').decode(buf))
+        .then(r => r.text()) // photo-array.txt is UTF-8
         .then(parseDelimited)
         .then(buildPhotoInfo),
       window.menuReady, // parsed + drawer already built by the shared script.js
@@ -159,7 +159,10 @@
         gallery.appendChild(intro);
       }
 
-      const pieces = PHOTO_INFO.slice().sort((a, b) => a.order - b.order);
+      // a "category Order" of 0 in photo-array.txt means leave this photo out
+      const pieces = PHOTO_INFO
+        .filter(photo => photo.order !== 0)
+        .sort((a, b) => a.order - b.order);
 
       pieces.forEach(photo => {
         const box = document.createElement('div');
