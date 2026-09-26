@@ -23,9 +23,19 @@ body {
 }
 
 .category-intro-body {
-  font-size: 1.5em;
+  font-size: 1.25em; /* 20px */
   text-align: left;
   line-height: 1.44;
+  margin: 0 0 0.6em; /* space between paragraphs */
+}
+
+/* phones only: smaller intro text. Narrow screen = phone held upright; short screen =
+   phone turned sideways. iPads and computers are bigger in both directions, so they
+   keep the 20px above. */
+@media (max-width: 700px), (max-height: 500px) {
+  .category-intro-body {
+    font-size: 17px;
+  }
 }
 
 .category-intro-footnote {

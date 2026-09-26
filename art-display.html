@@ -202,10 +202,14 @@
         heading.textContent = CATEGORY_NAMES[introId] || '';
         intro.appendChild(heading);
 
-        const body = document.createElement('p');
-        body.className = 'category-intro-body';
-        body.innerHTML = INTROS[introId].replace(/\n/g, '<br>');
-        intro.appendChild(body);
+        // each blank-line-separated block of the intro text becomes its own paragraph,
+        // so the space between paragraphs can be set in CSS (.category-intro-body margin)
+        INTROS[introId].split(/\n\s*\n/).forEach(para => {
+          const body = document.createElement('p');
+          body.className = 'category-intro-body';
+          body.innerHTML = para.replace(/\n/g, '<br>');
+          intro.appendChild(body);
+        });
 
         gallery.appendChild(intro);
       }
