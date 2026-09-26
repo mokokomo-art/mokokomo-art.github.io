@@ -207,27 +207,46 @@ body {
   display: block;
 }
 
-/* clear layer over the website -- catches clicks (see photo-display.html) */
+/* clear layer over the website -- blocks clicks on it, so they do nothing */
 #frame-click {
   position: absolute;
   inset: 0;
-  cursor: pointer;
 }
 
-#frame-close {
+/* "stay here" and "go to ..." buttons, upper right of the pop-up box */
+#frame-buttons {
   position: absolute;
   top: 8px;
   right: 8px;
   z-index: 1;
+  /* two equal columns: both buttons take the width of the wider one */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+#frame-buttons button {
   border: none;
   background: #fff;
   color: #000;
-  width: 36px;
-  height: 36px;
-  font-size: 32px;
-  line-height: 1;
+  font-size: 18px;
+  padding: 6px 12px;
+  border-radius: 999px; /* oval ends */
   cursor: pointer;
-  padding: 0;
+}
+
+/* the two buttons are color inverses of each other (like Photoshop's Difference blend over white) */
+
+/* "stay with mk": muted orange, white letters */
+#frame-buttons #frame-stay {
+  background: #c84b37;
+  color: #fff;
+}
+
+/* "go to ...": the inverse -- muted blue, white letters */
+#frame-buttons #frame-go {
+  background: #4fb4cf;
+  color: #fff;
 }
 
 /* ===== menu-bar: page-specific pieces (shared rules live in style.css) ===== */

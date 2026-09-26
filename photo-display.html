@@ -22,10 +22,14 @@
   <!-- pop-up box for showing another website without leaving this page -->
   <div id="frame-overlay" hidden>
     <div id="frame-box">
-      <button id="frame-close" type="button" aria-label="Close">&times;</button>
+      <!-- the only ways out of the box: stay here, or go to the linked site -->
+      <div id="frame-buttons">
+        <button id="frame-go" type="button"></button>
+        <button id="frame-stay" type="button">stay with mk</button>
+      </div>
       <iframe id="frame-view" title="linked website"></iframe>
-      <!-- clear layer over the website: a click anywhere opens that site in a new tab -->
-      <div id="frame-click" title="open in a new tab"></div>
+      <!-- clear layer over the website: clicks on the website itself do nothing -->
+      <div id="frame-click"></div>
     </div>
   </div>
 
@@ -172,17 +176,23 @@
     const frameOverlay = document.getElementById('frame-overlay');
     const frameView = document.getElementById('frame-view');
 
+    const frameGo = document.getElementById('frame-go');
+    const frameStay = document.getElementById('frame-stay');
+
     let frameUrl = '';
 
-    function openFrame(url) {
+    // label = text for the "go" button, from the link's data-label
+    function openFrame(url, label) {
       frameUrl = url;
+      frameGo.textContent = label || 'go to this page';
       frameView.src = url;
       frameOverlay.hidden = false;
     }
 
-    // a click anywhere on the website in the box opens it in a new tab
-    document.getElementById('frame-click').addEventListener('click', () => {
+    // "go" button: open the linked site in a new tab, and close the box here
+    frameGo.addEventListener('click', () => {
       window.open(frameUrl, '_blank', 'noopener');
+      closeFrame();
     });
 
     function closeFrame() {
@@ -195,28 +205,22 @@
       const link = e.target.closest('a.frame-link');
       if (!link) return;
       e.preventDefault();
-      openFrame(link.href);
+      openFrame(link.href, link.dataset.label);
     });
 
     // rolling over (or tapping) a superscript number marked class="frame-note"
     // opens the same pop-up box, showing the address in its data-url
     gallery.addEventListener('mouseover', e => {
       const note = e.target.closest('.frame-note');
-      if (note && frameOverlay.hidden) openFrame(note.dataset.url);
+      if (note && frameOverlay.hidden) openFrame(note.dataset.url, note.dataset.label);
     });
     gallery.addEventListener('click', e => {
       const note = e.target.closest('.frame-note');
-      if (note && frameOverlay.hidden) openFrame(note.dataset.url);
+      if (note && frameOverlay.hidden) openFrame(note.dataset.url, note.dataset.label);
     });
 
-    // close with the × button, a click outside the box, or the Esc key
-    document.getElementById('frame-close').addEventListener('click', closeFrame);
-    frameOverlay.addEventListener('click', e => {
-      if (e.target === frameOverlay) closeFrame();
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && !frameOverlay.hidden) closeFrame();
-    });
+    // "stay here" button closes the box
+    frameStay.addEventListener('click', closeFrame);
 
   </script>
 
