@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="art-display.css">
 </head>
-<body>
+<body class="bg-waiting">
 
   <div id="menu-bar"></div>
 
@@ -182,6 +182,15 @@
       // category intro: menu-array.txt's Intro column links this listing (by matching its
       // Action/Value back to the MENU row) to an ID in arrays/category-intro-array.txt.
       const menuEntry = findMenuEntryFor(categoryId);
+
+      // page background: menu-array.txt's BG column for this listing, if it has one;
+      // blank = back to art-display.css's default --page-bg
+      if (menuEntry && menuEntry.bg) {
+        document.documentElement.style.setProperty('--page-bg', menuEntry.bg);
+      } else {
+        document.documentElement.style.removeProperty('--page-bg');
+      }
+
       const introId = menuEntry && menuEntry.intro ? Number(menuEntry.intro) : null;
       if (introId && INTROS[introId]) {
         const intro = document.createElement('div');
@@ -273,14 +282,27 @@
     // fast cross-dissolve between categories: fade the gallery out, swap its content
     // while invisible, fade back in. Only used for an actual category-to-category switch
     // (drawer click / back-forward) -- the very first render on page load skips it.
-    const GALLERY_FADE_MS = 200;
+    //
+    // Exception: if the new listing's background color (menu-array.txt BG) differs from
+    // the current one, fade the WHOLE page out and back in instead -- same slower fade
+    // (FADE_MS, from script.js) as going to a different page -- so the color change
+    // happens while the page is hidden.
+    const GALLERY_FADE_MS = FADE_MS; // same length as the page-change fade (--fade-duration in style.css)
     function goToCategory(categoryId, pushUrl) {
-      gallery.style.opacity = '0';
+      const entry = findMenuEntryFor(categoryId);
+      const newBg = (entry && entry.bg) || '';
+      const currentBg = document.documentElement.style.getPropertyValue('--page-bg').trim();
+      const colorChanges = newBg.toLowerCase() !== currentBg.toLowerCase();
+
+      const fadeTarget = colorChanges ? document.body : gallery;
+      const fadeMs = colorChanges ? FADE_MS : GALLERY_FADE_MS;
+
+      fadeTarget.style.opacity = '0';
       setTimeout(() => {
         renderCategory(categoryId);
         if (pushUrl) history.pushState({ category: categoryId }, '', `art-display.html?category=${categoryId}`);
-        gallery.style.opacity = '1';
-      }, GALLERY_FADE_MS);
+        fadeTarget.style.opacity = '1';
+      }, fadeMs);
     }
 
     function toggleInfo(wrap) {
@@ -312,6 +334,8 @@
     dataReady.then(() => {
       const startCategory = getCategoryFromURL();
       if (startCategory) renderCategory(startCategory);
+      // background color is now set -- let the page fade in (see art-display.css)
+      document.body.classList.remove('bg-waiting');
     });
 
     window.addEventListener('popstate', () => {

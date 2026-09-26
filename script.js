@@ -3,8 +3,7 @@
 // long the page fade takes. Read it once here as a number of milliseconds, so the
 // fade-out's setTimeout (below) always matches whatever the CSS says, instead of a
 // separately hand-typed number that could drift out of sync with it. (art-display.html's
-// own gallery cross-dissolve when switching categories in place is a separate, shorter
-// GALLERY_FADE_MS constant -- deliberately not tied to this one.)
+// own gallery cross-dissolve when switching categories in place uses this same length too.)
 function readFadeMs() {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--fade-duration').trim();
   const value = parseFloat(raw);
@@ -41,8 +40,8 @@ document.addEventListener('pointerdown', e => {
 });
 
 // ===== shared: drawer, built from arrays/menu-array.txt =====
-// Each row: Name / Action / Value / Intro (Intro is only meaningful on art-display.html;
-// harmless elsewhere). Action meanings:
+// Each row: Name / Action / Value / Intro / BG (Intro and BG are only used on art-display.html;
+// harmless elsewhere. BG = that listing's page background color, blank = the page's default). Action meanings:
 //   goto  -> Value is a page to link straight to (home, about, nothing, coming-soon)
 //   union -> art-display.html filtered to one or more categories, OR'd together (Value is
 //            a comma-separated list of category IDs from arrays/category-array.txt)
@@ -56,8 +55,8 @@ document.addEventListener('pointerdown', e => {
 // swap its own category links to an in-place gallery update instead of a full navigation.
 function parseMenu(text) {
   return text.trim().split(/\r?\n/).slice(1).map(line => {
-    const [name, action, value, intro] = line.split('\t');
-    return { name, action, value: value || '', intro: intro || '' };
+    const [name, action, value, intro, bg] = line.split('\t');
+    return { name, action, value: value || '', intro: intro || '', bg: (bg || '').trim() };
   });
 }
 
