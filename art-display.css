@@ -20,7 +20,7 @@ body.bg-waiting {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 80px;
+  gap: 100px;
   padding: 100px 20px 40px;
   opacity: 1;
   transition: opacity var(--fade-duration) ease; /* same as the page-change fade (style.css) */
@@ -75,16 +75,6 @@ body.bg-waiting {
   line-height: 1;
   vertical-align: super;
   -webkit-text-size-adjust: 100%;
-}
-
-.box {
-  /* was #fffaf0 (cream card) -- set to match the page background so the box disappears visually */
-  background-color: var(--page-bg);
-  padding: clamp(14px, 1.7vw, 20px) clamp(14px, 1.7vw, 20px) clamp(7px, 0.85vw, 10px);
-  width: 100%;
-  max-width: 1600px;
-  box-sizing: border-box;
-  border-radius: 16px;
 }
 
 .box img {

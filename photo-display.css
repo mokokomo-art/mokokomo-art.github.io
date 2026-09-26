@@ -65,20 +65,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 80px;
+  gap: 100px;
   padding: 100px 20px 40px;
   opacity: 1;
   transition: opacity 0.2s ease;
-}
-
-.box {
-  /* matches the page background so the box disappears visually */
-  background-color: var(--page-bg);
-  padding: clamp(14px, 1.7vw, 20px) clamp(14px, 1.7vw, 20px) clamp(7px, 0.85vw, 10px);
-  width: 100%;
-  max-width: 1600px;
-  box-sizing: border-box;
-  border-radius: 16px;
 }
 
 .box img {
