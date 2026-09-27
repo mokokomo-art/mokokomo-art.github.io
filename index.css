@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background-color: #b1aeae;
+  background-color: #a2a7af;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -110,7 +110,7 @@ body {
 /* ===== menu-bar / menu-toggle: page-specific pieces (shared rules live in style.css) ===== */
 
 #menu-bar {
-  background: #b1aeae;
+  background: #a2a7af;
   padding-left: 20px;
   font-size: 16px;
 }

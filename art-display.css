@@ -1,17 +1,11 @@
 :root {
-  --page-bg: #e8e4dc;
+  --page-bg: #b4b9c2;
 }
 
 body {
   margin: 0;
   background-color: var(--page-bg);
   overflow-x: hidden;
-}
-
-/* keeps the page hidden on arrival until the listing's background color (menu-array.txt BG)
-   has been set -- otherwise the default color flashes first. Removed by art-display.html. */
-body.bg-waiting {
-  opacity: 0 !important;
 }
 
 /* ===== gallery ===== */
