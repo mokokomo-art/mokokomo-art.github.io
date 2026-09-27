@@ -1,0 +1,291 @@
+:root {
+  --page-bg: #b4b9c2;
+}
+
+body {
+  margin: 0;
+  background-color: var(--page-bg);
+  overflow-x: hidden;
+}
+
+/* ===== gallery ===== */
+
+.category-intro {
+  max-width: 1000px;
+  text-align: center;
+  margin-bottom: -60px; /* pulls the first picture closer: 120px gap - 60px = 60px */
+}
+
+.category-intro-heading {
+  font-style: italic;
+  font-weight: bold;
+  text-transform: lowercase;
+  font-size: 2em;
+}
+
+.category-intro-body {
+  font-size: 1.25em; /* 20px */
+  text-align: left;
+  line-height: 1.44;
+  margin: 0 0 0.6em; /* space between paragraphs */
+}
+
+/* phones only: smaller intro text. Narrow screen = phone held upright; short screen =
+   phone turned sideways. iPads and computers are bigger in both directions, so they
+   keep the 20px above. */
+@media (max-width: 700px), (max-height: 500px) {
+  .category-intro-body {
+    font-size: 17px;
+  }
+}
+
+.category-intro-footnote {
+  font-size: 0.667em;
+}
+
+/* superscripts in intro text: a blue dot with an i, same look as the info button
+   under each picture (.info button), about 15% smaller */
+.category-intro-body sup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #5ca2e1;
+  color: #fff;
+  font-size: 12.4px;
+  font-style: italic;
+  font-family: Georgia, serif;
+  line-height: 1;
+  vertical-align: super;
+  -webkit-text-size-adjust: 100%;
+}
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 120px;
+  padding: 100px 20px 40px;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* always cap a photo's rendered height so a tall piece never overflows the screen, no crop */
+.box {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.box img {
+  width: auto;
+  height: auto;
+  max-width: min(1200px, calc(100vw - 80px));
+  max-height: calc(92vh - 70px);
+}
+
+/* phones only: narrower side margins around the pictures -- 15px each side
+   (iPads and computers keep 40px). Same phone test as the intro text size rule. */
+@media (max-width: 700px), (max-height: 500px) {
+  .gallery {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .box img {
+    max-width: calc(100vw - 30px);
+  }
+}
+
+.caption {
+  margin: 16px 0 0;
+  font-family: sans-serif;
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  container-type: inline-size;
+}
+
+.caption .title {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: italic;
+  text-align: left;
+  font-size: clamp(16.8px, 4.32cqw, 21px);
+  margin-left: 2.3%;
+}
+
+.caption-right {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-right: 1.15%;
+}
+
+.size {
+  margin: 0;
+  text-align: right;
+  font-style: normal;
+  font-size: clamp(15.12px, 3.888cqw, 18.9px);
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.info {
+  position: relative;
+}
+
+.info button {
+  position: relative;
+  top: -3px;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+  width: 21.3px;
+  height: 21.3px;
+  border-radius: 50%;
+  background: #5ca2e1;
+  color: #fff;
+  font-size: 14.6px;
+  font-style: italic;
+  font-family: Georgia, serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-text-size-adjust: 100%;
+}
+
+.info p {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 22px;
+  width: max-content;
+  max-width: min(250px, calc(100vw - 40px));
+  margin: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+@media (hover: none) {
+  .info.open p {
+    display: block;
+  }
+}
+
+@media (hover: hover) {
+  .info:hover p {
+    display: block;
+  }
+}
+
+/* ===== superscript number that opens the pop-up box below on rollover (frame-note) ===== */
+
+.frame-note {
+  cursor: pointer;
+}
+
+.frame-note sup {
+  margin-left: 0.3em;
+}
+
+/* ===== pop-up box for showing another website (frame-link) ===== */
+
+#frame-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+#frame-overlay[hidden] {
+  display: none;
+}
+
+#frame-box {
+  position: relative;
+  width: 90vw;
+  height: 85vh;
+  background: #fff;
+}
+
+#frame-view {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* clear layer over the website -- blocks clicks on it, so they do nothing */
+#frame-click {
+  position: absolute;
+  inset: 0;
+}
+
+/* "stay here" and "go to ..." buttons, upper right of the pop-up box */
+#frame-buttons {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  /* two equal columns: both buttons take the width of the wider one */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+#frame-buttons button {
+  border: none;
+  background: #fff;
+  color: #000;
+  font-size: 18px;
+  padding: 6px 12px;
+  border-radius: 999px; /* oval ends */
+  cursor: pointer;
+}
+
+/* the two buttons are color inverses of each other (like Photoshop's Difference blend over white) */
+
+/* "stay with mk": muted orange, white letters */
+#frame-buttons #frame-stay {
+  background: #c84b37;
+  color: #fff;
+}
+
+/* "go to ...": the inverse -- muted blue, white letters */
+#frame-buttons #frame-go {
+  background: #4fb4cf;
+  color: #fff;
+}
+
+/* ===== menu-bar: page-specific pieces (shared rules live in style.css) ===== */
+
+#menu-bar {
+  background: linear-gradient(to bottom, var(--page-bg) 0%, var(--page-bg) 80%, transparent 100%);
+  padding-left: 20px;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
