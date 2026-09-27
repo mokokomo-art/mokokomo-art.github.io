@@ -10,7 +10,7 @@
     // DEV SWITCH: true = always play the intro on every reload (for working on the
     // animation itself); false = normal behavior, intro plays once per browser session.
     // Flip back to false when done testing.
-    const DEV_ALWAYS_PLAY_INTRO = false;
+    const DEV_ALWAYS_PLAY_INTRO = true;
 
     // set before body renders, so a repeat visit this session never paints the intro at all
     if (!DEV_ALWAYS_PLAY_INTRO && sessionStorage.getItem('introPlayed')) {

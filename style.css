@@ -24,7 +24,7 @@ body {
   align-items: center;
   box-sizing: border-box;
   font-family: sans-serif;
-  color: #505050;
+  color: #6e394d;
   text-transform: lowercase;
 }
 
@@ -54,7 +54,7 @@ body {
   display: block;
   height: 1.3px;
   width: 66%;
-  background: #333;
+  background: #6e394d;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 

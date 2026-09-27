@@ -29,7 +29,7 @@ body {
   justify-content: center;
   gap: 0.17em;
   font-size: clamp(9.75px, 3.75vw, 39.75px);
-  color: #505050;
+  color: #6e394d;
   text-align: center;
   line-height: 1.1;
 }
@@ -237,7 +237,7 @@ body {
 /* ===== content box below the title/grid animation ===== */
 
 .content-box {
-  border: 3px solid #505050;
+  border: 3px solid rgba(255, 255, 255, 0.9); /* white at 90% opacity */
   border-radius: 0;
   margin: 100px 30px 30px;
   box-sizing: border-box;
@@ -260,7 +260,7 @@ body {
 .content-box p {
   font-family: sans-serif;
   font-size: 24px;
-  color: #505050;
+  color: #fff;
   text-align: center;
   margin: 0;
   opacity: 0;
@@ -272,7 +272,7 @@ body {
 }
 
 .content-box.revealed {
-  animation: fadeIn 1.5s ease-out forwards;
+  animation: fadeIn 0.75s ease-out forwards;
 }
 
 /* ===== skip-intro: repeat visit this session, jump every entrance animation
