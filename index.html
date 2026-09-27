@@ -10,7 +10,7 @@
     // DEV SWITCH: true = always play the intro on every reload (for working on the
     // animation itself); false = normal behavior, intro plays once per browser session.
     // Flip back to false when done testing.
-    const DEV_ALWAYS_PLAY_INTRO = true;
+    const DEV_ALWAYS_PLAY_INTRO = false;
 
     // set before body renders, so a repeat visit this session never paints the intro at all
     if (!DEV_ALWAYS_PLAY_INTRO && sessionStorage.getItem('introPlayed')) {
@@ -145,6 +145,96 @@
       if (img.decode) img.decode().catch(() => {});
     });
 
+    // ===== grid dots (return visit only) =====
+    // grid coordinates: 0,0 = lower-left crossing visible inside the frame --
+    // bottom visible horizontal line x leftmost visible vertical line (one right of the "e" anchor).
+    // x counts vertical lines to the right, y counts horizontal lines up.
+    // Dots appear one at a time at random crossings. Once there are DOT_COUNT of them,
+    // each new dot also removes the oldest one.
+    const DOT_COUNT = 15;         // how many dots are on the grid at once
+    const DOT_INTERVAL_MS = 750;  // time between each new dot (milliseconds; 1000 = 1 second)
+    const DOT_FADE_MS = 200;      // how long each dot takes to fade up, and to fade out
+    // each new dot picks one of these colors at random -- add more by adding to the list
+    const DOT_COLORS = [
+      '#ffffff',  // white
+      '#83b2a0',  // menu green (style.css), 10% darker
+      '#7d4d5f'   // name-text plum (index.css), 10% lighter
+    ];
+    const DOT_MAX_REPEAT = 2;     // a color can appear at most this many times in a row
+    let recentDotColors = [];     // colors of the most recent dots, newest last
+
+    // random color, but never the same color more than DOT_MAX_REPEAT times in a row
+    function pickDotColor() {
+      const recent = recentDotColors.slice(-DOT_MAX_REPEAT);
+      const maxedOut = recent.length === DOT_MAX_REPEAT && recent.every(c => c === recent[0]) ? recent[0] : null;
+      const choices = DOT_COLORS.filter(c => c !== maxedOut);
+      const color = choices[Math.floor(Math.random() * choices.length)];
+      recentDotColors.push(color);
+      recentDotColors = recentDotColors.slice(-DOT_MAX_REPEAT);
+      return color;
+    }
+    let GRID_X = [], GRID_Y = [], dotSize = 0; // filled in by positionGridBox()
+    let dots = [];                // each dot on the grid: { gx, gy, el }, oldest first
+    let dotsStarted = false;
+
+    // sets a dot's size and position from its grid coordinates
+    function placeDot(dot) {
+      const el = dot.el;
+      const onGrid = GRID_X[dot.gx] !== undefined && GRID_Y[dot.gy] !== undefined;
+      el.style.display = onGrid ? '' : 'none'; // hidden if a resize left its column off the grid
+      if (!onGrid) return;
+      el.style.width = dotSize + 'px';
+      el.style.height = dotSize + 'px';
+      // lines are 1px wide, so a line's center is its position + 0.5
+      el.style.left = (GRID_X[dot.gx] + 0.5 - dotSize / 2) + 'px';
+      el.style.top = (GRID_Y[dot.gy] + 0.5 - dotSize / 2) + 'px';
+    }
+
+    // after a resize the grid lines are rebuilt: move every dot to its new spot,
+    // and put the dots back on top of the new lines
+    function drawDots() {
+      const gridBox = document.querySelector('.grid-box');
+      if (!gridBox) return;
+      dots.forEach(dot => { placeDot(dot); gridBox.appendChild(dot.el); });
+    }
+
+    function addRandomDot() {
+      const gridBox = document.querySelector('.grid-box');
+      if (!gridBox) return;
+      // pick a random crossing that doesn't already have a dot
+      const free = [];
+      GRID_X.forEach((_, gx) => GRID_Y.forEach((_, gy) => {
+        if (!dots.some(d => d.gx === gx && d.gy === gy)) free.push([gx, gy]);
+      }));
+      if (!free.length) return;
+      const [gx, gy] = free[Math.floor(Math.random() * free.length)];
+
+      // new dot: starts invisible, then fades up
+      const el = document.createElement('div');
+      el.className = 'grid-dot';
+      el.style.background = pickDotColor();
+      el.style.transition = `opacity ${DOT_FADE_MS}ms ease`;
+      const dot = { gx, gy, el };
+      placeDot(dot);
+      gridBox.appendChild(el);
+      dots.push(dot);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('shown')));
+
+      // over the limit: fade out the oldest dot, then remove it
+      if (dots.length > DOT_COUNT) {
+        const oldest = dots.shift();
+        oldest.el.classList.remove('shown');
+        setTimeout(() => oldest.el.remove(), DOT_FADE_MS);
+      }
+    }
+
+    function startDots() {
+      if (dotsStarted) return;
+      dotsStarted = true;
+      addRandomDot();
+      setInterval(addRandomDot, DOT_INTERVAL_MS);
+    }
+
     function positionGridBox() {
       const a = document.querySelector('.letter-a');
       const onkleE = document.querySelector('.letter-onkle-e');
@@ -169,6 +259,7 @@
       // 5 more horizontal lines, through u / r / i / c / e of "aurice", staggered in slightly after line 1
       let uTop = aTop;
       let eTop = null;
+      const hTops = [aTop]; // every horizontal line's top, top to bottom (for grid dots)
       document.querySelectorAll('.h-line').forEach((line, index) => {
         const letter = document.querySelector('.letter-' + line.dataset.letter);
         if (!letter) return;
@@ -179,6 +270,7 @@
         latestLineDelay = Math.max(latestLineDelay, delay);
         if (line.dataset.letter === 'u') uTop = top;
         if (line.dataset.letter === 'e') eTop = top;
+        hTops.push(top);
       });
 
       // 5 more horizontal lines below "e" (no letters left to anchor to, so just continue the spacing)
@@ -195,6 +287,7 @@
         latestLineDelay = Math.max(latestLineDelay, delay);
         gridBox.appendChild(line);
         lastExtraTop = top;
+        hTops.push(top);
       }
 
       // the box/clip geometry below is still sized as if the (no-longer-drawn) 2nd extra
@@ -240,6 +333,11 @@
         gridBox.appendChild(line);
       });
 
+      // grid coordinates for the dots (see "grid dots" below positionGridBox)
+      GRID_X = positions.slice(1);        // vertical lines, left to right (trimmed to the frame below)
+      GRID_Y = hTops.slice().reverse();   // horizontal lines, bottom to top
+      dotSize = Math.round(spacing / 2);  // 1/2 of the distance between horizontal lines
+
       // timed to the SECOND-TO-LAST vertical line's finish (positions.length - 2), not the
       // very last one -- so the clip-path finishes shrinking just before the final line
       // completes its own draw, rather than exactly matching it.
@@ -260,6 +358,8 @@
         const vLefts = positions.slice();
         const rightX = vLefts.reduce((closest, x) =>
           Math.abs(x - targetRightX) < Math.abs(closest - targetRightX) ? x : closest, vLefts[0]);
+        // only the vertical lines visible inside the frame count as dot positions
+        GRID_X = GRID_X.filter(x => x <= rightX);
 
         // expand the box outward almost a full grid-square, stopping just inside the next line;
         // bottom edge stops just above the 11th horizontal line (the last of the 5 below "e")
@@ -381,6 +481,13 @@
     window.addEventListener('load', positionGridBox);
     window.addEventListener('resize', positionGridBox);
     window.addEventListener('orientationchange', positionGridBox);
+    if (skipIntro) {
+      // redraw dots after anything that rebuilds the grid lines
+      window.addEventListener('load', drawDots);
+      window.addEventListener('resize', drawDots);
+      window.addEventListener('orientationchange', drawDots);
+      startDots();
+    }
 
     if (skipIntro) {
       // the reveal chain below normally fires off the frame-box's transitionend, which
