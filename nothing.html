@@ -45,12 +45,23 @@
       boxSoftEdge: 6,        // width of the box's soft edge, as % of the screen's longer side
       circleSoftEdge: 10,    // width of the circle's soft edge, as % of the distance to a corner
 
-      pageColor: '#000',     // page background
-      wipeColor: '#fff',     // the closing shape -- colors under it are flipped by this color
-      textColor: '#fff',     // words and arrows
+      pageColor: '#fff',     // page background
+      // the closing shape's color, one per pass, then back to the first.
+      // The words and arrows switch to the same color as each new pass begins
+      // (while the shape is out at the edges).
+      colors: ['#6e394d', '#b4b9c2'],   // maroon, blue-gray
       textSize: 24,          // size of the words, in pixels
 
-      words: ['nothing', 'also nothing'],   // one per inward pass, then back to the first
+      // one phrase per inward pass, picked at random (never the same one twice in a row).
+      // The page opens on the first one.
+      words: [
+        'nothing',
+        'also nothing',
+        'the negation of nothing is not something',
+        'the negation of something is not nothing',
+        'not for nothing',
+        'not something'
+      ],
       wordFade: 1.2          // time for one word to dissolve into the next
     };
     // =====================================================================
@@ -58,8 +69,8 @@
     const S = SETTINGS;
     const root = document.documentElement.style;
     root.setProperty('--page-color', S.pageColor);
-    root.setProperty('--wipe-color', S.wipeColor);
-    root.setProperty('--text-color', S.textColor);
+    root.setProperty('--wipe-color', S.colors[0]);
+    root.setProperty('--text-color', S.colors[0]);
     root.setProperty('--text-size', S.textSize + 'px');
     root.setProperty('--box-soft', S.boxSoftEdge + 'vmax');
     root.setProperty('--circle-soft', S.circleSoftEdge + '%');
@@ -104,34 +115,60 @@
       circleEl.style.display = 'none';
     }
 
-    // ===== words: each inward pass dissolves to the next word, finishing just
-    // before the edge reaches the center (while the edge is crossing the words) =====
+    // ===== words: each inward pass dissolves to a new phrase, picked at random
+    // (never the same one twice in a row), finishing just before the edge reaches
+    // the center (while the edge is crossing the words). The old phrase fades
+    // all the way out first, then the new one fades in -- each takes half of wordFade. =====
     const wordsEl = document.getElementById('words');
-    const n = S.words.length;
     const fadeEnd = S.inTime * 0.98;
     const fadeStart = Math.max(0, fadeEnd - S.wordFade);
-    const wordTotal = n * cycle;
+    const fadeMs = (fadeEnd - fadeStart) * 1000;
 
-    S.words.forEach((word, i) => {
-      const span = document.createElement('span');
-      span.textContent = word;
-      if (n > 1) {
-        // [time, opacity] points for this word across the whole loop
-        let points;
-        if (i === 0) {
-          const last = (n - 1) * cycle;
-          points = [[0, 1], [fadeStart, 1], [fadeEnd, 0], [last + fadeStart, 0], [last + fadeEnd, 1], [wordTotal, 1]];
-        } else {
-          const a = (i - 1) * cycle, b = i * cycle;
-          points = [[0, 0], [a + fadeStart, 0], [a + fadeEnd, 1], [b + fadeStart, 1], [b + fadeEnd, 0], [wordTotal, 0]];
-        }
-        css += `@keyframes word${i} {` +
-          points.map(([t, o]) => `${pct(t, wordTotal)} { opacity: ${o}; }`).join(' ') + '}';
-        span.style.opacity = i === 0 ? 1 : 0;
-        span.style.animation = `word${i} ${wordTotal}s linear ${S.startDelay}s infinite backwards`;
-      }
-      wordsEl.appendChild(span);
-    });
+    const wordSpan = document.createElement('span');
+    wordSpan.style.transition = `opacity ${fadeMs / 2}ms linear`;
+    wordsEl.appendChild(wordSpan);
+    let currentWord = S.words[0];
+    wordSpan.textContent = currentWord;
+    wordSpan.style.opacity = 1;
+
+    function pickNextWord() {
+      const choices = S.words.filter(w => w !== currentWord);
+      return choices.length ? choices[Math.floor(Math.random() * choices.length)] : currentWord;
+    }
+
+    function swapWord() {
+      currentWord = pickNextWord();
+      wordSpan.style.opacity = 0;                // fade the old phrase out...
+      setTimeout(() => {
+        wordSpan.textContent = currentWord;      // ...then swap in the new one
+        wordSpan.style.opacity = 1;              // and fade it in
+      }, fadeMs / 2);
+    }
+
+    // schedule each swap from the page's start time (not one after another),
+    // so the timing stays lined up with the shape's passes
+    const pageStart = performance.now();
+    let passNumber = 0;
+    function scheduleNextSwap() {
+      const at = pageStart + (S.startDelay + passNumber * cycle + fadeStart) * 1000;
+      setTimeout(() => { swapWord(); passNumber++; scheduleNextSwap(); },
+                 Math.max(0, at - performance.now()));
+    }
+    if (S.words.length > 1) scheduleNextSwap();
+
+    // ===== colors: switch to the next color at the start of each pass
+    // (the shape is out at the edges then), for both the shape and the words/arrows =====
+    if (S.colors.length > 1) {
+      const colorTotal = S.colors.length * cycle;
+      const justBefore = 0.001; // seconds -- makes each switch instant instead of a blend
+      css += '@keyframes colorSwap {' + S.colors.map((c, i) => {
+        const from = pct(i * cycle, colorTotal);
+        const to = pct((i + 1) * cycle - justBefore, colorTotal);
+        return `${from}, ${to} { --wipe-color: ${c}; --text-color: ${c}; }`;
+      }).join(' ') + '}';
+      document.documentElement.style.animation =
+        `colorSwap ${colorTotal}s linear ${S.startDelay}s infinite backwards`;
+    }
 
     const styleEl = document.createElement('style');
     styleEl.textContent = css;
