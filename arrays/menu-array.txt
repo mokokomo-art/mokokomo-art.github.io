@@ -1,6 +1,6 @@
 Name	Action	Value	Intro	BG
 home	goto	index.html
-photo as means	union	1	1
+photo as means	union	1	1	#b4b9c2
 photo as subject	union	2	2	#b4b9c2
 photo as end	goto	photo-display.html
 everything	chron		4
