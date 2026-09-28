@@ -160,7 +160,15 @@
       '#83b2a0',  // menu green (style.css), 10% darker
       '#7d4d5f'   // name-text plum (index.css), 10% lighter
     ];
-    const DOT_MAX_REPEAT = 2;     // a color can appear at most this many times in a row
+    const DOT_MAX_REPEAT = 1;     // a color can appear at most this many times in a row
+    // dots come in two kinds -- filled, or just a circle outline -- in a fixed pattern (not random).
+    // DOT_MOSTLY: which kind most of the dots are, 'filled' or 'outline'.
+    // DOT_EVERY: every Nth dot is the OTHER kind. 0 = none (all DOT_MOSTLY), 1 = all the other
+    //            kind, 2 = every other one (half), 3 = one in three, 4 = one in four, and so on.
+    const DOT_MOSTLY = 'filled';
+    const DOT_EVERY = 2;
+    const DOT_OUTLINE_PX = 2;      // outline thickness, in pixels
+    let dotCount = 0;              // how many dots have been added so far
     let recentDotColors = [];     // colors of the most recent dots, newest last
 
     // random color, but never the same color more than DOT_MAX_REPEAT times in a row
@@ -212,7 +220,18 @@
       // new dot: starts invisible, then fades up
       const el = document.createElement('div');
       el.className = 'grid-dot';
-      el.style.background = pickDotColor();
+      const color = pickDotColor();
+      dotCount++;
+      const isNth = DOT_EVERY > 0 && dotCount % DOT_EVERY === 0; // this one is the other kind
+      const isOutline = DOT_MOSTLY === 'outline' ? !isNth : isNth;
+      if (isOutline) {
+        // outline: see-through middle, colored ring -- same overall size as a filled dot
+        el.style.background = 'transparent';
+        el.style.border = `${DOT_OUTLINE_PX}px solid ${color}`;
+        el.style.boxSizing = 'border-box';
+      } else {
+        el.style.background = color;
+      }
       el.style.transition = `opacity ${DOT_FADE_MS}ms ease`;
       const dot = { gx, gy, el };
       placeDot(dot);
