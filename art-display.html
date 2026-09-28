@@ -288,7 +288,7 @@
       }, GALLERY_FADE_MS);
     }
 
-    // ===== keep intro pop-up images (image-note) inside the window =====
+    // ===== keep intro pop-ups (image-note images, text-note boxes) inside the window =====
     // A pop-up image starts at its number and extends to the right, so near the right
     // edge of a narrower window it can run off the page. When one appears, measure it and,
     // if needed, slide it left just enough to fit (with a 20px margin). It normally sits
@@ -297,7 +297,7 @@
     // this -- there the image is centered on the screen instead (see art-display.css).
     const EDGE_MARGIN = 20;
     function fitImageNote(note) {
-      const img = note.querySelector('img');
+      const img = note.querySelector('img, .text-note-box');
       if (!img) return;
       img.style.left = '';
       img.style.top = '';
@@ -309,18 +309,21 @@
           img.style.bottom = 'auto';
         }
         const r = img.getBoundingClientRect();
+        // screen width -- clientWidth, not innerWidth: on phones a pop-up that sticks out
+        // past the edge makes innerWidth grow to include it, so it would never look too wide
+        const screenW = document.documentElement.clientWidth;
         let shift = 0;
-        if (r.right > window.innerWidth - EDGE_MARGIN) shift = window.innerWidth - EDGE_MARGIN - r.right;
+        if (r.right > screenW - EDGE_MARGIN) shift = screenW - EDGE_MARGIN - r.right;
         if (r.left + shift < EDGE_MARGIN) shift = EDGE_MARGIN - r.left;
         if (shift) img.style.left = shift + 'px';
       });
     }
     gallery.addEventListener('mouseover', e => {
-      const note = e.target.closest('.image-note');
+      const note = e.target.closest('.image-note, .text-note');
       if (note && !note.contains(e.relatedTarget)) fitImageNote(note);
     });
     gallery.addEventListener('focusin', e => {
-      const note = e.target.closest('.image-note');
+      const note = e.target.closest('.image-note, .text-note');
       if (note) fitImageNote(note);
     });
 

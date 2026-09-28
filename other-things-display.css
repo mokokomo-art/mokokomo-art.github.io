@@ -39,10 +39,6 @@ body {
   }
 }
 
-.category-intro-footnote {
-  font-size: 0.667em;
-}
-
 /* superscripts in intro text: a blue dot with an i, same look as the info button
    under each picture (.info button), about 15% smaller */
 .category-intro-body sup {

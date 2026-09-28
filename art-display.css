@@ -49,10 +49,6 @@ body {
   }
 }
 
-.category-intro-footnote {
-  font-size: 0.667em;
-}
-
 /* superscripts in intro text: a blue dot with an i, same look as the info button
    under each picture (.info button), about 15% smaller */
 .category-intro-body sup {
@@ -266,5 +262,39 @@ body {
 
 .image-note:hover img,
 .image-note:focus img {
+  display: block;
+}
+
+/* ===== text-note: blue i dot in intro text that pops up a box of text on rollover (or tap) ===== */
+
+.text-note {
+  position: relative;
+  cursor: pointer;
+}
+
+.text-note sup {
+  margin-left: 0.3em;
+}
+
+/* the text box -- same look as the box under each picture's info button (.info p) */
+.text-note-box {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: max-content;
+  max-width: min(250px, calc(100vw - 40px));
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 18px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 50;
+}
+
+.text-note:hover .text-note-box,
+.text-note:focus .text-note-box {
   display: block;
 }
