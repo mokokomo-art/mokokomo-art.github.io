@@ -148,6 +148,10 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  /* #intro is nudged 20px right (left: 20px), so its empty right edge stuck out 20px past
+     the screen -- making the whole page 20px too wide. On iPhone the page could then slide
+     sideways, and the menu (pinned to the right edge) jumped and flickered. Trim it off. */
+  overflow-x: clip;
 }
 
 @media (orientation: landscape) {
