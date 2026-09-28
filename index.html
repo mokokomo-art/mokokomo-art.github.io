@@ -458,10 +458,11 @@
     // places .grid-title just below the bottom of the grid (the frame-box), and lines it
     // up under the grid image (which is positioned by JS, not simple centering) by copying
     // the image's own left/width. Phones held upright: the image is too narrow for the
-    // title, so the title spans the screen instead -- a small margin on the left, and on the
-    // right it ends exactly where the "this space left intentionally blank" box ends.
+    // title, so the title gets a wider space instead, centered under the grid -- as wide
+    // as it can be without going past the right edge of the "this space left
+    // intentionally blank" box, or closer than GRID_TITLE_PHONE_MARGIN to the left edge.
     const GRID_TITLE_GAP = 22;          // space between the bottom of the grid and the title
-    const GRID_TITLE_PHONE_MARGIN = 20; // phone upright: space left of the title
+    const GRID_TITLE_PHONE_MARGIN = 20; // phone upright: smallest space left of the title
     function syncGridTitlePosition() {
       const gridTitle = document.querySelector('.grid-title');
       const fadeImage = document.querySelector('.grid-fade-image');
@@ -480,8 +481,12 @@
       if (isPhoneUpright) {
         const contentBox = document.querySelector('.content-box');
         const rightEdge = contentBox.getBoundingClientRect().right; // right side of the blank box
-        gridTitle.style.marginLeft = GRID_TITLE_PHONE_MARGIN + 'px';
-        gridTitle.style.width = (rightEdge - GRID_TITLE_PHONE_MARGIN) + 'px';
+        const frameRect = frameBox.getBoundingClientRect();
+        const gridCenter = (frameRect.left + frameRect.right) / 2;
+        // half the title's width: whichever side runs out of room first decides
+        const half = Math.min(gridCenter - GRID_TITLE_PHONE_MARGIN, rightEdge - gridCenter);
+        gridTitle.style.marginLeft = (gridCenter - half) + 'px';
+        gridTitle.style.width = (half * 2) + 'px';
       } else {
         const imgRect = fadeImage.getBoundingClientRect();
         gridTitle.style.marginLeft = imgRect.left + 'px';
@@ -528,7 +533,7 @@
       const gridTitle = document.querySelector('.grid-title');
       if (gridTitle) {
         const gap = ' '.repeat(4);
-        gridTitle.innerHTML = '<span class="piece-name">' + RETURN_VISIT_TITLE + '</span>' + gap + RETURN_VISIT_YEAR + gap + RETURN_VISIT_SIZE;
+        gridTitle.innerHTML = '<span class="piece-name">' + RETURN_VISIT_TITLE + '</span><br>' + RETURN_VISIT_YEAR + gap + RETURN_VISIT_SIZE;
         gridTitle.style.display = 'block';
         syncGridTitlePosition();
         // again once the page has finished loading -- the grid gets re-measured then too

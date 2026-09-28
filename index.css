@@ -50,6 +50,17 @@ body {
   font-size: 17.6px;
 }
 
+/* phones held upright: smaller text, so the title has a better chance of fitting on one line */
+@media (orientation: portrait) and (max-width: 700px) {
+  .grid-title {
+    font-size: 14px;
+  }
+
+  .grid-title .piece-name {
+    font-size: 15.4px;
+  }
+}
+
 .big {
   font-size: clamp(24px, 7vw, 95.5px);
   line-height: 0.5;
@@ -251,7 +262,7 @@ body {
 .content-box {
   border: 3px solid rgba(255, 255, 255, 0.9); /* white at 90% opacity */
   border-radius: 0;
-  margin: 100px 30px 30px;
+  margin: 100px 20px 30px; /* top, left and right, bottom */
   box-sizing: border-box;
   opacity: 0;
   display: flex;
@@ -281,6 +292,15 @@ body {
 
 .content-box p.revealed {
   opacity: 1;
+}
+
+/* phones held upright: "this space left intentionally blank" scaled down by the same amount
+   as the grid title (24px -> 21px), so the two keep the same size relationship as on a computer.
+   Has to come after the .content-box p rule above, or that rule's 24px would win. */
+@media (orientation: portrait) and (max-width: 700px) {
+  .content-box p {
+    font-size: 21px;
+  }
 }
 
 .content-box.revealed {
