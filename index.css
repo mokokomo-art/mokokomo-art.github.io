@@ -42,7 +42,7 @@ body {
   color: #fff;
   text-align: center;
   font-size: 16px;
-  margin: 22px 0 0;
+  margin: 0; /* space above is set by JS (GRID_TITLE_GAP in index.html), measured from the grid */
 }
 
 .grid-title .piece-name {

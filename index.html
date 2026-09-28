@@ -455,15 +455,38 @@
       }
     });
 
-    // lines up .grid-title under the grid image itself (which is positioned by JS, not
-    // simple centering) by copying the image's own left/width after it's been placed
+    // places .grid-title just below the bottom of the grid (the frame-box), and lines it
+    // up under the grid image (which is positioned by JS, not simple centering) by copying
+    // the image's own left/width. Phones held upright: the image is too narrow for the
+    // title, so the title spans the screen instead -- a small margin on the left, and on the
+    // right it ends exactly where the "this space left intentionally blank" box ends.
+    const GRID_TITLE_GAP = 22;          // space between the bottom of the grid and the title
+    const GRID_TITLE_PHONE_MARGIN = 20; // phone upright: space left of the title
     function syncGridTitlePosition() {
       const gridTitle = document.querySelector('.grid-title');
       const fadeImage = document.querySelector('.grid-fade-image');
-      if (!gridTitle || !fadeImage) return;
-      const imgRect = fadeImage.getBoundingClientRect();
-      gridTitle.style.marginLeft = imgRect.left + 'px';
-      gridTitle.style.width = imgRect.width + 'px';
+      const frameBox = document.querySelector('.frame-box');
+      if (!gridTitle || !fadeImage || !frameBox) return;
+
+      // vertical: the title normally sits right below the name block (.home), which on some
+      // screens ends well below the grid -- so move it up (or down) by the difference
+      gridTitle.style.marginTop = '0px';
+      const titleTop = gridTitle.getBoundingClientRect().top;
+      const gridBottom = frameBox.getBoundingClientRect().bottom;
+      gridTitle.style.marginTop = (gridBottom + GRID_TITLE_GAP - titleTop) + 'px';
+
+      // horizontal
+      const isPhoneUpright = window.matchMedia('(orientation: portrait) and (max-width: 700px)').matches;
+      if (isPhoneUpright) {
+        const contentBox = document.querySelector('.content-box');
+        const rightEdge = contentBox.getBoundingClientRect().right; // right side of the blank box
+        gridTitle.style.marginLeft = GRID_TITLE_PHONE_MARGIN + 'px';
+        gridTitle.style.width = (rightEdge - GRID_TITLE_PHONE_MARGIN) + 'px';
+      } else {
+        const imgRect = fadeImage.getBoundingClientRect();
+        gridTitle.style.marginLeft = imgRect.left + 'px';
+        gridTitle.style.width = imgRect.width + 'px';
+      }
     }
 
     // ===== skip the intro animation on a repeat visit within the same browser session =====
@@ -508,6 +531,8 @@
         gridTitle.innerHTML = '<span class="piece-name">' + RETURN_VISIT_TITLE + '</span>' + gap + RETURN_VISIT_YEAR + gap + RETURN_VISIT_SIZE;
         gridTitle.style.display = 'block';
         syncGridTitlePosition();
+        // again once the page has finished loading -- the grid gets re-measured then too
+        window.addEventListener('load', syncGridTitlePosition);
         window.addEventListener('resize', syncGridTitlePosition);
         window.addEventListener('orientationchange', syncGridTitlePosition);
       }
