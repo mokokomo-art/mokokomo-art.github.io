@@ -1,0 +1,9 @@
+Phrase
+nothing
+the negation of nothing is not something
+the negation of something is not nothing
+not nothing is not something
+not something is not nothing
+all this nothing is something <em>silly</em>
+this space is intentionally not blank
+blank in not nothing
