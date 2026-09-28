@@ -135,6 +135,8 @@
     const RETURN_VISIT_TITLE = '(yellow and red, yellow and black)';
     const RETURN_VISIT_SIZE = '45" x 26"';
     const RETURN_VISIT_YEAR = '2026';
+    // text in the box below the grid on a return visit (first visit keeps the page's own text)
+    const RETURN_VISIT_BOX_TEXT = 'this space is no longer intentionally left blank';
 
     // preload and fully decode every cycled image well ahead of time (cycling doesn't
     // start for several seconds anyway) - Safari's WebP decode can lag behind the cut
@@ -546,7 +548,10 @@
       const revealText = document.querySelector('.reveal-text');
       const fadeImage = document.querySelector('.grid-fade-image');
       if (contentBox) contentBox.classList.add('revealed');
-      if (revealText) revealText.classList.add('revealed');
+      if (revealText) {
+        revealText.textContent = RETURN_VISIT_BOX_TEXT;
+        revealText.classList.add('revealed');
+      }
       if (fadeImage) {
         fadeImage.classList.add('revealed');
         gridImageCycleStarted = true; // also blocks the normal animationend listener from ever starting a cycle here
