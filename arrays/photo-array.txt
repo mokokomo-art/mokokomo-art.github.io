@@ -1,18 +1,18 @@
-ID-num	Piece	File Name	Category	category Order	date-opus	size	info	faq	Price
-1	accordion-hands-field	accordion-hands-field.webp		19					
-2	building-bar-camera	building-bar-camera.webp		8					
-3	cloud-sky-building-antenna	cloud-sky-building-antenna.webp		4					
-4	cloud-sky-stacks-buildings	cloud-sky-stacks-buildings.webp		3					
-5	compass–bird–chimney	compass–bird–chimney.webp		7					
-6	eclipse–90-percent	eclipse–90-percent.webp		15				
-7	frozen river-reflection	frozen river-reflection.webp		10					
-8	grill-guage-sky	grill-guage-sky.webp		2					
-9	Inside-window-outside	Inside-window-outside.webp		0
-10	lamp–glass	lamp–glass.webp		1					
-11	no-step-sky	no-step-sky.webp		14					
-12	rosemary-snow-shadow	rosemary-snow-shadow.webp		0					
-13	sky-cloud-antennas	sky-cloud-antennas.webp		5				
-14	sky-cloud-smoke-stacks	sky-cloud-smoke-stacks.webp		6					
-15	sky-statue	sky-statue.webp		18	
-16	water–oars	water–oars.webp		0			
-17	west-hill-sunset	west-hill-sunset.webp		17					
+ID-num	Piece	File Name	Category	category Order	Everything	date-opus	size	info	faq	Price
+1	accordion-hands-field	accordion-hands-field.webp		19		2021-01				
+2	building-bar-camera	building-bar-camera.webp		8		2022-01				
+3	cloud-sky-building-antenna	cloud-sky-building-antenna.webp		4		2020-04				
+4	cloud-sky-stacks-buildings	cloud-sky-stacks-buildings.webp		3		2020-03				
+5	compass–bird–chimney	compass–bird–chimney.webp		7		2020-01				
+6	eclipse–90-percent	eclipse–90-percent.webp		15		2017-01				
+7	frozen river-reflection	frozen river-reflection.webp		9		2017-02				
+8	grill-guage-sky	grill-guage-sky.webp		2		2019-02				
+9	Inside-window-outside	Inside-window-outside.webp				2022-02				
+10	lamp–glass	lamp–glass.webp		1		2019-01				
+11	no-step-sky	no-step-sky.webp		14		2020-02				
+12	rosemary-snow-shadow	rosemary-snow-shadow.webp								
+13	sky-cloud-antennas	sky-cloud-antennas.webp		5		2020-05				
+14	sky-cloud-smoke-stacks	sky-cloud-smoke-stacks.webp		6		2017-03				
+15	sky-statue	sky-statue.webp		18		2019-03				
+16	water–oars	water–oars.webp								
+17	west-hill-sunset	west-hill-sunset.webp		17		2019-04				

@@ -1,7 +1,7 @@
-ID-num	Piece	File Name	Category	category Order	date-opus	size	info	faq	Price
-1	all the time there is clock	all the time there is clock.webp		1					
-2	Image Scrap Clock	Image Scrap Clock.webp		2					
-3	musical frequencies	musical frequencies.webp		3					
-4	Neural Net Clock	Neural Net Clock.webp		4					
-5	Optimize Love Beauty Clock	Optimize Love Beauty Clock.webp		5					
-6	working memory lamp shade	working memory lamp shade.webp		6					
+ID-num	Piece	File Name	Category	category Order	Everything	date-opus	size	info	faq	Price
+1	all the time there is clock	all the time there is clock.webp		1						
+2	Image Scrap Clock	Image Scrap Clock.webp		2						
+3	musical frequencies	musical frequencies.webp		3						
+4	Neural Net Clock	Neural Net Clock.webp		4						
+5	Optimize Love Beauty Clock	Optimize Love Beauty Clock.webp		5						
+6	working memory lamp shade	working memory lamp shade.webp		6						
