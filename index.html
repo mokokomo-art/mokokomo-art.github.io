@@ -153,16 +153,19 @@
     // x counts vertical lines to the right, y counts horizontal lines up.
     // Dots appear one at a time at random crossings. Once there are DOT_COUNT of them,
     // each new dot also removes the oldest one.
-    const DOT_COUNT = 15;         // how many dots are on the grid at once
-    const DOT_INTERVAL_MS = 750;  // time between each new dot (milliseconds; 1000 = 1 second)
+    const DOT_COUNT = 20;         // how many dots are on the grid at once
+    const DOT_INTERVAL_MS = 500;  // time between each new dot (milliseconds; 1000 = 1 second)
     const DOT_FADE_MS = 200;      // how long each dot takes to fade up, and to fade out
-    // each new dot picks one of these colors at random -- add more by adding to the list
+    // the dot colors (order set by DOT_COLOR_ORDER below) -- add more by adding to the list
     const DOT_COLORS = [
       '#ffffff',  // white
-      '#83b2a0',  // menu green (style.css), 10% darker
+      '#749e8e',  // menu green (style.css), 20% darker
       '#7d4d5f'   // name-text plum (index.css), 10% lighter
     ];
-    const DOT_MAX_REPEAT = 1;     // a color can appear at most this many times in a row
+    // DOT_COLOR_ORDER: 'random' -- each dot picks a color at random (see DOT_MAX_REPEAT), or
+    // 'sequence' -- each dot takes the next color in DOT_COLORS, starting over after the last one
+    const DOT_COLOR_ORDER = 'sequence';
+    const DOT_MAX_REPEAT = 1;     // random only: a color can appear at most this many times in a row
     // dots come in two kinds -- filled, or just a circle outline -- in a fixed pattern (not random).
     // DOT_MOSTLY: which kind most of the dots are, 'filled' or 'outline'.
     // DOT_EVERY: every Nth dot is the OTHER kind. 0 = none (all DOT_MOSTLY), 1 = all the other
@@ -173,8 +176,11 @@
     let dotCount = 0;              // how many dots have been added so far
     let recentDotColors = [];     // colors of the most recent dots, newest last
 
-    // random color, but never the same color more than DOT_MAX_REPEAT times in a row
+    // next color in the list (sequence), or a random one that never repeats more than DOT_MAX_REPEAT times in a row
     function pickDotColor() {
+      if (DOT_COLOR_ORDER === 'sequence') {
+        return DOT_COLORS[dotCount % DOT_COLORS.length]; // dotCount = dots added so far
+      }
       const recent = recentDotColors.slice(-DOT_MAX_REPEAT);
       const maxedOut = recent.length === DOT_MAX_REPEAT && recent.every(c => c === recent[0]) ? recent[0] : null;
       const choices = DOT_COLORS.filter(c => c !== maxedOut);
