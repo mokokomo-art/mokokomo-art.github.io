@@ -90,6 +90,14 @@ window.menuReady = fetch('arrays/menu-array.txt')
             // body's own CSS transition (see style.css) already covers this direction
             // too, so no need to set it again here -- just change the opacity.
             document.body.style.opacity = '0';
+            // going to the nothing page (white): also fade this page's background
+            // color to white during the fade-out, so it doesn't jump from this
+            // page's color straight to white when nothing.html appears
+            if (href === 'nothing.html') {
+              document.body.style.transition =
+                `opacity ${FADE_MS}ms ease, background-color ${FADE_MS}ms ease`;
+              document.body.style.backgroundColor = '#fff';
+            }
             setTimeout(() => { window.location.href = href; }, FADE_MS);
           });
         }
