@@ -76,13 +76,12 @@ window.menuReady = fetch('arrays/menu-array.txt')
         const a = document.createElement('a');
         a.innerHTML = name; // menu-array.txt names can include plain HTML, e.g. <br>
 
-        // on every page except the homepage, the "home" link reads "you can go home
-        // again" instead, in smaller text (.drawer-small in style.css) so the drawer
-        // doesn't get wider
+        // the "home" link gets a second line in smaller text (.drawer-small in style.css):
+        // "you are here" on the homepage, "you can go there again" everywhere else
         const onHomePage = /(^|\/)(index\.html)?$/.test(window.location.pathname);
-        if (name === 'home' && !onHomePage) {
-          a.innerHTML = 'you can go home again';
-          a.classList.add('drawer-small');
+        if (name === 'home') {
+          const secondLine = onHomePage ? '(you are here)' : '(you can go there again)';
+          a.innerHTML = `home<span class="drawer-small">${secondLine}</span>`;
         }
         const href = buildDrawerHref(action, value);
         a.href = href;

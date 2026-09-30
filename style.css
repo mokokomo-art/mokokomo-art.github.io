@@ -109,8 +109,10 @@ body {
   background: rgba(145, 198, 178, 1); /* fully solid */
 }
 
-/* smaller menu text, e.g. "you can go home again" (added by script.js) */
-#drawer a.drawer-small {
+/* smaller menu text, e.g. the "you can go there again" line under home (added by script.js) */
+#drawer .drawer-small {
+  display: block;   /* puts it on its own line, under "home" */
   font-size: 16px;
+  line-height: 1;   /* tighter space between the two lines; bigger number = more space */
 }
 
