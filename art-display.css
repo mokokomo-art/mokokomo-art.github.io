@@ -298,3 +298,9 @@ body {
 .text-note:focus .text-note-box {
   display: block;
 }
+
+/* math letters in faq text, e.g. the italic I in Field Theory #1 --
+   a serif font, so an italic capital I doesn't look like a lowercase l */
+.math {
+  font-family: Palatino, "Palatino Linotype", "Times New Roman", serif;
+}

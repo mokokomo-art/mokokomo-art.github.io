@@ -8,7 +8,7 @@ application of mechanical drawing to wonder about seeking virtue/grace
 application of coordinate system to wonder about causation
 
 [4]
-field, e^x, 0, 1 and I, because transcendental.
+field, e<sup>x</sup>, 0, 1 and <em class="math">i</em>, because transcendental.
 
 [5]
 Twenty-some years ago, I visited New York MoMA. I saw a magnificent painting by Marcel Duchamp titled Network of Stoppages. The image took up permanent residence in my brain. It has influenced my work and informed how I think about art. Network of Bales is an expression of my continuing amazement and gratitude.<img src="images/support images/Duchamp Network of Stoppages.webp" alt="Duchamp, Network of Stoppages">
@@ -17,7 +17,7 @@ Twenty-some years ago, I visited New York MoMA. I saw a magnificent painting by 
 application of calculus to wonder about how much there is
 
 [7]
-field, the natural log and e^x functions, real and imaginary axes.
+field, the natural log and e<sup>x</sup> functions, real and imaginary axes.
 
 [8]
 field, matrices, determinants/absolute values, matrix algebra.
@@ -32,16 +32,16 @@ application of network mapping to natural objects as arranged by human and machi
 The Fourfold (hat tip Heidegger)
 
 [12]
-35mm Color Slide image taken in 1980 inside Mt Rainier ice cave (no longer there - climate change).  Slide and cardboard surround photographed with hi-res digital camera, images composited and printed in 2023.
+35mm Color Slide image taken in 1980 inside Mt Rainier ice cave (no longer there - climate change).  Slide image with the cardboard surround photographed with hi-res digital camera. Images composited and printed in 2023.
 
 [13]
-35mm Color Slide image taken during 1979 total eclipse.  slide image projected on textured wall and photographed for the 2nd time with an SX-70 camera in 1980.  SX-70 film photographed for the 1st, eclipse image for the 3rd time, then with a hi-res digital camera and printed in 2023.
+35mm Color Slide image taken during 1979 total eclipse.  Slide image projected on textured wall and photographed for the 2nd time with an SX-70 camera in 1980.  SX-70 film photographed for the 1st time, eclipse image for the 3rd time, with hi-res digital camera and printed in 2023.
 
 [14]
-SX-70 photo as Object/Subject, much larger than canonical size, to make the point?
+SX-70 photo as Found Object/Subject, much larger than canonical size, to make the point?
 
 [15]
-SX-70 photo as Object/Subject, much larger than canonical size, to make the point?
+SX-70 photo as Found Object/Subject, much larger than canonical size, to make the point?
 
 [16]
-Ordered Pair. SX-70 film never placed in the camera. Developer chemicals rolled out by hand, with a wooden dowel, in a dark room. The colors: experimental serendipity.
+Ordered Pair. SX-70 film that was never placed in the camera or exposed to light through a lens. Developer chemicals were rolled out by hand, with a wooden dowel, in a dark room. The colors: experimental serendipity.
