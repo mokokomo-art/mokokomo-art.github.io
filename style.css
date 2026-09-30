@@ -109,3 +109,8 @@ body {
   background: rgba(145, 198, 178, 1); /* fully solid */
 }
 
+/* smaller menu text, e.g. "you can go home again" (added by script.js) */
+#drawer a.drawer-small {
+  font-size: 16px;
+}
+
