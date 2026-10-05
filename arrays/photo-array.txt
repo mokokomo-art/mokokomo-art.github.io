@@ -9,10 +9,10 @@ ID-num	Piece	File Name	Category	category Order	Everything	date-opus	size	info	fa
 8	grill-gauge-sky	grill-gauge-sky.webp		2		2019-02				
 9	Inside-window-outside	Inside-window-outside.webp				2022-02				
 10	lamp–glass	lamp–glass.webp		1		2019-01				
-11	no-step-sky	no-step-sky.webp		14		2020-02				
+11	no-step-sky	no-step-sky.webp		13		2020-02				
 12	rosemary-snow-shadow	rosemary-snow-shadow.webp								
-13	sky-cloud-antennas	sky-cloud-antennas.webp		5		2020-05				
+13	sky-cloud-antennas	sky-cloud-antennas.webp				2020-05				
 14	sky-cloud-smoke-stacks	sky-cloud-smoke-stacks.webp		6		2017-03				
-15	sky-statue	sky-statue.webp		18		2019-03				
+15	sky-statue	sky-statue.webp		14		2019-03				
 16	water–oars	water–oars.webp								
 17	west-hill-sunset	west-hill-sunset.webp		17		2019-04				
