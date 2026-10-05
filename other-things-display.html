@@ -79,6 +79,7 @@
         id: Number(r['ID-num']),
         piece: r['Piece'],
         file: r['File Name'],
+        subcategory: (r['Sub Category'] || '').trim(),
         order: Number(r['category Order']),
         date: r['date-opus'],
         size: r['size'],
@@ -161,6 +162,14 @@
         .filter(thing => thing.order !== 0)
         .sort((a, b) => a.order - b.order);
 
+      // small items: any piece with something in its Sub Category column (other-things-array.txt)
+      // goes in a 400px box. Small items next to each other in the order with the SAME
+      // Sub Category share a row, side by side, wrapping onto more rows when the page is too
+      // narrow (see .small-row in other-things-display.css). A different Sub Category starts
+      // a new row, so clocks and coasters never share one.
+      let smallRow = null;       // the row the current run of small items is going into
+      let rowSubcategory = '';   // that row's Sub Category
+
       pieces.forEach(thing => {
         const box = document.createElement('div');
         box.className = 'box';
@@ -170,7 +179,27 @@
         img.alt = '';
         box.appendChild(img);
 
-        gallery.appendChild(box);
+        // the Piece name under the image, same caption style as art-display.html
+        const caption = document.createElement('div');
+        caption.className = 'caption';
+        const title = document.createElement('p');
+        title.className = 'title';
+        title.textContent = thing.piece;
+        caption.appendChild(title);
+        box.appendChild(caption);
+
+        if (thing.subcategory) {
+          if (!smallRow || thing.subcategory !== rowSubcategory) {   // start a new row
+            rowSubcategory = thing.subcategory;
+            smallRow = document.createElement('div');
+            smallRow.className = 'small-row';
+            gallery.appendChild(smallRow);
+          }
+          smallRow.appendChild(box);
+        } else {
+          smallRow = null;                       // a full-size item ends the run
+          gallery.appendChild(box);
+        }
       });
     }
 

@@ -88,6 +88,29 @@ body {
   max-height: calc(92vh - 70px);
 }
 
+/* clocks and coasters (other-things-display.html, SMALL_WORDS): 400px boxes, side by
+   side, wrapping onto another row when the page is too narrow */
+.small-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 40px;        /* space between boxes side by side */
+  row-gap: 120px;          /* space between rows -- same as between full-size pieces */
+  width: 100%;
+}
+
+.small-row .box {
+  width: 400px;
+  max-width: 100%;
+  margin: 0;
+}
+
+.small-row .box img {
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+}
+
 /* phones only: narrower side margins around the pictures -- 15px each side
    (iPads and computers keep 40px). Same phone test as the intro text size rule. */
 @media (max-width: 700px), (max-height: 500px) {
@@ -106,7 +129,7 @@ body {
   font-size: 14px;
   color: #333;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;   /* piece name centered under the piece */
   align-items: baseline;
   width: 100%;
   container-type: inline-size;
@@ -116,9 +139,8 @@ body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   font-style: italic;
-  text-align: left;
+  text-align: center;
   font-size: clamp(16.8px, 4.32cqw, 21px);
-  margin-left: 2.3%;
 }
 
 .caption-right {
