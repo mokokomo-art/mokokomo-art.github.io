@@ -1,5 +1,7 @@
 :root {
   --fade-duration: 0.8s;
+  --bottom-space: 90px;   /* empty space below the last item on scrolling pages,
+                             and below an open pop-up (script.js) */
 }
 
 /* page fade-in on arrival / fade-out before navigating -- the duration lives here as

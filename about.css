@@ -90,7 +90,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 80px;
-  padding: 40px 20px;
+  padding: 40px 20px var(--bottom-space); /* top, sides, bottom (style.css) */
 }
 
 .box {

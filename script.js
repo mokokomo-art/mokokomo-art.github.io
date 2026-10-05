@@ -120,3 +120,20 @@ window.menuReady = fetch('arrays/menu-array.txt')
     console.error('menu-array.txt failed to load', err);
     return [];
   });
+
+// ===== room for pop-ups: the info pop-ups hang down from their button and don't make
+// the page taller, so one near the bottom could run off the end. After any click, if a
+// pop-up is open and reaches past the bottom of the page, the page grows just enough to
+// show all of it plus --bottom-space (style.css). When it closes, the extra goes away. =====
+function makeRoomForPopup() {
+  document.body.style.paddingBottom = '';
+  const popup = document.querySelector('.info.open p');
+  if (!popup) return;
+  const space = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bottom-space')) || 0;
+  const needed = popup.getBoundingClientRect().bottom + window.scrollY + space;
+  const pageHeight = document.documentElement.scrollHeight;
+  if (needed > pageHeight) document.body.style.paddingBottom = (needed - pageHeight) + 'px';
+}
+// requestAnimationFrame waits until the page's own click code has opened or closed the pop-up
+document.addEventListener('click', () => requestAnimationFrame(makeRoomForPopup));
+document.addEventListener('pointerdown', () => requestAnimationFrame(makeRoomForPopup));
