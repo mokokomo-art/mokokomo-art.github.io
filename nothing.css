@@ -185,6 +185,18 @@ body.nothing-page #drawer {
   initial-value: #6e394d;
 }
 
+@property --disc-color {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #6e394d;
+}
+
+@property --page-color {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fff;
+}
+
 @property --text-color {
   syntax: '<color>';
   inherits: true;
@@ -219,4 +231,11 @@ body.nothing-page #drawer {
 #wipe-circle {
   background: radial-gradient(circle farthest-corner at center,
               transparent var(--hole), var(--wipe-color) calc(var(--hole) + var(--circle-soft)));
+}
+
+/* disc ('box-in-disc-out' only): solid inside the circle, see-through outside it,
+   with the soft edge (--circle-soft) in between -- the reverse of #wipe-circle */
+#wipe-disc {
+  background: radial-gradient(circle farthest-corner at center,
+              var(--disc-color) var(--hole), transparent calc(var(--hole) + var(--circle-soft)));
 }
