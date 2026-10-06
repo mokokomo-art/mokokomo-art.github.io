@@ -2,6 +2,7 @@ Phrase
 nothing
 not nothing is not something
 not something is not nothing
+nothing from nothing leaves nothing
 not enough nothing
 too much nothing
 not enough nothing ≠ too much nothing
