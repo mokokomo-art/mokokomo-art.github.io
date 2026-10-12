@@ -4,5 +4,4 @@ photo as means	union	1	1
 photo as subject	union	2	2
 photo as end	goto	photo-display.html
 chronology	chron		4
-nothing	goto	nothing.html
 other things	goto	other-things-display.html
