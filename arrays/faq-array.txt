@@ -14,7 +14,7 @@ field, e<sup>x</sup>, 0, 1 and <em class="math">i</em>, because transcendental.
 Twenty-some years ago, I visited New York MoMA. I saw a magnificent painting by Marcel Duchamp titled <em>Network of Stoppages</em>. The image took up permanent residence in my brain. It has influenced my work and informed how I think about art. Network of Bales is an expression of my continuing amazement and gratitude.<img src="images/support images/Duchamp Network of Stoppages.webp" alt="Duchamp, Network of Stoppages">
 
 [6]
-application of calculus to wonder about how much there is
+application of calculus to wonder about how much there is above and below the curve
 
 [7]
 field, the natural log and e<sup>x</sup> functions, real and imaginary axes.
