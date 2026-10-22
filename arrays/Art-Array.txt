@@ -5,8 +5,9 @@ ID-num	Piece	File Name	Category	category Order	Everything	date-opus	size	info	Pr
 4	Field Theory #1	Field Theory 1.webp	1	7	1	2024-05-01	50'' x 18''	archival print, color pencil,  ink marker.	gifted
 5	Network of Bales  (after Duchamp)	Network of Bales (after Duchamp).webp	1	4	1	2024-07-01	32'' x 24'' 	archival print,  pastels, ink marker, color pencil.	nfs
 6	calculating area	calculating area.webp	1	2	1	2024-07-02	38'' x 24''	archival print, color pencil.	gifted
-7	Field Theory #2	Field Theory 2.webp	1	8	1	2025-01-01	48'' x 18''	archival print, color pencil,  ink marker.	sold
-8	Field Theory #3	Field Theory 3.webp	1	9	1	2025-01-02	48'' x 18''	archival print, color pencil,  ink marker.	sold
+7	Field Theory #2	Field Theory 2.webp	1	8	1	2025-01-01	48'' x 18''	archival print, color pencil, pastels, ink marker.	sold
+8	Field Theory #3	Field Theory 3.webp	1	9	1	2025-01-02	48'' x 18''	archival print, color pencil, pastels, ink
+ marker.	sold
 9	Field Theory #4	Field Theory 4.webp	1	10	1	2025-01-03	48'' x 18''	archival print, color pencil.	800. framed. Museum Acrylic glazing,
 10	Network(s) of Bales + Outliers	Network(s) of Bales + Outliers.webp	1	5	1	2025-03-01	36'' x 29''	archival print,  ink marker.	sold
 11	Earth, Sky, Mortals, Divinities	fourfold.webp	1	3	1	2025-08/01	24'' x 22''	archival prints, color pencil,  ink marker.	800. framed.  Museum Acrylic glazing,
