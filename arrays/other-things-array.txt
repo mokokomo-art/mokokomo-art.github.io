@@ -1,5 +1,5 @@
 ID-num	Piece	File Name	Category	Sub Category	category Order	Everything	date-opus	size	info	faq	Price
-1	all the time there is -clock	all the time there is clock.webp		clock	4				
+1	all the time there is -clock	all the time there is clock.webp		clock		4				
 2	Image Scrap -clock	Image Scrap Clock.webp		clock	1					
 3	musical frequencies - 36'' x 46''	musical frequencies.webp			11					
 4	Machine Learning -clock	Neural Net Clock.webp		clock	2					
