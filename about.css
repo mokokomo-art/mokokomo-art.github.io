@@ -70,3 +70,55 @@ body {
   font-style: italic;
 }
 
+/* the blue i button, drawn inside a sentence -- same look as the real info button
+   under each artwork (.info button in art-display.css). In about-text.txt, type:
+   <span class="info-dot">i</span>   (picture only), or for one that pops up a box:
+   <span class="text-note" tabindex="0"><span class="info-dot">i</span><span class="text-note-box">box text</span></span> */
+.info-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21.3px;
+  height: 21.3px;
+  border-radius: 50%;
+  background: #5ca2e1;
+  color: #fff;
+  font-size: 14.6px;
+  font-style: italic;
+  font-family: Georgia, serif;
+  line-height: 1;
+  vertical-align: middle;
+  position: relative;
+  top: -3px;            /* raises it on the line; more negative = higher */
+}
+
+/* ===== text-note: pop-up box on rollover (or tap) -- copied from art-display.css,
+   where the blue i dots in the category intro text work the same way ===== */
+
+.text-note {
+  position: relative;
+  cursor: pointer;
+}
+
+/* the text box -- same look as the box under each picture's info button */
+.text-note-box {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: max-content;
+  max-width: min(400px, calc(100vw - 40px)); /* box is only as wide as its text, up to 400px */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 18px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 50;
+}
+
+.text-note:hover .text-note-box,
+.text-note:focus .text-note-box {
+  display: block;
+}
