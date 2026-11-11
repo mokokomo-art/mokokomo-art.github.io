@@ -42,8 +42,14 @@
             page.appendChild(box);
           }
           const p = document.createElement('p');
-          if (line.startsWith('about ')) p.className = 'head';
-          p.innerHTML = line;
+          if (line.startsWith('about ')) {
+            // heading: wrap the word "about" so about.css can make it italic;
+            // the rest of the line (Art, Wonder, ...) stays as typed
+            p.className = 'head';
+            p.innerHTML = '<span class="about-word">about</span>' + line.slice(5);
+          } else {
+            p.innerHTML = line;
+          }
           box.appendChild(p);
         });
       })

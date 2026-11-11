@@ -1,13 +1,13 @@
 body {
   margin: 0;
-  background-color: #a2a7af;
+  background-color: #cacfd7;
   overflow-x: hidden;
 }
 
 /* ===== menu-bar: page-specific pieces (shared rules live in style.css) ===== */
 
 #menu-bar {
-  background: #a2a7af;
+  background: #cacfd7;
   padding-left: 20px;
   font-size: 22px;
 }
@@ -18,8 +18,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 80px;
-  padding: 40px 20px var(--bottom-space); /* top, sides, bottom (style.css) */
+  gap: 60px;
+  padding: 80px 20px var(--bottom-space); /* top, sides, bottom (style.css) */
 }
 
 /* boxes are turned off for now: no background color, padding, or rounded corners.
@@ -29,24 +29,44 @@ body {
      border-radius: 16px;                                                         */
 .box {
   width: 100%;
-  max-width: 1200px;
+  max-width: 650px;
   box-sizing: border-box;
 }
 
 /* ===== text inside the boxes ===== */
 
+/* font and color: none set, so the browser's default (same as the category intro
+   text in art-display.css). Size and spacing also match it: 20px, 17px on phones. */
 .prose p {
-  font-family: sans-serif;
-  font-size: clamp(15px, 1.6vw, 17px);
-  line-height: 1.6;
-  color: #333;
-  margin: 0 0 1.2em;
+  padding-left: 0; /* indent: text sits 0px in from the box's left edge (headings don't -- see below) */
+  font-size: 1.25em; /* 20px */
+  line-height: 1.44;
+  margin: 0 0 0.6em; /* space between paragraphs */
+}
+
+/* phones only: smaller text -- same phone test as art-display.css */
+@media (max-width: 700px), (max-height: 500px) {
+  .prose p {
+    font-size: 17px;
+  }
 }
 
 .prose p:last-child {
   margin-bottom: 0;
 }
 
+/* headings: 24px on computers and phones alike */
 .prose .head {
+  padding-left: 0;        /* headings start right at the box's left edge */
   font-weight: bold;
+  font-size: 24px;
+  line-height: 1.15;      /* tighter than body text, usual for headings */
+  margin-bottom: 0.17em;  /* space under the heading: 0.17 x 24px = about 4px;
+                             in em so it stays in proportion if the size changes */
 }
+
+/* the word "about" in each heading (wrapped by the script in about.html) */
+.about-word {
+  font-style: italic;
+}
+
