@@ -5,4 +5,4 @@ photo as subject	union	2	2
 photo as end	goto	photo-display.html
 chronology	chron		4
 other things	goto	other-things-display.html
-about	goto	about.html
+about ...	goto	about.html

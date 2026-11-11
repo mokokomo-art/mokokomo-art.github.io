@@ -41,7 +41,7 @@
     // not Mac-Roman like Art-Array.txt.
     // No per-photo category/faq/price system yet -- this page just lists every photo in
     // category-Order. It does show one fixed intro block though, reusing
-    // category-array.txt/category-intro-array.txt's category ID 3 ("photo as end") --
+    // category-array.txt's category ID 3 ("photo as end") --
     // same two files art-display.html reads, just always this one ID here since this
     // page isn't filtered by category.
 
@@ -90,23 +90,19 @@
       }));
     }
 
-    // category-array.txt: ID<TAB>Name per row, header first.
-    function parseCategoryNames(text) {
+    // category-array.txt: one block per category --
+    //   [ID] heading name        <- first line of the block
+    //   intro text ...           <- everything after it, up to the next [ID] line (can be empty)
+    function parseCategories(text) {
       const names = {};
-      text.trim().split(/\r?\n/).slice(1).forEach(line => {
-        const [id, name] = line.split('\t');
-        names[Number(id)] = name;
-      });
-      return names;
-    }
-
-    // category-intro-array.txt: [ID] on its own line, then the intro text.
-    function parseIntroText(text) {
       const intros = {};
-      const re = /\[(\d+)\]\r?\n([\s\S]*?)(?=\r?\n\[\d+\]\r?\n|$)/g;
+      const re = /^\[(\d+)\][ \t]*(.*)$\r?\n?([\s\S]*?)(?=^\[\d+\]|(?![\s\S]))/gm;
       let m;
-      while ((m = re.exec(text)) !== null) intros[Number(m[1])] = m[2].trim();
-      return intros;
+      while ((m = re.exec(text)) !== null) {
+        names[Number(m[1])] = m[2].trim();
+        intros[Number(m[1])] = m[3].trim();
+      }
+      return { names, intros };
     }
 
     // this page always shows one fixed intro -- category 3, "photo as end" --
@@ -123,12 +119,11 @@
         .then(parseDelimited)
         .then(buildPhotoInfo),
       window.menuReady, // parsed + drawer already built by the shared script.js
-      fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategoryNames),
-      fetch('arrays/category-intro-array.txt').then(r => r.text()).then(parseIntroText)
-    ]).then(([photoInfo, menu, categoryNames, intros]) => {
+      fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategories)
+    ]).then(([photoInfo, menu, categories]) => {
       PHOTO_INFO = photoInfo;
-      CATEGORY_NAMES = categoryNames;
-      INTROS = intros;
+      CATEGORY_NAMES = categories.names;
+      INTROS = categories.intros;
     }).catch(err => console.error('failed to load photo data', err));
 
     // ===== gallery rendering =====
@@ -138,7 +133,8 @@
       gallery.innerHTML = '';
       window.scrollTo(0, 0);
 
-      if (INTROS[PHOTO_CATEGORY_ID]) {
+      // the heading shows even when the intro text is empty
+      if (CATEGORY_NAMES[PHOTO_CATEGORY_ID]) {
         const intro = document.createElement('div');
         intro.className = 'category-intro';
 
@@ -149,7 +145,7 @@
 
         // each blank-line-separated block of the intro text becomes its own paragraph,
         // so the space between paragraphs can be set in CSS (.category-intro-body margin)
-        INTROS[PHOTO_CATEGORY_ID].split(/\n\s*\n/).forEach(para => {
+        (INTROS[PHOTO_CATEGORY_ID] || '').split(/\n\s*\n/).filter(para => para.trim()).forEach(para => {
           const body = document.createElement('p');
           body.className = 'category-intro-body';
           body.innerHTML = para.replace(/\n/g, '<br>');

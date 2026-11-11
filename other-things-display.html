@@ -39,7 +39,7 @@
     // arrays/other-things-array.txt is the live source data, same tab-delimited format
     // as photo-array.txt, saved as UTF-8.
     // This page lists every item in category-Order. It shows one fixed intro block,
-    // category ID 6 ("other things") from category-array.txt/category-intro-array.txt.
+    // category ID 6 ("other things") from category-array.txt.
 
     function parseDelimited(text) {
       const rows = [];
@@ -87,23 +87,19 @@
       }));
     }
 
-    // category-array.txt: ID<TAB>Name per row, header first.
-    function parseCategoryNames(text) {
+    // category-array.txt: one block per category --
+    //   [ID] heading name        <- first line of the block
+    //   intro text ...           <- everything after it, up to the next [ID] line (can be empty)
+    function parseCategories(text) {
       const names = {};
-      text.trim().split(/\r?\n/).slice(1).forEach(line => {
-        const [id, name] = line.split('\t');
-        names[Number(id)] = name;
-      });
-      return names;
-    }
-
-    // category-intro-array.txt: [ID] on its own line, then the intro text.
-    function parseIntroText(text) {
       const intros = {};
-      const re = /\[(\d+)\]\r?\n([\s\S]*?)(?=\r?\n\[\d+\]\r?\n|$)/g;
+      const re = /^\[(\d+)\][ \t]*(.*)$\r?\n?([\s\S]*?)(?=^\[\d+\]|(?![\s\S]))/gm;
       let m;
-      while ((m = re.exec(text)) !== null) intros[Number(m[1])] = m[2].trim();
-      return intros;
+      while ((m = re.exec(text)) !== null) {
+        names[Number(m[1])] = m[2].trim();
+        intros[Number(m[1])] = m[3].trim();
+      }
+      return { names, intros };
     }
 
     // this page always shows one fixed intro -- category 6, "other things" --
@@ -120,12 +116,11 @@
         .then(parseDelimited)
         .then(buildThingInfo),
       window.menuReady, // parsed + drawer already built by the shared script.js
-      fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategoryNames),
-      fetch('arrays/category-intro-array.txt').then(r => r.text()).then(parseIntroText)
-    ]).then(([thingInfo, menu, categoryNames, intros]) => {
+      fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategories)
+    ]).then(([thingInfo, menu, categories]) => {
       THING_INFO = thingInfo;
-      CATEGORY_NAMES = categoryNames;
-      INTROS = intros;
+      CATEGORY_NAMES = categories.names;
+      INTROS = categories.intros;
     }).catch(err => console.error('failed to load other things data', err));
 
     // ===== gallery rendering =====
@@ -135,7 +130,7 @@
       gallery.innerHTML = '';
       window.scrollTo(0, 0);
 
-      // the heading shows even while the intro text in category-intro-array.txt is empty
+      // the heading shows even while the intro text in category-array.txt is empty
       if (CATEGORY_NAMES[CATEGORY_ID]) {
         const intro = document.createElement('div');
         intro.className = 'category-intro';

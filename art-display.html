@@ -104,31 +104,26 @@
       return faqs;
     }
 
-    // category-array.txt: ID<TAB>Name per row, header first. Was reference-only until now --
-    // this is the first code that actually reads it, to build the category intro heading.
-    function parseCategoryNames(text) {
+    // category-array.txt: one block per category --
+    //   [ID] heading name        <- first line of the block
+    //   intro text ...           <- everything after it, up to the next [ID] line (can be empty)
+    function parseCategories(text) {
       const names = {};
-      text.trim().split(/\r?\n/).slice(1).forEach(line => {
-        const [id, name] = line.split('\t');
-        names[Number(id)] = name;
-      });
-      return names;
-    }
-
-    // category-intro-array.txt: same [ID]-block format as faq-array.txt, one intro per category.
-    function parseIntroText(text) {
       const intros = {};
-      const re = /\[(\d+)\]\r?\n([\s\S]*?)(?=\r?\n\[\d+\]\r?\n|$)/g;
+      const re = /^\[(\d+)\][ \t]*(.*)$\r?\n?([\s\S]*?)(?=^\[\d+\]|(?![\s\S]))/gm;
       let m;
-      while ((m = re.exec(text)) !== null) intros[Number(m[1])] = m[2].trim();
-      return intros;
+      while ((m = re.exec(text)) !== null) {
+        names[Number(m[1])] = m[2].trim();
+        intros[Number(m[1])] = m[3].trim();
+      }
+      return { names, intros };
     }
 
     let ART_INFO = [];
     let MENU = [];
     let FAQS = {};
     let CATEGORY_NAMES = {}; // arrays/category-array.txt, ID -> Name (for the intro heading)
-    let INTROS = {};        // arrays/category-intro-array.txt, ID -> intro text
+    let INTROS = {};        // arrays/category-array.txt, ID -> intro text
 
     const dataReady = Promise.all([
       fetch('arrays/Art-Array.txt')
@@ -138,14 +133,13 @@
         .then(buildArtInfo),
       window.menuReady, // parsed + drawer already built by the shared script.js
       fetch('arrays/faq-array.txt').then(r => r.text()).then(parseFaqText),
-      fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategoryNames),
-      fetch('arrays/category-intro-array.txt').then(r => r.text()).then(parseIntroText)
-    ]).then(([artInfo, menu, faqs, categoryNames, intros]) => {
+      fetch('arrays/category-array.txt').then(r => r.text()).then(parseCategories)
+    ]).then(([artInfo, menu, faqs, categories]) => {
       ART_INFO = artInfo;
       MENU = menu;
       FAQS = faqs;
-      CATEGORY_NAMES = categoryNames;
-      INTROS = intros;
+      CATEGORY_NAMES = categories.names;
+      INTROS = categories.intros;
     }).catch(err => console.error('failed to load art data', err));
 
     // ===== gallery rendering =====
@@ -180,11 +174,12 @@
       }
 
       // category intro: menu-array.txt's Intro column links this listing (by matching its
-      // Action/Value back to the MENU row) to an ID in arrays/category-intro-array.txt.
+      // Action/Value back to the MENU row) to an ID in arrays/category-array.txt.
       const menuEntry = findMenuEntryFor(categoryId);
 
       const introId = menuEntry && menuEntry.intro ? Number(menuEntry.intro) : null;
-      if (introId && INTROS[introId]) {
+      // the heading shows even when the intro text is empty
+      if (introId && CATEGORY_NAMES[introId]) {
         const intro = document.createElement('div');
         intro.className = 'category-intro';
 
@@ -196,7 +191,7 @@
 
         // each blank-line-separated block of the intro text becomes its own paragraph,
         // so the space between paragraphs can be set in CSS (.category-intro-body margin)
-        INTROS[introId].split(/\n\s*\n/).forEach(para => {
+        (INTROS[introId] || '').split(/\n\s*\n/).filter(para => para.trim()).forEach(para => {
           const body = document.createElement('p');
           body.className = 'category-intro-body';
           body.innerHTML = para.replace(/\n/g, '<br>');
