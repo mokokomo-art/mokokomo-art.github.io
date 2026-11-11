@@ -24,16 +24,16 @@ body {
 /* one big box holding all the sections: lighter gray, no border, rounded corners */
 .page-box {
   width: 100%;
-  max-width: 700px;
-  box-sizing: border-box;      /* the 700px includes the padding */
-  background-color: #cacfd7;   /* the lighter gray the page background used to be */
+  max-width: 720px;
+  box-sizing: border-box;      /* the 720px includes the padding */
+  background-color: #dee3eb;   /* light gray; the glow on line 36 uses the same color */
   padding: 40px;               /* space between the big box's edge and the text */
   border-radius: 16px;         /* rounded corners (same as the old boxes) */
 
   /* soft edges: a blur of the box's own color spreads out past its edge and fades
      into the page. --edge-fade = how far the fade reaches: bigger = softer, hazier. */
   --edge-fade: 20px;
-  box-shadow: 0 0 var(--edge-fade) calc(var(--edge-fade) / 2) #cacfd7;
+  box-shadow: 0 0 var(--edge-fade) calc(var(--edge-fade) / 2) #dee3eb;
   display: flex;
   flex-direction: column;
   gap: 60px;                   /* space between sections */
