@@ -1,13 +1,13 @@
 body {
   margin: 0;
-  background-color: #cacfd7;
+  background-color: #a2a7af; /* same blue-gray as the other pages */
   overflow-x: hidden;
 }
 
 /* ===== menu-bar: page-specific pieces (shared rules live in style.css) ===== */
 
 #menu-bar {
-  background: #cacfd7;
+  background: #a2a7af;
   padding-left: 20px;
   font-size: 22px;
 }
@@ -18,19 +18,30 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
   padding: 80px 20px var(--bottom-space); /* top, sides, bottom (style.css) */
 }
 
-/* boxes are turned off for now: no background color, padding, or rounded corners.
-   To bring them back, add these three lines inside .box:
-     background-color: #f2f2f2;
-     padding: clamp(14px, 1.7vw, 20px);
-     border-radius: 16px;                                                         */
+/* one big box holding all the sections: lighter gray, no border, rounded corners */
+.page-box {
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;      /* the 700px includes the padding */
+  background-color: #cacfd7;   /* the lighter gray the page background used to be */
+  padding: 40px;               /* space between the big box's edge and the text */
+  border-radius: 16px;         /* rounded corners (same as the old boxes) */
+
+  /* soft edges: a blur of the box's own color spreads out past its edge and fades
+     into the page. --edge-fade = how far the fade reaches: bigger = softer, hazier. */
+  --edge-fade: 20px;
+  box-shadow: 0 0 var(--edge-fade) calc(var(--edge-fade) / 2) #cacfd7;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;                   /* space between sections */
+}
+
+/* each section inside the big box (no color of its own) */
 .box {
   width: 100%;
-  max-width: 650px;
-  box-sizing: border-box;
 }
 
 /* ===== text inside the boxes ===== */
