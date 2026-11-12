@@ -133,3 +133,25 @@ body {
 .text-note:focus .text-note-box {
   display: block;
 }
+
+/* the email address on the "about me" heading line (arrays/about-text.txt line 15):
+   float: right pushes it to the right edge of the box, on the same line */
+.email {
+  float: right;
+  /* no font size here on purpose: this box keeps the heading's 24px, so its
+     text bottom lines up exactly with "about me". The address is made smaller below. */
+  font-weight: normal;    /* not bold like the heading */
+  color: #6e394d;         /* plum, same as the name in the menu bar (style.css) */
+}
+
+/* the clickable address: keeps the text color instead of the browser's link blue */
+.email a {
+  color: inherit;
+  font-size: 20px;        /* same size as the body text (heading is 24px) */
+}
+
+/* the arrowhead before the address (arrays/about-text.txt line 15; &#x2192; is the arrow character).
+   Same size as the address; not part of the link, so not underlined */
+.arrow {
+  font-size: 20px;
+}
