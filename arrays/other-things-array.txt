@@ -1,5 +1,5 @@
 ID-num	category Order	Piece	File Name	Category	Sub Category	Everything	date-opus	size	info	faq	Price
-1	15	all the time there is -clock	all the time there is clock.webp		clock	4					
+1	19	all the time there is -clock	all the time there is clock.webp		clock	4					
 2	11	Image Scrap -clock	Image Scrap Clock.webp		clock					
 3	1	musical frequencies - 36'' x 46''	musical frequencies.webp							
 4	12	Machine Learning -clock	Neural Net Clock.webp		clock					
@@ -7,3 +7,6 @@ ID-num	category Order	Piece	File Name	Category	Sub Category	Everything	date-opus
 6	20	working memory -lamp shade	working memory lamp shade.webp						
 7	31	this is this -coaster	this is this - coaster.webp		coaster
 8	32	you are here, your coffee is here -coaster	you are here, your coffee is here - coaster.webp		coaster
+9	14	David Byrne -clock	David Byrne Clock.webp		clock	
+10	15	Rolling Stones -clock	Rolling Stones Clock.webp		clock
+11	16	more time -clocks	clock-animation.webp		clock
