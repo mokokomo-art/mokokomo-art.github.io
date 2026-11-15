@@ -357,32 +357,3 @@ html.skip-intro .grid-fade-image,
 html.skip-intro .grid-fade-image.revealed {
   transition: none;
 }
-
-/* ===== box behind the hamburger (first visit only) =====
-   centered on the hamburger (style.css: #menu-toggle is 30px x 16px, 10px from the top,
-   20px from the right) and sits just under it. Hidden until index.html adds .shown */
-#menu-dot {
-  --box-width: 26px;
-  --box-height: 18px;
-  --fade-time: 1.5s;  /* fade in when it first appears */
-  position: fixed;
-  top: calc(18px - var(--box-height) / 2);
-  right: calc(35px - var(--box-width) / 2);
-  width: var(--box-width);
-  height: var(--box-height);
-  background: #ffffff;
-  opacity: 0.8;       /* 1 = solid, 0 = invisible */
-  z-index: 99;
-  pointer-events: none;
-  display: none;
-}
-
-#menu-dot.shown {
-  display: block;
-  animation: menuDotFadeIn var(--fade-time) ease-out;
-}
-
-/* fade in from invisible up to the opacity set above */
-@keyframes menuDotFadeIn {
-  from { opacity: 0; }
-}

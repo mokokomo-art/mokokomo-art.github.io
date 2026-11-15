@@ -28,10 +28,6 @@
     <span></span><span></span><span></span>
   </button>
 
-  <!-- green dot behind the hamburger, first visit only -- look in index.css (#menu-dot),
-       timing in MENU_DOT_DELAY_MS below -->
-  <div id="menu-dot"></div>
-
   <nav id="drawer"></nav>
 
   <div class="home">
@@ -489,17 +485,6 @@
           fadeImage.src = GRID_IMAGES[gridImageIndex];
         }, 667);
       }
-    });
-
-    // ===== green dot behind the hamburger (first visit only) =====
-    // appears this many milliseconds after the intro animation ends (1000 = 1 second);
-    // 0 = the moment it ends
-    const MENU_DOT_DELAY_MS = 0;
-    document.querySelector('.content-box').addEventListener('animationend', evt => {
-      if (evt.animationName !== 'fadeIn') return;
-      if (document.documentElement.classList.contains('skip-intro')) return;
-      const menuDot = document.getElementById('menu-dot');
-      if (menuDot) setTimeout(() => menuDot.classList.add('shown'), MENU_DOT_DELAY_MS);
     });
 
     // places .grid-title just below the bottom of the grid (the frame-box), and lines it
