@@ -88,7 +88,8 @@
         piece: r['Piece'],
         file: r['File Name'],
         category: Number(r['Category']),
-        order: Number(r['category Order']),
+        order: Number(r['category Order']),       // 0 or blank = hide from its category page
+        everything: Number(r['Everything']),     // 0 or blank = hide from the chronology page
         date: r['date-opus'],
         size: r['size'],
         info: r['info'],
@@ -165,13 +166,13 @@
       if (categoryId === 'chron') {
         // "everything (but odds and ends)": categories 1+2 combined, newest piece first
         pieces = ART_INFO
-          .filter(a => a.category === 1 || a.category === 2)
+          .filter(a => (a.category === 1 || a.category === 2) && a.everything !== 0)
           .sort((a, b) => b.date.localeCompare(a.date));
       } else {
         // categoryId is a list of one or more category IDs, OR'd together -- a single
         // real category (like "image as means") is just a union of one
         pieces = ART_INFO
-          .filter(a => categoryId.includes(a.category))
+          .filter(a => categoryId.includes(a.category) && a.order !== 0)
           .sort((a, b) => a.order - b.order);
       }
 
