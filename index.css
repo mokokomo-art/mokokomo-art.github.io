@@ -306,7 +306,8 @@ body {
 .content-box {
   border: 3px solid rgba(255, 255, 255, 0.9); /* white at 90% opacity */
   border-radius: 0;
-  margin: 100px 20px 30px; /* top, left and right, bottom */
+  margin: 100px 20px 30px; /* top, left and right, bottom -- the top is replaced by the script in
+                              index.html, which places the box a set number of grid squares below the grid */
   box-sizing: border-box;
   opacity: 0;
   display: flex;

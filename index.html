@@ -142,6 +142,9 @@
     const RETURN_VISIT_TITLE = '(yellow and red, yellow and black)';
     const RETURN_VISIT_SIZE = '45" x 26"';
     const RETURN_VISIT_YEAR = '2026';
+    // TEMPORARY SWITCH: false = hide the piece's title/year/size under the grid on a return visit
+    // (the blank box then sits the usual distance below the grid itself); true = show it
+    const SHOW_RETURN_VISIT_TITLE = false;
     // text in the box below the grid on a return visit (first visit keeps the page's own text)
     const RETURN_VISIT_BOX_TEXT = 'this space is no longer intentionally left blank';
 
@@ -197,6 +200,13 @@
       return color;
     }
     let GRID_X = [], GRID_Y = [], dotSize = 0; // filled in by positionGridBox()
+
+    // ===== space between the bottom of the grid and the top of the blank box below =====
+    // measured in grid squares (the distance between two grid lines), so the space grows
+    // and shrinks with the grid itself: 1 = about 43px on a computer, about 16px on a phone held upright
+    const CONTENT_BOX_GAP_SQUARES = 2;
+    let gridFinalBottomY = null; // where the grid's bottom edge ends up (page position), set by positionGridBox()
+    let gridSpacing = 0;         // the distance between two grid lines, set by positionGridBox()
     let dots = [];                // each dot on the grid: { gx, gy, el }, oldest first
     let dotsStarted = false;
 
@@ -405,6 +415,10 @@
         const finalTop = aTop - grow;
         const finalLeft = (anchorX + spacing) - grow;
         const finalBottom = frameBottomAnchor - FRAME_INSET_PX;
+        // remembered for the blank box below (syncContentBoxPosition) -- the grid's FINAL bottom,
+        // not where the frame happens to be mid-shrink
+        gridFinalBottomY = homeRect.top + window.scrollY + finalBottom;
+        gridSpacing = spacing;
         const finalWidth = (rightX - (anchorX + spacing)) + grow * 2;
         const finalHeight = finalBottom - finalTop;
 
@@ -473,6 +487,25 @@
           });
         }
       }
+      syncContentBoxPosition();
+    }
+
+    // places the blank box ("this space left intentionally blank") CONTENT_BOX_GAP_SQUARES
+    // grid squares below the bottom of the grid. On a repeat visit, when the piece's title
+    // shows under the grid, the space is measured from the bottom of that title instead,
+    // so the box never runs into it.
+    function syncContentBoxPosition() {
+      const contentBox = document.querySelector('.content-box');
+      if (!contentBox || gridFinalBottomY === null) return;
+      let from = gridFinalBottomY;
+      const gridTitle = document.querySelector('.grid-title');
+      if (gridTitle && getComputedStyle(gridTitle).display !== 'none') {
+        from = Math.max(from, gridTitle.getBoundingClientRect().bottom + window.scrollY);
+      }
+      // where the box would sit with no top margin, then add whatever margin gets it to the right spot
+      contentBox.style.marginTop = '0px';
+      const naturalTop = contentBox.getBoundingClientRect().top + window.scrollY;
+      contentBox.style.marginTop = (from + gridSpacing * CONTENT_BOX_GAP_SQUARES - naturalTop) + 'px';
     }
 
     // the fade image waits until the box's own reveal animation finishes, then
@@ -550,6 +583,7 @@
         gridTitle.style.marginLeft = imgRect.left + 'px';
         gridTitle.style.width = imgRect.width + 'px';
       }
+      syncContentBoxPosition(); // the title just moved, so the box below it may need to move too
     }
 
     // ===== skip the intro animation on a repeat visit within the same browser session =====
@@ -592,7 +626,7 @@
         fadeImage.src = RETURN_VISIT_IMAGE;
       }
       const gridTitle = document.querySelector('.grid-title');
-      if (gridTitle) {
+      if (gridTitle && SHOW_RETURN_VISIT_TITLE) {
         const gap = ' '.repeat(4);
         gridTitle.innerHTML = '<span class="piece-name">' + RETURN_VISIT_TITLE + '</span><br>' + RETURN_VISIT_YEAR + gap + RETURN_VISIT_SIZE;
         gridTitle.style.display = 'block';
