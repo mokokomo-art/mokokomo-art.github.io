@@ -36,7 +36,7 @@ body {
   box-shadow: 0 0 var(--edge-fade) calc(var(--edge-fade) / 2) #dee3eb;
   display: flex;
   flex-direction: column;
-  gap: 60px;                   /* space between sections */
+  gap: 24px;                   /* space between sections */
 }
 
 /* each section inside the big box (no color of its own) */
@@ -66,14 +66,13 @@ body {
   margin-bottom: 0;
 }
 
-/* headings: 24px on computers and phones alike */
+/* headings: 20px on computers and phones alike (same as body text on computers) */
 .prose .head {
   padding-left: 0;        /* headings start right at the box's left edge */
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.15;      /* tighter than body text, usual for headings */
-  margin-bottom: 0.17em;  /* space under the heading: 0.17 x 24px = about 4px;
-                             in em so it stays in proportion if the size changes */
+  margin-bottom: 2px;     /* space under the heading */
 }
 
 /* the word "about" in each heading (wrapped by the script in about.html) */
@@ -81,26 +80,36 @@ body {
   font-style: italic;
 }
 
-/* the blue i button, drawn inside a sentence -- same look as the real info button
-   under each artwork (.info button in art-display.css). In about-text.txt, type:
+/* the blue i button, drawn inside a sentence -- same look as the dots in the category
+   intro text (.category-intro-body sup in art-display.css), 15% smaller than the info button. In about-text.txt, type:
    <span class="info-dot">i</span>   (picture only), or for one that pops up a box:
    <span class="text-note" tabindex="0"><span class="info-dot">i</span><span class="text-note-box">box text</span></span> */
 .info-dot {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 21.3px;
-  height: 21.3px;
+  width: 18px;          /* same size as the dots in the category intro text */
+  height: 18px;
   border-radius: 50%;
   background: #5ca2e1;
   color: #fff;
-  font-size: 14.6px;
+  font-size: 12.4px;
   font-style: italic;
   font-family: Georgia, serif;
   line-height: 1;
   vertical-align: middle;
   position: relative;
   top: -3px;            /* raises it on the line; more negative = higher */
+}
+
+/* pink version of the dot, to match the ? (faq) button: <span class="info-dot faq">?</span> */
+.info-dot.faq {
+  background: #c35f9f;
+}
+
+/* green version of the dot, to match the $ (price) button: <span class="info-dot price">$</span> */
+.info-dot.price {
+  background: rgb(49.5% 62.8% 52.7%);
 }
 
 /* ===== text-note: pop-up box on rollover (or tap) -- copied from art-display.css,
@@ -138,7 +147,7 @@ body {
    float: right pushes it to the right edge of the box, on the same line */
 .email {
   float: right;
-  /* no font size here on purpose: this box keeps the heading's 24px, so its
+  /* no font size here on purpose: this box keeps the heading's 20px, so its
      text bottom lines up exactly with "about me". The address is made smaller below. */
   font-weight: normal;    /* not bold like the heading */
   color: #6e394d;         /* plum, same as the name in the menu bar (style.css) */
@@ -147,7 +156,7 @@ body {
 /* the clickable address: keeps the text color instead of the browser's link blue */
 .email a {
   color: inherit;
-  font-size: 20px;        /* same size as the body text (heading is 24px) */
+  font-size: 20px;        /* same size as the body text and heading */
 }
 
 /* the arrowhead before the address (arrays/about-text.txt line 15; &#x2192; is the arrow character).
