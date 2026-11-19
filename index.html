@@ -30,6 +30,11 @@
 
   <nav id="drawer"></nav>
 
+  <!-- three > signs pointing at the menu icon: first visit only. 1 second after the grid
+       images start, they appear one at a time, left to right (see "menu arrow" in the
+       script below; look set in index.css) -->
+  <span id="menu-arrow"><span>&gt;</span><span>&gt;</span><span>&gt;</span></span>
+
   <div class="home">
     <div class="grid-box">
       <div class="frame-box"></div>
@@ -479,6 +484,27 @@
       fadeImage.classList.add('revealed');
       if (!gridImageCycleStarted && GRID_IMAGES.length) {
         gridImageCycleStarted = true;
+        // menu arrow: 1 second (1000 ms) after the images start, the three > signs beside the
+        // menu icon appear one at a time, left to right, ARROW_STEP_MS apart; then all three
+        // fade off together (the fade also takes ARROW_STEP_MS), and it starts over --
+        // looping for as long as the page is open
+        const ARROW_STEP_MS = 800;
+        setTimeout(() => {
+          const menuArrow = document.getElementById('menu-arrow');
+          if (!menuArrow) return;
+          menuArrow.classList.add('shown');
+          const signs = menuArrow.querySelectorAll('span');
+          menuArrow.style.setProperty('--arrow-fade', ARROW_STEP_MS + 'ms'); // fade length, used in index.css
+          let step = 0; // 0, 1, 2 = show that many + 1 signs; last step = all fade off
+          function showStep() {
+            const fadeStep = step === signs.length;
+            menuArrow.classList.toggle('fading', fadeStep); // fades only on the way off; signs still appear instantly
+            signs.forEach((sign, i) => sign.classList.toggle('shown', i <= step && !fadeStep));
+            step = (step + 1) % (signs.length + 1);
+          }
+          showStep();
+          setInterval(showStep, ARROW_STEP_MS);
+        }, 1000);
         fadeImage.src = GRID_IMAGES[gridImageIndex];
         setInterval(() => {
           gridImageIndex = (gridImageIndex + 1) % GRID_IMAGES.length;

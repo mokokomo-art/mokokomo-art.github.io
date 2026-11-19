@@ -142,6 +142,46 @@ body {
   to   { opacity: 1; pointer-events: auto; }
 }
 
+/* three > signs to the left of the menu icon, in the same plum as the menu icon.
+   Hidden until the script in index.html adds "shown" (first visit only, 1 second
+   after the grid images start); then each > sign gets "shown", one at a time. */
+#menu-arrow {
+  display: none;
+  position: fixed;
+  top: 17.85px;           /* lines up the points of the > signs with the menu icon's middle bar */
+  right: 66px;            /* menu icon is 20px from the right and 30px wide, plus 16px gap */
+  transform: translateY(-50%);
+  z-index: 100;
+  font-size: 18px;
+  line-height: 1;
+  color: #6e394d;         /* plum, same as the menu icon */
+  opacity: 0.6;
+}
+
+#menu-arrow.shown {
+  display: block;
+}
+
+/* each > sign: invisible (but still taking up its space) until it gets "shown" */
+#menu-arrow span {
+  opacity: 0;
+}
+
+#menu-arrow span.shown {
+  opacity: 1;
+}
+
+/* after the 3rd sign, all three fade off together; the length (--arrow-fade) is set
+   by the script in index.html, same as one step of the loop */
+#menu-arrow.fading span {
+  transition: opacity var(--arrow-fade) ease;
+}
+
+/* extra space between the > signs: doubles the gap the font leaves on its own (about 2px) */
+#menu-arrow span + span {
+  margin-left: 2px;
+}
+
 /* ===== home layout (title + first image) ===== */
 
 .home {
