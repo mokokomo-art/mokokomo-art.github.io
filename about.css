@@ -12,6 +12,18 @@ body {
   font-size: 22px;
 }
 
+/* About page only: the name ("maurice konkle", set in style.css) is turned off here,
+   and a clickable email address is put in its place (in about.html, line 15) */
+#menu-bar::before {
+  content: none;
+}
+
+/* the email address: same plum color as the name, not the browser's link blue */
+#menu-bar a {
+  color: inherit;
+  font-size: 18px;        /* smaller than the name on other pages (22px) */
+}
+
 /* ===== the column of boxes ===== */
 
 .gallery {
