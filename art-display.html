@@ -331,8 +331,35 @@
     function toggleInfo(wrap) {
       const wasOpen = wrap.classList.contains('open');
       document.querySelectorAll('.info.open').forEach(el => el.classList.remove('open'));
-      if (!wasOpen) wrap.classList.add('open');
+      if (!wasOpen) {
+        wrap.classList.add('open');
+        placePopup(wrap);
+      }
     }
+
+    // pop-ups normally open downward from their button. If the box would run off the
+    // bottom of the screen, and there's more room above the button than below it,
+    // open it upward instead (.info.up in art-display.css) -- so the page doesn't have
+    // to scroll and push the picture out of view
+    function placePopup(wrap) {
+      const box = wrap.querySelector('p');
+      const btn = wrap.querySelector('button');
+      if (!box || !btn) return;
+      wrap.classList.remove('up');
+      const boxRect = box.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+      const roomBelow = window.innerHeight - btnRect.bottom;
+      const roomAbove = btnRect.top;
+      if (boxRect.bottom > window.innerHeight && roomAbove > roomBelow) wrap.classList.add('up');
+    }
+
+    // on screens with a mouse or trackpad (computers, and Safari's phone/iPad emulation),
+    // pop-ups open by hovering, not tapping (see @media (hover: hover) in art-display.css) --
+    // so make the same up-or-down check when the pointer moves onto a button
+    document.addEventListener('mouseover', e => {
+      const wrap = e.target.closest('.info');
+      if (wrap) placePopup(wrap);
+    });
 
     document.addEventListener('pointerdown', e => {
       if (!e.target.closest('.info')) {

@@ -85,7 +85,9 @@ body {
   width: auto;
   height: auto;
   max-width: min(1200px, calc(100vw - 80px));
-  max-height: calc(92vh - 70px);
+  max-height: calc(92vh - 70px);   /* fallback for older browsers */
+  max-height: calc(92svh - 70px);  /* svh = the screen's height WITH the phone's address bar showing,
+                                      so the picture and its caption fit on screen together */
 }
 
 /* phones only: narrower side margins around the pictures -- 15px each side
