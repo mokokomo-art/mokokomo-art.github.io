@@ -1,18 +1,18 @@
 ID-num	Category	category Order	Everything	Piece	File Name	date-opus	size	info	Price
-1	1	1	1	how far	how far.webp	2021-07/01	38'' x 24''	archival print, color pencil.	nfs
-2	1	11	1	hope	hope.webp	2021-11/01	22'' x 18''	archival print,  ink marker.	gifted
-3	1	6	1	after/because	after-because.webp	2022-08-11	36'' x 29''	archival print, color pencil,  ink marker.	gifted
-4	1	7	1	Field Theory #1	Field Theory 1.webp	2024-05-01	50'' x 18''	archival print, color pencil,  ink marker.	gifted
-5	1	4	1	Network of Bales  (after Duchamp)	Network of Bales (after Duchamp).webp	2024-07-01	32'' x 24'' 	archival print,  pastels, ink marker, color pencil.	nfs
-6	1	2	1	calculating area	calculating area.webp	2024-07-02	38'' x 24''	archival print, color pencil.	gifted
-7	1	8	1	Field Theory #2	Field Theory 2.webp	2025-01-01	48'' x 18''	archival print, color pencil, pastels, ink marker.	sold
-8	1	9	1	Field Theory #3	Field Theory 3.webp	2025-01-02	48'' x 18''	archival print, color pencil, pastels, ink marker.	sold
+1	1	1	1	how far	how far.webp	2021-07/01	38'' x 24''	archival print, color pencil.	
+2	1	11	1	hope	hope.webp	2021-11/01	22'' x 18''	archival print,  ink marker.	
+3	1	6	1	after/because	after-because.webp	2022-08-11	36'' x 29''	archival print, color pencil,  ink marker.	
+4	1	7	1	Field Theory #1	Field Theory 1.webp	2024-05-01	50'' x 18''	archival print, color pencil,  ink marker.	
+5	1	4	1	Network of Bales (after Duchamp)	Network of Bales (after Duchamp).webp	2024-07-01	32'' x 24'' 	archival print,  pastels, ink marker, color pencil.	
+6	1	2	1	calculating area	calculating area.webp	2024-07-02	38'' x 24''	archival print, color pencil.	
+7	1	8	1	Field Theory #2	Field Theory 2.webp	2025-01-01	48'' x 18''	archival print, color pencil, pastels, ink marker.	
+8	1	9	1	Field Theory #3	Field Theory 3.webp	2025-01-02	48'' x 18''	archival print, color pencil, pastels, ink marker.	
 9	1	10	1	Field Theory #4	Field Theory 4.webp	2025-01-03	48'' x 18''	archival print, color pencil.	800. framed. Museum Acrylic glazing,
-10	1	5	1	Network(s) of Bales + Outliers	Network(s) of Bales + Outliers.webp	2025-03-01	36'' x 29''	archival print,  ink marker.	sold
-11	1	3	1	Earth, Sky, Mortals, Divinities	fourfold.webp	2025-08/01	24'' x 22''	archival prints, color pencil,  ink marker.	800. framed.  Museum Acrylic glazing,
-12	2	2	1	35mm Slide/Mt Rainier Ice Cave	35mm Slide Mt Rainier Ice Cave.webp	2023-08-01	19'' x 24''	archival print	gifted
-13	2	4	1	SX-70 Eclipse	SX-70 Eclipse.webp	2023-10-01	19'' x 24''	archival print	gifted
-14	2			SX-70 Umbrella 	SX-70 Umbrella.webp	2025-02-02	37'' x 44''	archival print	750. 1 of 1 at this size.  1 of 5 total. framed. acrylic spray coating.
-15	2			SX-70 Parka 	SX-70 Parka.webp	2025-02-01	37'' x 44''	archival print	sold
-16	2	3	1	SX-70 Umbrella, SX-70 Parka	SX-70 Umbrella-Parka.webp	2025-02-02	37'' x44'' each	archival print	sold
+10	1	5	1	Network(s) of Bales + Outliers	Network(s) of Bales + Outliers.webp	2025-03-01	36'' x 29''	archival print,  ink marker.	
+11	1	3	1	Earth, Sky, Mortals, Divinities	fourfold.webp	2025-08/01	24'' x 22''	archival prints, color pencil,  ink marker.	1000. framed. Museum Acrylic glazing,
+12	2	2	1	35mm Slide/Mt Rainier Ice Cave	35mm Slide Mt Rainier Ice Cave.webp	2023-08-01	19'' x 24''	archival print	
+13	2	4	1	SX-70 Eclipse	SX-70 Eclipse.webp	2023-10-01	19'' x 24''	archival print	
+14	2			SX-70 Umbrella 	SX-70 Umbrella.webp	2025-02-02	37'' x 44''	archival print	
+15	2			SX-70 Parka 	SX-70 Parka.webp	2025-02-01	37'' x 44''	archival print	
+16	2	3	1	SX-70 Umbrella, SX-70 Parka	SX-70 Umbrella-Parka.webp	2025-02-02	37'' x44'' each	archival print	
 17	2	1	1	(yellow and red, yellow and black)	(yellow-red, yellow-black).webp	2026-08-01	22'' x 26'' each	archival print	

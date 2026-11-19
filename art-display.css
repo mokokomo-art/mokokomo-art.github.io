@@ -68,6 +68,28 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* green $ dot used like a bullet at the start of an intro paragraph -- same size as the
+   i dots in the intro text, same green as the $ (price) button under each picture.
+   In category-array.txt, type: <span class="price-dot">$</span> */
+.category-intro-body .price-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgb(49.5% 62.8% 52.7%);
+  color: #fff;
+  font-size: 12.4px;
+  font-style: italic;
+  font-family: Georgia, serif;
+  line-height: 1;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;            /* raises it on the line; more negative = higher */
+  -webkit-text-size-adjust: 100%;
+}
+
 .box img {
   width: 100%;
   height: auto;

@@ -255,20 +255,19 @@
         faqWrap.append(faqBtn, faqP);
         meta.appendChild(faqWrap);
 
-        /* PRICE BUTTON -- turned off for now, kept for later.
-           To bring it back, delete the lone opening mark on the next line and the lone closing mark after the code. */
-        /*
-        const priceWrap = document.createElement('div');
-        priceWrap.className = 'info price';
-        const priceBtn = document.createElement('button');
-        priceBtn.type = 'button';
-        priceBtn.textContent = '$';
-        const priceP = document.createElement('p');
-        priceP.textContent = art.price;
-        priceBtn.addEventListener('click', () => toggleInfo(priceWrap));
-        priceWrap.append(priceBtn, priceP);
-        meta.appendChild(priceWrap);
-        */
+        // PRICE BUTTON ($), only when the Price cell in Art-Array.txt has something in it -- blank = no $ button
+        if (art.price) {
+          const priceWrap = document.createElement('div');
+          priceWrap.className = 'info price';
+          const priceBtn = document.createElement('button');
+          priceBtn.type = 'button';
+          priceBtn.textContent = '$';
+          const priceP = document.createElement('p');
+          priceP.textContent = art.price;
+          priceBtn.addEventListener('click', () => toggleInfo(priceWrap));
+          priceWrap.append(priceBtn, priceP);
+          meta.appendChild(priceWrap);
+        }
 
         captionRight.appendChild(meta);
         caption.appendChild(captionRight);
