@@ -23,6 +23,23 @@ requestAnimationFrame(() => {
   });
 });
 
+// ===== shared: coming back with the browser's Back (or Forward) button =====
+// Browsers often keep a page you just left in memory, frozen exactly as it was at the
+// moment you left -- which, here, is faded out to invisible (see the fade-out-then-navigate
+// below). Back then shows that frozen, invisible page: a blank screen. "pageshow" with
+// event.persisted = true means the page came back from that memory, so undo the fade-out
+// (and the white background used when leaving for the nothing page), close the menu,
+// and fade the page in again as if just arriving.
+window.addEventListener('pageshow', event => {
+  if (!event.persisted) return;
+  document.body.style.transition = '';
+  document.body.style.backgroundColor = '';
+  document.body.classList.remove('menu-open');
+  requestAnimationFrame(() => {
+    document.body.style.opacity = '1';
+  });
+});
+
 // ===== shared: hamburger open/close =====
 const menuToggle = document.getElementById('menu-toggle');
 const menuDrawer = document.getElementById('drawer');
