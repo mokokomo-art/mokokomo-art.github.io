@@ -2,6 +2,11 @@
   --fade-duration: 0.8s;
   --bottom-space: 90px;   /* empty space below the last item on scrolling pages,
                              and below an open pop-up (script.js) */
+  /* space between artworks on the art, photo as end and other things pages: 13% of the
+     screen's SHORTER side (vmin) -- its width when a phone is upright, its height when
+     sideways, so both come out the same -- never less than 40px or more than 120px.
+     About 117px on a computer, 100px on an iPad, 51px on an iPhone. */
+  --piece-gap: clamp(40px, 13vmin, 120px);
 }
 
 /* page fade-in on arrival / fade-out before navigating -- the duration lives here as

@@ -14,7 +14,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 120px;
+  gap: var(--piece-gap);   /* space between artworks -- set in style.css */
   padding: 100px 20px var(--bottom-space); /* top, sides, bottom (style.css) */
   opacity: 1;
   transition: opacity var(--fade-duration) ease; /* same as the page-change fade (style.css) */
@@ -23,7 +23,7 @@ body {
 .category-intro {
   max-width: 1000px;
   text-align: center;
-  margin-bottom: -60px; /* pulls the first picture closer: 120px gap - 60px = 60px */
+  margin-bottom: calc(var(--piece-gap) / -2); /* pulls the first picture closer: half the gap between artworks */
 }
 
 .category-intro-heading {
