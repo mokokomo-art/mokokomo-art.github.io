@@ -7,6 +7,10 @@
      sideways, so both come out the same -- never less than 40px or more than 120px.
      About 117px on a computer, 100px on an iPad, 51px on an iPhone. */
   --piece-gap: clamp(40px, 13vmin, 120px);
+  /* space between a picture and its caption, on the same three pages: scales the same
+     way as --piece-gap, never less than 8px or more than 16px.
+     About 16px on a computer, 14px on an iPad, 8px on an iPhone. */
+  --caption-gap: clamp(8px, 1.8vmin, 16px);
 }
 
 /* page fade-in on arrival / fade-out before navigating -- the duration lives here as
