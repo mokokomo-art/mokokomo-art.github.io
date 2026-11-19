@@ -101,6 +101,10 @@ body {
   gap: 1em;
   padding: 80px 0 0;
   box-sizing: border-box;
+  /* backup: if the menu is ever taller than the screen, it scrolls instead of
+     hiding the bottom items (no bounce at the ends) */
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .menu-open #drawer {
@@ -125,5 +129,20 @@ body {
   display: block;   /* puts it on its own line, under "home" */
   font-size: 16px;
   line-height: 1;   /* tighter space between the two lines; bigger number = more space */
+}
+
+/* short screens (phones held sideways): a more compact menu, so every item fits */
+@media (max-height: 500px) {
+  #drawer {
+    padding-top: 44px;    /* (80px on other screens) */
+    gap: 6px;             /* space between items (1em on other screens) */
+  }
+  #drawer a {
+    font-size: 18px;      /* (22px on other screens) */
+    padding: 5px 12px;    /* (8px 14px on other screens) */
+  }
+  #drawer .drawer-small {
+    font-size: 13px;      /* (16px on other screens) */
+  }
 }
 
